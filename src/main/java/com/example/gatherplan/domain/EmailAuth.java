@@ -4,21 +4,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmailAuth {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userEmail;
     private String authCode;
-    private LocalTime createdTime;
-    private LocalTime expiredTime;
+    private LocalDateTime createdTime;
+    private LocalDateTime expiredTime;
 
 }

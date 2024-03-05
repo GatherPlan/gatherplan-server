@@ -4,8 +4,7 @@ import com.example.gatherplan.domain.embedded.Address;
 import com.example.gatherplan.domain.enums.AppointmentState;
 import com.example.gatherplan.domain.enums.CandidateTimeType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +14,9 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Appointment {
 
     @Id
@@ -37,12 +39,14 @@ public class Appointment {
     private LocalTime confirmedEndTime;
 
     @ElementCollection
+    @Builder.Default
     private List<LocalDate> candidateDates = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private CandidateTimeType candidateTimeType;
 
     @ElementCollection
+    @Builder.Default
     private List<LocalTime> candidateTimes = new ArrayList<>();
 
     @OneToMany(mappedBy = "appointment")

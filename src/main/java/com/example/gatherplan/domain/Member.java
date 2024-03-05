@@ -3,14 +3,16 @@ package com.example.gatherplan.domain;
 import com.example.gatherplan.domain.enums.UserAuthType;
 import com.example.gatherplan.domain.enums.UserType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
