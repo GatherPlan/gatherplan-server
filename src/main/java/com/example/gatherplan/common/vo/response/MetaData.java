@@ -1,9 +1,8 @@
 package com.example.gatherplan.common.vo.response;
 
 import lombok.Builder;
-import lombok.Getter;
-
-@Getter
+import lombok.Data;
+@Data
 @Builder
 public class MetaData {
 

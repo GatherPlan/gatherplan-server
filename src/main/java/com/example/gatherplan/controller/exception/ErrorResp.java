@@ -1,7 +1,5 @@
 package com.example.gatherplan.controller.exception;
 
-import com.example.gatherplan.common.exception.ErrorCode;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter

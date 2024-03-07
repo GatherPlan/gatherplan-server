@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
+import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -33,7 +34,8 @@ public class MemberServiceImpl implements MemberService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendAuthCodeProcess(String email){
+    public void sendAuthCodeProcess(LocalJoinEmailDto localJoinEmailDto){
+        String email = localJoinEmailDto.getEmail();
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
     }
