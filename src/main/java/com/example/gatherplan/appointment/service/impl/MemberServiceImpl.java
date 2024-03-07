@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
+import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
@@ -72,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
 
         if (memberByEmail.isPresent()) {
-            throw new ResourceConflictException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
+            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
         }
     }
 
@@ -103,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
 
         if (findEmailAuth.isEmpty()){
-            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다.");
+            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다.");
         }
 
         EmailAuth emailAuth = findEmailAuth.get();
@@ -122,7 +123,7 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> findMember = memberRepository.findMemberByName(name);
 
         if (findMember.isPresent()){
-            throw new ResourceConflictException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
+            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
         }
     }
 

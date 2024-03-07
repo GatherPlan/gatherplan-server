@@ -5,16 +5,13 @@ import com.example.gatherplan.common.validation.NotBlankEmail;
 import com.example.gatherplan.common.validation.PatternCheckEmail;
 import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
 import com.example.gatherplan.appointment.service.MemberService;
-import com.example.gatherplan.appointment.validation.LocalJoinFormValidationSequence;
+import com.example.gatherplan.controller.validation.LocalJoinFormValidationSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -26,11 +23,11 @@ public class MemberController {
 
     @PostMapping("/send-authcode")
     public ResponseEntity<BooleanResp> sendAuthCode(
+            @RequestParam("email")
             @Validated(value = LocalJoinFormValidationSequence.class)
             @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
-            @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
-            String email
-    ){
+            @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class) String email){
+        System.out.println(email);
         memberService.sendAuthCodeProcess(email);
 
         return ResponseEntity.ok(

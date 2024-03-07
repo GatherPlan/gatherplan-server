@@ -4,7 +4,6 @@ import com.example.gatherplan.common.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice
-public class LocalJoinExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResp> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
@@ -35,7 +34,7 @@ public class LocalJoinExceptionHandler {
     }
 
     @ExceptionHandler({BusinessException.class})
-    protected ResponseEntity<ErrorResp> handleResourceNotFoundException(BusinessException exception){
+    protected ResponseEntity<ErrorResp> handleBusinessException(BusinessException exception){
         ErrorCode errorCode = exception.getErrorCode();
 
         return ResponseEntity

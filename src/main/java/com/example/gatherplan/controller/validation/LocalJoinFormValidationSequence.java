@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.validation;
+package com.example.gatherplan.controller.validation;
 
 import com.example.gatherplan.common.validation.*;
 import jakarta.validation.GroupSequence;

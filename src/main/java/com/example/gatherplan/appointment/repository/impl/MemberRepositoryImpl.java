@@ -10,8 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.gatherplan.domain.QMember.member;
-import static com.example.gatherplan.domain.QEmailAuth.emailAuth;
+import static com.example.gatherplan.appointment.repository.entity.QMember.member;
+import static com.example.gatherplan.appointment.repository.entity.QEmailAuth.emailAuth;
+
 
 @Repository
 public class MemberRepositoryImpl implements MemberRepository {
@@ -48,6 +49,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+
     }
 
     @Override
@@ -56,7 +58,6 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .delete(emailAuth)
                 .where(emailAuth.userEmail.eq(email))
                 .execute();
-
     }
 
     @Override

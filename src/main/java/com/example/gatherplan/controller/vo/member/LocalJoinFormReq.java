@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.user;
+package com.example.gatherplan.controller.vo.member;
 
 import com.example.gatherplan.common.validation.*;
 import jakarta.validation.constraints.Email;
