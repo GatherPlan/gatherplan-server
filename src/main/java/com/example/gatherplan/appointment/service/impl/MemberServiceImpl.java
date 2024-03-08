@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
 import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
+import com.example.gatherplan.appointment.dto.LocalLoginFormDto;
 import com.example.gatherplan.appointment.dto.TemporaryJoinFormDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserType;
@@ -11,7 +12,10 @@ import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
+import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -143,6 +147,27 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.saveMember(member);
 
+    }
+
+    @Override
+    public void localLoginProcess(LocalLoginFormDto localLoginFormDto, HttpServletRequest httpServletRequest) {
+        String email = localLoginFormDto.getEmail();
+        String password = localLoginFormDto.getPassword();
+
+        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
+        if (findMember.isEmpty()) {
+            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 계정입니다.");
+        }
+
+        Member member = findMember.get();
+
+        if (!member.getPassword().equals(password)) {
+            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "비밀번호가 일치하지 않습니다.");
+        }
+
+        HttpSession httpSession = httpServletRequest.getSession(true);
+        httpSession.setAttribute("email", email);
+        httpSession.setMaxInactiveInterval(600);
     }
 
 }

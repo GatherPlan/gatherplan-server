@@ -4,8 +4,9 @@ import com.example.gatherplan.appointment.dto.AppointmentFormDto;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.vo.response.BooleanResp;
-import com.example.gatherplan.controller.validation.LocalJoinFormValidationSequence;
+import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.AppointmentFormReq;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,12 @@ public class AppointmentController {
 
     @PostMapping("/set-information")
     public ResponseEntity<BooleanResp> setInformation(
-            @Validated(value = LocalJoinFormValidationSequence.class)
-            @RequestBody AppointmentFormReq appointmentFormReq) {
+            @Validated(value = RequestValidationSequence.class)
+            @RequestBody AppointmentFormReq appointmentFormReq, HttpServletRequest httpServletRequest) {
 
-        AppointmentFormDto appointmentFormDto = Mappers.getMapper(AppointmentMapper.class).toAppointmentFormDto(appointmentFormReq);
-        appointmentService.setInformation(appointmentFormDto);
+        AppointmentFormDto appointmentFormDto = Mappers.getMapper(AppointmentMapper.class)
+                .toAppointmentFormDto(appointmentFormReq);
+        appointmentService.setInformation(appointmentFormDto, httpServletRequest);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)

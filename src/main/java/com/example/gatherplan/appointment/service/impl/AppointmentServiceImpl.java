@@ -6,8 +6,13 @@ import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.service.AppointmentService;
+import com.example.gatherplan.common.exception.BusinessException;
+import com.example.gatherplan.common.exception.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,7 +25,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     @Override
-    public void setInformation(AppointmentFormDto appointmentFormDto) {
+    @Transactional
+    public void setInformation(AppointmentFormDto appointmentFormDto, HttpServletRequest httpServletRequest) {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+
+        if (httpSession == null) {
+            throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL, "약속 만들기는 로그인이 필요합니다.");
+        }
+
         String name = appointmentFormDto.getName();
         String notice = appointmentFormDto.getNotice();
         String place = appointmentFormDto.getPlace();
@@ -63,7 +75,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         appointmentRepository.saveAppointment(appointment);
-
     }
 
 }
