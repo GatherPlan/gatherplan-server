@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository.entity;
 
-import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import jakarta.persistence.*;
@@ -26,10 +25,9 @@ public class Appointment {
 
     private String name;
 
-    private String description;
+    private String notice;
 
-    @Embedded
-    private Address address;
+    private String place;
 
     @Enumerated(EnumType.STRING)
     private AppointmentState appointmentState;
@@ -47,7 +45,11 @@ public class Appointment {
 
     @ElementCollection
     @Builder.Default
-    private List<LocalTime> candidateTimes = new ArrayList<>();
+    private List<LocalTime> candidateStartTimes = new ArrayList<>();
+
+    @ElementCollection
+    @Builder.Default
+    private List<LocalTime> candidateEndTimes = new ArrayList<>();
 
     @OneToMany(mappedBy = "appointment")
     private List<ParticipationEntity> participationEntities;

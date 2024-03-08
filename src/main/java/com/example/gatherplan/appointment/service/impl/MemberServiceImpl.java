@@ -1,18 +1,18 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
-import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.common.exception.AuthenticationFailException;
-import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.appointment.repository.entity.EmailAuth;
-import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
+import com.example.gatherplan.appointment.dto.TemporaryJoinFormDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserType;
-import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
+import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
+import com.example.gatherplan.appointment.repository.entity.EmailAuth;
+import com.example.gatherplan.appointment.repository.entity.Member;
 import com.example.gatherplan.appointment.service.MemberService;
+import com.example.gatherplan.common.exception.AuthenticationFailException;
+import com.example.gatherplan.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -34,16 +34,18 @@ public class MemberServiceImpl implements MemberService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendAuthCodeProcess(LocalJoinEmailDto localJoinEmailDto){
+    @Transactional
+    public void sendAuthCodeProcess(LocalJoinEmailDto localJoinEmailDto) {
         String email = localJoinEmailDto.getEmail();
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
     }
-    @Transactional
+
+
     public void sendAuthCodeToEmail(String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
 
-        if (findEmailAuth.isPresent()){
+        if (findEmailAuth.isPresent()) {
             memberRepository.deleteEmailAuth(email);
         }
 
@@ -71,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
-    public void checkEmailDuplicate(String email){
+    public void checkEmailDuplicate(String email) {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
 
         if (memberByEmail.isPresent()) {
@@ -80,43 +82,41 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
-    public void validateLocalJoinFormProcess(LocalJoinFormDto localJoinFormDto){
+    public void validateLocalJoinFormProcess(LocalJoinFormDto localJoinFormDto) {
         String email = localJoinFormDto.getEmail();
         String authCode = localJoinFormDto.getAuthCode();
         String name = localJoinFormDto.getName();
         String password = localJoinFormDto.getPassword();
 
-        checkAuthCodeCorrect(authCode,email);
+        checkAuthCodeCorrect(authCode, email);
         checkNameDuplicate(name);
 
         Member member = Member.builder()
                 .email(email)
                 .name(name)
                 .password(password)
-                .userType(UserType.MEMBER)
+                .userType(UserType.REGULAR)
                 .userAuthType(UserAuthType.LOCAL)
                 .build();
 
         memberRepository.saveMember(member);
     }
 
-    @Transactional
-    public void checkAuthCodeCorrect(String authCode,String email) {
+    public void checkAuthCodeCorrect(String authCode, String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
 
-        if (findEmailAuth.isEmpty()){
+        if (findEmailAuth.isEmpty()) {
             throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다.");
         }
 
         EmailAuth emailAuth = findEmailAuth.get();
 
-        if (LocalDateTime.now().isAfter(emailAuth.getExpiredTime())){
+        if (LocalDateTime.now().isAfter(emailAuth.getExpiredTime())) {
             memberRepository.deleteEmailAuth(email); // 쿼리는 나가는데 삭제가 안됨
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
         }
 
-        if (!authCode.equals(emailAuth.getAuthCode())){
+        if (!authCode.equals(emailAuth.getAuthCode())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
     }
@@ -124,9 +124,25 @@ public class MemberServiceImpl implements MemberService {
     private void checkNameDuplicate(String name) {
         Optional<Member> findMember = memberRepository.findMemberByName(name);
 
-        if (findMember.isPresent()){
+        if (findMember.isPresent()) {
             throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
         }
+    }
+
+    @Override
+    @Transactional
+    public void temporaryJoin(TemporaryJoinFormDto temporaryJoinFormDto) {
+        String name = temporaryJoinFormDto.getName();
+        String password = temporaryJoinFormDto.getPassword();
+
+        Member member = Member.builder()
+                .name(name)
+                .password(password)
+                .userType(UserType.TEMPORARY)
+                .build();
+
+        memberRepository.saveMember(member);
+
     }
 
 }

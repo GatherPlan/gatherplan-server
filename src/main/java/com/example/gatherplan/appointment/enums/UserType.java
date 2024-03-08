@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum UserType {
-    NONMEMBER,MEMBER
+    TEMPORARY, REGULAR
 }
