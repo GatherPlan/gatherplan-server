@@ -30,22 +30,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         CandidateTimeType candidateTimeType = CandidateTimeType.SECTION;
 
-        if (appointmentFormDto.getCustom()) {
+        if (appointmentFormDto.getCustom().equals(true)) {
             startTimes.add(LocalTime.parse(appointmentFormDto.getCustomStartTime()));
             endTimes.add(LocalTime.parse(appointmentFormDto.getCustomEndTime()));
             candidateTimeType = CandidateTimeType.CUSTOM;
         } else {
-            if (appointmentFormDto.getMorning()) {
+            if (appointmentFormDto.getMorning().equals(true)) {
                 startTimes.add(LocalTime.parse("08:00"));
                 endTimes.add(LocalTime.parse("11:00"));
             }
 
-            if (appointmentFormDto.getAfternoon()) {
+            if (appointmentFormDto.getAfternoon().equals(true)) {
                 startTimes.add(LocalTime.parse("11:00"));
                 endTimes.add(LocalTime.parse("17:00"));
             }
 
-            if (appointmentFormDto.getEvening()) {
+            if (appointmentFormDto.getEvening().equals(true)) {
                 startTimes.add(LocalTime.parse("17:00"));
                 endTimes.add(LocalTime.parse("22:00"));
             }
