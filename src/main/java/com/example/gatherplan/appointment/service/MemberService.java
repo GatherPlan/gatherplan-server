@@ -14,4 +14,6 @@ public interface MemberService {
     void temporaryJoin(TemporaryJoinFormDto temporaryJoinFormDto);
 
     void localLoginProcess(LocalLoginFormDto localLoginFormDto, HttpServletRequest httpServletRequest);
+
+    void loginCheck(HttpServletRequest httpServletRequest);
 }

@@ -170,4 +170,12 @@ public class MemberServiceImpl implements MemberService {
         httpSession.setMaxInactiveInterval(600);
     }
 
+    @Override
+    public void loginCheck(HttpServletRequest httpServletRequest) {
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (httpSession == null) {
+            throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL, "로그인이 필요합니다.");
+        }
+    }
+
 }

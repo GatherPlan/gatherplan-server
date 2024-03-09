@@ -82,4 +82,13 @@ public class MemberController {
         );
     }
 
+    @PostMapping("/login/check")
+    public ResponseEntity<BooleanResp> localLogin(HttpServletRequest httpServletRequest) {
+        memberService.loginCheck(httpServletRequest);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(true)
+        );
+    }
+
 }
