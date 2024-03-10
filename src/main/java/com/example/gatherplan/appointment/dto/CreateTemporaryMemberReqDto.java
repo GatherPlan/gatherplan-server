@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LocalJoinEmailDto {
-    private String email;
+public class CreateTemporaryMemberReqDto {
+    private String name;
+
+    private String password;
 }

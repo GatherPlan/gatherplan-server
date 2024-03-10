@@ -5,13 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LocalJoinFormDto {
-
+public class LoginMemberReqDto {
     private String email;
-
-    private String authCode;
-
-    private String name;
-
     private String password;
 }

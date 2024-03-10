@@ -1,8 +1,8 @@
 package com.example.gatherplan.appointment.service;
 
-import com.example.gatherplan.appointment.dto.AppointmentFormDto;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AppointmentService {
-    void setInformation(AppointmentFormDto appointmentFormDto, HttpServletRequest httpServletRequest);
+    void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, HttpServletRequest httpServletRequest);
 }

@@ -1,20 +1,19 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
-import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
-import com.example.gatherplan.appointment.dto.LocalLoginFormDto;
-import com.example.gatherplan.appointment.dto.TemporaryJoinFormDto;
-import com.example.gatherplan.appointment.mapper.UserMapper;
+import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
+import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
+import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
+import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.member.LocalJoinEmailReq;
-import com.example.gatherplan.controller.vo.member.LocalJoinFormReq;
-import com.example.gatherplan.controller.vo.member.LocalLoginFormReq;
-import com.example.gatherplan.controller.vo.member.TemporaryJoinFormReq;
+import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
+import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
+import com.example.gatherplan.controller.vo.appointment.LoginMemberReq;
+import com.example.gatherplan.controller.vo.appointment.CreateTemporaryMemberReq;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,65 +24,78 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/join")
+@RequestMapping("/api/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberMapper memberMapper;
 
-    @PostMapping("/local/send-authcode")
-    public ResponseEntity<BooleanResp> localSendAuthCode(
+    @PostMapping("/auth/email")
+    public ResponseEntity<BooleanResp> authenticateEmail(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody LocalJoinEmailReq localJoinEmailReq) {
+            @RequestBody AuthenticateEmailReq authenticateEmailReq) {
 
-        LocalJoinEmailDto localJoinEmailDto = Mappers.getMapper(UserMapper.class).toLocalJoinEmailDto(localJoinEmailReq);
-        memberService.sendAuthCodeProcess(localJoinEmailDto);
+        AuthenticateEmailReqDto authenticateEmailReqDto = memberMapper.to(authenticateEmailReq);
+        memberService.authenticateEmail(authenticateEmailReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)
         );
     }
 
-    @PostMapping("/local/validate-form")
-    public ResponseEntity<BooleanResp> localValidateForm(
+    @PostMapping("/join")
+    public ResponseEntity<BooleanResp> joinMember(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody LocalJoinFormReq localJoinFormReq
+            @RequestBody CreateMemberReq createMemberReq
     ) {
-        LocalJoinFormDto localJoinFormDto = Mappers.getMapper(UserMapper.class).toLocalJoinFormDto(localJoinFormReq);
-        memberService.validateLocalJoinFormProcess(localJoinFormDto);
+        CreateMemberReqDto createMemberReqDto = memberMapper.to(createMemberReq);
+
+        memberService.joinMember(createMemberReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)
         );
     }
 
-    @PostMapping("/temporary/validate-form")
-    public ResponseEntity<BooleanResp> temporaryValidateForm(
+    @PostMapping("/join/temporary")
+    public ResponseEntity<BooleanResp> joinTemporaryMember(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody TemporaryJoinFormReq temporaryJoinFormReq
+            @RequestBody CreateTemporaryMemberReq createTemporaryMemberReq
     ) {
-        TemporaryJoinFormDto temporaryJoinFormDto = Mappers.getMapper(UserMapper.class).toTemporaryJoinFormDto(temporaryJoinFormReq);
-        memberService.temporaryJoin(temporaryJoinFormDto);
+        CreateTemporaryMemberReqDto createTemporaryMemberReqDto = memberMapper.to(createTemporaryMemberReq);
+        memberService.joinTemporaryMember(createTemporaryMemberReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)
         );
     }
 
-    @PostMapping("/local/login")
-    public ResponseEntity<BooleanResp> localLogin(
+    /**
+     * TODO : Token 방식 인증 체계 도입
+     * @param loginMemberReq
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("/login")
+    public ResponseEntity<BooleanResp> login(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody LocalLoginFormReq localLoginFormReq, HttpServletRequest httpServletRequest
+            @RequestBody LoginMemberReq loginMemberReq, HttpServletRequest httpServletRequest
     ) {
-        LocalLoginFormDto localLoginFormDto = Mappers.getMapper(UserMapper.class).toLocalLoginFormDto(localLoginFormReq);
-        memberService.localLoginProcess(localLoginFormDto, httpServletRequest);
+        LoginMemberReqDto loginMemberReqDto = memberMapper.to(loginMemberReq);
+        memberService.login(loginMemberReqDto, httpServletRequest);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)
         );
     }
 
+    /**
+     * 프론트 확인용 임시 api
+     * @param httpServletRequest
+     * @return
+     */
     @PostMapping("/login/check")
-    public ResponseEntity<BooleanResp> localLogin(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<BooleanResp> loginCheck(HttpServletRequest httpServletRequest) {
         memberService.loginCheck(httpServletRequest);
 
         return ResponseEntity.ok(

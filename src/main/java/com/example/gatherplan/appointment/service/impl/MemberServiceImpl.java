@@ -1,9 +1,9 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
-import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
-import com.example.gatherplan.appointment.dto.LocalLoginFormDto;
-import com.example.gatherplan.appointment.dto.TemporaryJoinFormDto;
+import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
+import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
+import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
@@ -39,8 +39,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void sendAuthCodeProcess(LocalJoinEmailDto localJoinEmailDto) {
-        String email = localJoinEmailDto.getEmail();
+    public void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto) {
+        String email = authenticateEmailReqDto.getEmail();
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
     }
@@ -86,11 +86,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void validateLocalJoinFormProcess(LocalJoinFormDto localJoinFormDto) {
-        String email = localJoinFormDto.getEmail();
-        String authCode = localJoinFormDto.getAuthCode();
-        String name = localJoinFormDto.getName();
-        String password = localJoinFormDto.getPassword();
+    public void joinMember(CreateMemberReqDto createMemberReqDto) {
+        String email = createMemberReqDto.getEmail();
+        String authCode = createMemberReqDto.getAuthCode();
+        String name = createMemberReqDto.getName();
+        String password = createMemberReqDto.getPassword();
 
         checkAuthCodeCorrect(authCode, email);
         checkNameDuplicate(name);
@@ -135,9 +135,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void temporaryJoin(TemporaryJoinFormDto temporaryJoinFormDto) {
-        String name = temporaryJoinFormDto.getName();
-        String password = temporaryJoinFormDto.getPassword();
+    public void joinTemporaryMember(CreateTemporaryMemberReqDto createTemporaryMemberReqDto) {
+        String name = createTemporaryMemberReqDto.getName();
+        String password = createTemporaryMemberReqDto.getPassword();
 
         Member member = Member.builder()
                 .name(name)
@@ -150,9 +150,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void localLoginProcess(LocalLoginFormDto localLoginFormDto, HttpServletRequest httpServletRequest) {
-        String email = localLoginFormDto.getEmail();
-        String password = localLoginFormDto.getPassword();
+    public void login(LoginMemberReqDto loginMemberReqDto, HttpServletRequest httpServletRequest) {
+        String email = loginMemberReqDto.getEmail();
+        String password = loginMemberReqDto.getPassword();
 
         Optional<Member> findMember = memberRepository.findMemberByEmail(email);
         if (findMember.isEmpty()) {

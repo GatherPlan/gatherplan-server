@@ -1,19 +1,19 @@
 package com.example.gatherplan.appointment.service;
 
-import com.example.gatherplan.appointment.dto.LocalJoinEmailDto;
-import com.example.gatherplan.appointment.dto.LocalJoinFormDto;
-import com.example.gatherplan.appointment.dto.LocalLoginFormDto;
-import com.example.gatherplan.appointment.dto.TemporaryJoinFormDto;
+import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
+import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
+import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface MemberService {
-    void sendAuthCodeProcess(LocalJoinEmailDto localJoinEmailDto);
+    void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto);
 
-    void validateLocalJoinFormProcess(LocalJoinFormDto localJoinFormDto);
+    void joinMember(CreateMemberReqDto createMemberReqDto);
 
-    void temporaryJoin(TemporaryJoinFormDto temporaryJoinFormDto);
+    void joinTemporaryMember(CreateTemporaryMemberReqDto createTemporaryMemberReqDto);
 
-    void localLoginProcess(LocalLoginFormDto localLoginFormDto, HttpServletRequest httpServletRequest);
+    void login(LoginMemberReqDto loginMemberReqDto, HttpServletRequest httpServletRequest);
 
     void loginCheck(HttpServletRequest httpServletRequest);
 }

@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.member;
+package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.validation.*;
 import jakarta.validation.constraints.Email;
@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LocalLoginFormReq {
+public class LoginMemberReq {
     @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
     private String email;

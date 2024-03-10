@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class AppointmentFormDto {
+public class CreateAppointmentReqDto {
     private String name;
 
     private Boolean morning;

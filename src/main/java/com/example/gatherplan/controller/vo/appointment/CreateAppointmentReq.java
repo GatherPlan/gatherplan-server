@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class AppointmentFormReq {
+public class CreateAppointmentReq {
     @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 1, max = 12, message = "약속 이름은 1자 이상 12자 이하여야 합니다.", groups = SizeCheckName.class)
     private String name;
