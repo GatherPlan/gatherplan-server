@@ -13,6 +13,8 @@ java {
 
 ext {
 	queryDslVersion = '5.0.0'
+	mapstructVersion = '1.5.3.Final'
+	mapstructBindingVersion = '0.2.0'
 }
 
 configurations {
@@ -36,9 +38,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	// MapStruct
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
 
 	// QueryDsl
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
