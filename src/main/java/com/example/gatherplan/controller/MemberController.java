@@ -2,16 +2,17 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
 import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
+import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
 import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
 import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
-import com.example.gatherplan.controller.vo.appointment.LoginMemberReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTemporaryMemberReq;
+import com.example.gatherplan.controller.vo.appointment.LoginMemberReq;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
+    @Operation(summary = "이메일 인증", description = "이메일 인증 기능입니다.")
     @PostMapping("/auth/email")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Validated(value = RequestValidationSequence.class)
@@ -72,6 +74,7 @@ public class MemberController {
 
     /**
      * TODO : Token 방식 인증 체계 도입
+     *
      * @param loginMemberReq
      * @param httpServletRequest
      * @return
@@ -91,6 +94,7 @@ public class MemberController {
 
     /**
      * 프론트 확인용 임시 api
+     *
      * @param httpServletRequest
      * @return
      */
