@@ -12,27 +12,24 @@ import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
 import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTemporaryMemberReq;
 import com.example.gatherplan.controller.vo.appointment.LoginMemberReq;
-import io.swagger.v3.oas.annotations.Operation;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
-    @Operation(summary = "이메일 인증", description = "이메일 인증 기능입니다.")
-    @PostMapping("/auth/email")
+    @PostMapping("/api/v1/members/auth/email")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody AuthenticateEmailReq authenticateEmailReq) {
@@ -45,7 +42,7 @@ public class MemberController {
         );
     }
 
-    @PostMapping("/join")
+    @PostMapping("/api/v1/members/join")
     public ResponseEntity<BooleanResp> joinMember(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateMemberReq createMemberReq
@@ -59,7 +56,7 @@ public class MemberController {
         );
     }
 
-    @PostMapping("/join/temporary")
+    @PostMapping("/api/v1/members/join/temporary")
     public ResponseEntity<BooleanResp> joinTemporaryMember(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateTemporaryMemberReq createTemporaryMemberReq
@@ -86,21 +83,6 @@ public class MemberController {
     ) {
         LoginMemberReqDto loginMemberReqDto = memberMapper.to(loginMemberReq);
         memberService.login(loginMemberReqDto, httpServletRequest);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(true)
-        );
-    }
-
-    /**
-     * 프론트 확인용 임시 api
-     *
-     * @param httpServletRequest
-     * @return
-     */
-    @PostMapping("/login/check")
-    public ResponseEntity<BooleanResp> loginCheck(HttpServletRequest httpServletRequest) {
-        memberService.loginCheck(httpServletRequest);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)

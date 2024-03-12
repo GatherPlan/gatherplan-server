@@ -7,6 +7,7 @@ import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
+import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
@@ -14,11 +15,16 @@ import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.jwt.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +36,11 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService {
-
+public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
     private final Random random = new Random();
-
     private final JavaMailSender javaMailSender;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @Transactional
@@ -98,9 +103,10 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.builder()
                 .email(email)
                 .name(name)
-                .password(password)
+                .password(bCryptPasswordEncoder.encode(password))
                 .userType(UserType.REGULAR)
                 .userAuthType(UserAuthType.LOCAL)
+                .role("ROLE_ADMIN")
                 .build();
 
         memberRepository.saveMember(member);
@@ -178,4 +184,13 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Member> findMember = memberRepository.findMemberByName(username);
+
+        if (findMember.isEmpty()){
+            throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다.");
+        }
+        return new CustomUserDetails(findMember.get());
+    }
 }

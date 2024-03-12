@@ -29,6 +29,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private UserAuthType userAuthType;
 
+    private String role;
+
     @OneToMany(mappedBy = "member")
     private List<ParticipationEntity> participationEntities;
 }
