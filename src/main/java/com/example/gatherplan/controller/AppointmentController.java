@@ -6,7 +6,6 @@ import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,10 +25,10 @@ public class AppointmentController {
     @PostMapping("")
     public ResponseEntity<BooleanResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody CreateAppointmentReq createAppointmentReq, HttpServletRequest httpServletRequest) {
+            @RequestBody CreateAppointmentReq createAppointmentReq) {
 
         CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq);
-        appointmentService.registerAppointment(createAppointmentReqDto, httpServletRequest);
+        appointmentService.registerAppointment(createAppointmentReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)

@@ -1,5 +1,7 @@
 package com.example.gatherplan.common.jwt;
 
+import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.common.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,40 +27,35 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public final AuthenticationManager authenticationManager;
     public final JWTUtil jwtUtil;
     public final ObjectMapper objectMapper;
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
-            throw new RuntimeException("Authentication Content-Type not supported: " + request.getContentType());
+            throw new MemberException(ErrorCode.PARAMETER_VALIDATION_FAIL, "입력된 데이터가 JSON 형식이 아닙니다.");
         }
 
-        LoginReq loginReq = null;
+        LoginReq loginReq;
+
         try {
             loginReq = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), LoginReq.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MemberException(ErrorCode.PARAMETER_VALIDATION_FAIL, "요청된 입력을 파싱하는데 실패했습니다.");
         }
 
-//        String username = obtainUsername(request);
-//        String password = obtainPassword(request);
-        String username = loginReq.getUsername();
+        String email = loginReq.getEmail();
         String password = loginReq.getPassword();
 
-        System.out.println(username);
-        System.out.println(password);
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
 
         return authenticationManager.authenticate(authToken);
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication){
-        System.out.println("success");
-        //UserDetailsS
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        String username = customUserDetails.getUsername();
+        String email = customUserDetails.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -66,14 +63,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 600*600*100L);
+        String token = jwtUtil.createJwt(email, role, 600 * 600 * 100L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        System.out.println("fail");
         response.setStatus(401);
     }
 }

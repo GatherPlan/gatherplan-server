@@ -12,20 +12,13 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Member member;
+    private final transient Member member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
-        collection.add(new GrantedAuthority() {
-
-            @Override
-            public String getAuthority() {
-
-                return member.getRole();
-            }
-        });
+        collection.add((GrantedAuthority) member::getRole);
 
         return collection;
 
@@ -39,6 +32,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return member.getName();
+    }
+
+    public String getEmail() {
+        return member.getEmail();
     }
 
     @Override

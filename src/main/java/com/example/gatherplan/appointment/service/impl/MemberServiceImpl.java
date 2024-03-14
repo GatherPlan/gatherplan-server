@@ -2,7 +2,6 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
 import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserType;
@@ -13,11 +12,8 @@ import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
-import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -61,7 +57,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
 
         LocalDateTime createdTime = LocalDateTime.now();
-        LocalDateTime expiredTime = createdTime.plusMinutes(1);
+        LocalDateTime expiredTime = createdTime.plusMinutes(3);
 
         EmailAuth emailAuth = EmailAuth.builder()
                 .authCode(authCode)
@@ -148,6 +144,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         Member member = Member.builder()
                 .name(name)
                 .password(password)
+                .role("ROLE_ADMIN")
                 .userType(UserType.TEMPORARY)
                 .build();
 
@@ -156,41 +153,13 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     }
 
     @Override
-    public void login(LoginMemberReqDto loginMemberReqDto, HttpServletRequest httpServletRequest) {
-        String email = loginMemberReqDto.getEmail();
-        String password = loginMemberReqDto.getPassword();
-
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Member> findMember = memberRepository.findMemberByEmail(email);
+
         if (findMember.isEmpty()) {
-            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 계정입니다.");
-        }
-
-        Member member = findMember.get();
-
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "비밀번호가 일치하지 않습니다.");
-        }
-
-        HttpSession httpSession = httpServletRequest.getSession(true);
-        httpSession.setAttribute("email", email);
-        httpSession.setMaxInactiveInterval(600);
-    }
-
-    @Override
-    public void loginCheck(HttpServletRequest httpServletRequest) {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
-            throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL, "로그인이 필요합니다.");
-        }
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> findMember = memberRepository.findMemberByName(username);
-
-        if (findMember.isEmpty()){
             throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다.");
         }
+
         return new CustomUserDetails(findMember.get());
     }
 }
