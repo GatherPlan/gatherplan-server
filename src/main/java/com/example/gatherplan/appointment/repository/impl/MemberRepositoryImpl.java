@@ -3,7 +3,6 @@ package com.example.gatherplan.appointment.repository.impl;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,11 +73,6 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public void saveMember(Member member) {
         entityManager.persist(member);
-    }
-
-    @Override
-    public void saveTemporaryMember(TempMember tempMember) {
-        entityManager.persist(tempMember);
     }
 
 }

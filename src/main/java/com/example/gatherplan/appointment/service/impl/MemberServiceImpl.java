@@ -7,9 +7,10 @@ import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
+import com.example.gatherplan.appointment.repository.MemberTempRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.entity.TempMember;
+import com.example.gatherplan.appointment.repository.entity.MemberTemp;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -34,6 +35,7 @@ import java.util.Random;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
+    private final MemberTempRepository memberTempRepository;
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -139,13 +141,13 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String name = createTemporaryMemberReqDto.getName();
         String password = createTemporaryMemberReqDto.getPassword();
 
-        TempMember tempMember = TempMember.builder()
+        MemberTemp memberTemp = MemberTemp.builder()
                 .name(name)
                 .password(password)
                 .role("ROLE_ADMIN")
                 .build();
 
-        memberRepository.saveTemporaryMember(tempMember);
+        memberTempRepository.saveTemporaryMember(memberTemp);
 
     }
 

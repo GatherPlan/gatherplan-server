@@ -11,10 +11,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TempMember {
+public class MemberTemp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TEMP_MEMBER_ID")
+    @Column(name = "MEMBER_TEMP_ID")
     private Long id;
 
     private String name;
@@ -22,6 +22,6 @@ public class TempMember {
 
     private String role;
 
-    @OneToMany(mappedBy = "tempMember")
+    @OneToMany(mappedBy = "memberTemp")
     private List<TempParticipation> tempParticipationList;
 }

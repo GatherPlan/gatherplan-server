@@ -4,6 +4,7 @@ import com.example.gatherplan.common.jwt.JWTFilter;
 import com.example.gatherplan.common.jwt.JWTUtil;
 import com.example.gatherplan.common.jwt.LoginFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,15 +54,18 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/appointments/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
-        // 토큰 유무, 만료 확인 필터
-        httpSecurity
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-
-        // 로그인 필터
-        httpSecurity
-                .addFilterBefore(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtFilter(), LoginFilter.class);
+        httpSecurity.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
+    }
+
+    private Filter loginFilter() throws Exception {
+        return new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper);
+    }
+
+    private Filter jwtFilter() {
+        return new JWTFilter(jwtUtil);
     }
 
 }

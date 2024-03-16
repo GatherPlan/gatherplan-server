@@ -2,7 +2,6 @@ package com.example.gatherplan.appointment.repository;
 
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.entity.TempMember;
 
 import java.util.Optional;
 
@@ -18,6 +17,4 @@ public interface MemberRepository {
     Optional<Member> findMemberByName(String name);
 
     void saveMember(Member member);
-
-    void saveTemporaryMember(TempMember tempMember);
 }
