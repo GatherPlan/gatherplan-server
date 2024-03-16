@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipationEntity {
+public class Participation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

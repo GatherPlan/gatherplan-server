@@ -39,13 +39,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable);
-
-        httpSecurity
-                .formLogin(AbstractHttpConfigurer::disable);
-
-        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
+
+        httpSecurity
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
@@ -53,18 +53,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/appointments/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
+        // 토큰 유무, 만료 확인 필터
         httpSecurity
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper);
-        loginFilter.setFilterProcessesUrl("/api/v1/members/login");
-
+        // 로그인 필터
         httpSecurity
-                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        httpSecurity
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .addFilterBefore(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

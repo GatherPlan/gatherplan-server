@@ -24,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
 
     }
 
+    public String getEmail() {
+        return member.getEmail();
+    }
+
     @Override
     public String getPassword() {
         return member.getPassword();
@@ -32,10 +36,6 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return member.getName();
-    }
-
-    public String getEmail() {
-        return member.getEmail();
     }
 
     @Override

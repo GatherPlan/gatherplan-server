@@ -1,7 +1,6 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,13 +23,10 @@ public class Member {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @Enumerated(EnumType.STRING)
     private UserAuthType userAuthType;
 
     private String role;
 
     @OneToMany(mappedBy = "member")
-    private List<ParticipationEntity> participationEntities;
+    private List<Participation> participationEntities;
 }

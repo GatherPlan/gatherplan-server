@@ -4,12 +4,12 @@ import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -45,7 +45,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
     }
-
 
     public void sendAuthCodeToEmail(String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
@@ -100,7 +99,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .email(email)
                 .name(name)
                 .password(bCryptPasswordEncoder.encode(password))
-                .userType(UserType.REGULAR)
                 .userAuthType(UserAuthType.LOCAL)
                 .role("ROLE_ADMIN")
                 .build();
@@ -141,25 +139,25 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String name = createTemporaryMemberReqDto.getName();
         String password = createTemporaryMemberReqDto.getPassword();
 
-        Member member = Member.builder()
+        TempMember tempMember = TempMember.builder()
                 .name(name)
                 .password(password)
                 .role("ROLE_ADMIN")
-                .userType(UserType.TEMPORARY)
                 .build();
 
-        memberRepository.saveMember(member);
+        memberRepository.saveTemporaryMember(tempMember);
 
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
 
-        if (findMember.isEmpty()) {
-            throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다.");
+        Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(email);
+
+        if (findMemberByEmail.isPresent()) {
+            return new CustomUserDetails(findMemberByEmail.get());
         }
 
-        return new CustomUserDetails(findMember.get());
+        throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다.");
     }
 }

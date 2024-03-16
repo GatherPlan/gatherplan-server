@@ -24,12 +24,9 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        //request에서 Authorization 헤더를 찾음
         String authorization = request.getHeader("Authorization");
 
-        //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            log.info("토큰을 가지고 있지 않습니다");
             filterChain.doFilter(request, response);
             return;
         }
@@ -39,7 +36,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = authorization.split(" ")[1];
 
         boolean expired = jwtUtil.isExpired(token);
-        //토큰 소멸 시간 검증
         if (expired) {
             log.info("토큰이 만료되었습니다.");
             filterChain.doFilter(request, response);
@@ -54,11 +50,11 @@ public class JWTFilter extends OncePerRequestFilter {
                 .role(role)
                 .build();
 
-        //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

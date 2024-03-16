@@ -8,5 +8,6 @@ import lombok.Setter;
 public class LoginReq {
 
     private String email;
+    private String name;
     private String password;
 }

@@ -10,4 +10,5 @@ public interface MemberService {
     void joinMember(CreateMemberReqDto createMemberReqDto);
 
     void joinTemporaryMember(CreateTemporaryMemberReqDto createTemporaryMemberReqDto);
+
 }

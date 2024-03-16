@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,12 +23,21 @@ import java.util.Collection;
 import java.util.Iterator;
 
 
-@RequiredArgsConstructor
+@Getter
+@Setter
+@Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public final AuthenticationManager authenticationManager;
     public final JWTUtil jwtUtil;
     public final ObjectMapper objectMapper;
+
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, ObjectMapper objectMapper) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.objectMapper = objectMapper;
+        setFilterProcessesUrl("/api/v1/members/login");
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -46,9 +57,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = loginReq.getEmail();
         String password = loginReq.getPassword();
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password, null);
 
-        return authenticationManager.authenticate(authToken);
+        return authenticationManager.authenticate(token);
     }
 
     @Override
@@ -62,7 +73,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-
         String token = jwtUtil.createJwt(email, role, 600 * 600 * 100L);
 
         response.addHeader("Authorization", "Bearer " + token);

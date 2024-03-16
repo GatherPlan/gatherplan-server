@@ -1,8 +1,9 @@
 package com.example.gatherplan.appointment.repository.impl;
 
+import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.MemberRepository;
+import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.gatherplan.appointment.repository.entity.QMember.member;
 import static com.example.gatherplan.appointment.repository.entity.QEmailAuth.emailAuth;
+import static com.example.gatherplan.appointment.repository.entity.QMember.member;
 
 
 @Repository
@@ -27,7 +28,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findMemberByEmail(String email){
+    public Optional<Member> findMemberByEmail(String email) {
         Member result = jpaQueryFactory
                 .selectFrom(member)
                 .where(member.email.eq(email))
@@ -73,6 +74,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public void saveMember(Member member) {
         entityManager.persist(member);
+    }
+
+    @Override
+    public void saveTemporaryMember(TempMember tempMember) {
+        entityManager.persist(tempMember);
     }
 
 }
