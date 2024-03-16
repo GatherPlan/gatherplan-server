@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository.entity;
 
-import com.example.gatherplan.appointment.enums.UserAuthType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,21 +11,17 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member {
+public class TempMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "TEMP_MEMBER_ID")
     private Long id;
 
     private String name;
-    private String email;
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    private UserAuthType userAuthType;
 
     private String role;
 
-    @OneToMany(mappedBy = "member")
-    private List<Participation> participationEntities;
+    @OneToMany(mappedBy = "tempMember")
+    private List<TempParticipation> tempParticipationList;
 }

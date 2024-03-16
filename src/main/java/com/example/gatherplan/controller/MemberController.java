@@ -2,17 +2,14 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
 import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
-import com.example.gatherplan.controller.vo.appointment.LoginMemberReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTemporaryMemberReq;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.gatherplan.controller.vo.appointment.CreateTempMemberReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +46,6 @@ public class MemberController {
             @RequestBody CreateMemberReq createMemberReq
     ) {
         CreateMemberReqDto createMemberReqDto = memberMapper.to(createMemberReq);
-
         memberService.joinMember(createMemberReqDto);
 
         return ResponseEntity.ok(
@@ -60,43 +56,10 @@ public class MemberController {
     @PostMapping("/join/temporary")
     public ResponseEntity<BooleanResp> joinTemporaryMember(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody CreateTemporaryMemberReq createTemporaryMemberReq
+            @RequestBody CreateTempMemberReq createTempMemberReq
     ) {
-        CreateTemporaryMemberReqDto createTemporaryMemberReqDto = memberMapper.to(createTemporaryMemberReq);
-        memberService.joinTemporaryMember(createTemporaryMemberReqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(true)
-        );
-    }
-
-    /**
-     * TODO : Token 방식 인증 체계 도입
-     * @param loginMemberReq
-     * @param httpServletRequest
-     * @return
-     */
-    @PostMapping("/login")
-    public ResponseEntity<BooleanResp> login(
-            @Validated(value = RequestValidationSequence.class)
-            @RequestBody LoginMemberReq loginMemberReq, HttpServletRequest httpServletRequest
-    ) {
-        LoginMemberReqDto loginMemberReqDto = memberMapper.to(loginMemberReq);
-        memberService.login(loginMemberReqDto, httpServletRequest);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(true)
-        );
-    }
-
-    /**
-     * 프론트 확인용 임시 api
-     * @param httpServletRequest
-     * @return
-     */
-    @PostMapping("/login/check")
-    public ResponseEntity<BooleanResp> loginCheck(HttpServletRequest httpServletRequest) {
-        memberService.loginCheck(httpServletRequest);
+        CreateTempMemberReqDto createTempMemberReqDto = memberMapper.to(createTempMemberReq);
+        memberService.joinTempMember(createTempMemberReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)

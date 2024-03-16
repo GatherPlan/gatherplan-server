@@ -52,5 +52,8 @@ public class Appointment {
     private List<LocalTime> candidateEndTimes = new ArrayList<>();
 
     @OneToMany(mappedBy = "appointment")
-    private List<ParticipationEntity> participationEntities;
+    private List<Participation> participationEntities;
+
+    @OneToMany(mappedBy = "appointment")
+    private List<TempParticipation> tempParticipationList;
 }

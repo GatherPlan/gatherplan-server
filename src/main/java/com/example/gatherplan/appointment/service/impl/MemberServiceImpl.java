@@ -2,23 +2,26 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.LoginMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
+import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
+import com.example.gatherplan.appointment.repository.TempMemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
-import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +33,12 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService {
-
+public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
+    private final TempMemberRepository tempMemberRepository;
     private final Random random = new Random();
-
     private final JavaMailSender javaMailSender;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     @Transactional
@@ -44,7 +47,6 @@ public class MemberServiceImpl implements MemberService {
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
     }
-
 
     public void sendAuthCodeToEmail(String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
@@ -56,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
 
         LocalDateTime createdTime = LocalDateTime.now();
-        LocalDateTime expiredTime = createdTime.plusMinutes(1);
+        LocalDateTime expiredTime = createdTime.plusMinutes(3);
 
         EmailAuth emailAuth = EmailAuth.builder()
                 .authCode(authCode)
@@ -98,9 +100,9 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.builder()
                 .email(email)
                 .name(name)
-                .password(password)
-                .userType(UserType.REGULAR)
+                .password(bCryptPasswordEncoder.encode(password))
                 .userAuthType(UserAuthType.LOCAL)
+                .role("ROLE_ADMIN")
                 .build();
 
         memberRepository.saveMember(member);
@@ -135,47 +137,29 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void joinTemporaryMember(CreateTemporaryMemberReqDto createTemporaryMemberReqDto) {
-        String name = createTemporaryMemberReqDto.getName();
-        String password = createTemporaryMemberReqDto.getPassword();
+    public void joinTempMember(CreateTempMemberReqDto createTempMemberReqDto) {
+        String name = createTempMemberReqDto.getName();
+        String password = createTempMemberReqDto.getPassword();
 
-        Member member = Member.builder()
+        TempMember tempMember = TempMember.builder()
                 .name(name)
                 .password(password)
-                .userType(UserType.TEMPORARY)
+                .role("ROLE_ADMIN")
                 .build();
 
-        memberRepository.saveMember(member);
+        tempMemberRepository.saveTempMember(tempMember);
 
     }
 
     @Override
-    public void login(LoginMemberReqDto loginMemberReqDto, HttpServletRequest httpServletRequest) {
-        String email = loginMemberReqDto.getEmail();
-        String password = loginMemberReqDto.getPassword();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
-        if (findMember.isEmpty()) {
-            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 계정입니다.");
+        Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(email);
+
+        if (findMemberByEmail.isPresent()) {
+            return new CustomUserDetails(findMemberByEmail.get());
         }
 
-        Member member = findMember.get();
-
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "비밀번호가 일치하지 않습니다.");
-        }
-
-        HttpSession httpSession = httpServletRequest.getSession(true);
-        httpSession.setAttribute("email", email);
-        httpSession.setMaxInactiveInterval(600);
+        throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다.");
     }
-
-    @Override
-    public void loginCheck(HttpServletRequest httpServletRequest) {
-        HttpSession httpSession = httpServletRequest.getSession(false);
-        if (httpSession == null) {
-            throw new BusinessException(ErrorCode.AUTHENTICATION_FAIL, "로그인이 필요합니다.");
-        }
-    }
-
 }
