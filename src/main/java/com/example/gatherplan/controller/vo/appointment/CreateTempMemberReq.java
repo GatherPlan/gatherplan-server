@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreateTemporaryMemberReq {
+public class CreateTempMemberReq {
 
     @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckName.class)

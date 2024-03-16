@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CreateTemporaryMemberReqDto {
+public class CreateTempMemberReqDto {
     private String name;
 
     private String password;

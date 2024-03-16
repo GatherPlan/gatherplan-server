@@ -2,15 +2,15 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTemporaryMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
-import com.example.gatherplan.appointment.repository.MemberTempRepository;
+import com.example.gatherplan.appointment.repository.TempMemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.entity.MemberTemp;
+import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -35,7 +35,7 @@ import java.util.Random;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
-    private final MemberTempRepository memberTempRepository;
+    private final TempMemberRepository tempMemberRepository;
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -137,17 +137,17 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     @Transactional
-    public void joinTemporaryMember(CreateTemporaryMemberReqDto createTemporaryMemberReqDto) {
-        String name = createTemporaryMemberReqDto.getName();
-        String password = createTemporaryMemberReqDto.getPassword();
+    public void joinTempMember(CreateTempMemberReqDto createTempMemberReqDto) {
+        String name = createTempMemberReqDto.getName();
+        String password = createTempMemberReqDto.getPassword();
 
-        MemberTemp memberTemp = MemberTemp.builder()
+        TempMember tempMember = TempMember.builder()
                 .name(name)
                 .password(password)
                 .role("ROLE_ADMIN")
                 .build();
 
-        memberTempRepository.saveTemporaryMember(memberTemp);
+        tempMemberRepository.saveTempMember(tempMember);
 
     }
 

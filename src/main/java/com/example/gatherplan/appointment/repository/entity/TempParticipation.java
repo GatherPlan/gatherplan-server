@@ -23,8 +23,8 @@ public class TempParticipation {
     private Appointment appointment;
 
     @ManyToOne
-    @JoinColumn(name = "MEMBER_TEMP_ID")
-    private MemberTemp memberTemp;
+    @JoinColumn(name = "TEMP_MEMBER_ID")
+    private TempMember tempMember;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
