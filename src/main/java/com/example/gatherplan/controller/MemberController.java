@@ -5,11 +5,12 @@ import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
-import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
 import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempMemberReq;
+import com.example.gatherplan.controller.vo.common.BooleanResp;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +29,7 @@ public class MemberController {
     private final MemberMapper memberMapper;
 
     @PostMapping("/auth/email")
+    @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody AuthenticateEmailReq authenticateEmailReq) {
@@ -41,6 +43,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
+    @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> joinMember(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateMemberReq createMemberReq
@@ -54,6 +57,7 @@ public class MemberController {
     }
 
     @PostMapping("/join/temporary")
+    @Operation(summary = "임시 회원가입 요청", description = "사용자가 새로운 임시 회원으로 가입할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> joinTemporaryMember(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateTempMemberReq createTempMemberReq

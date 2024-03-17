@@ -3,9 +3,10 @@ package com.example.gatherplan.controller;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.service.AppointmentService;
-import com.example.gatherplan.common.vo.response.BooleanResp;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
+import com.example.gatherplan.controller.vo.common.BooleanResp;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +24,7 @@ public class AppointmentController {
     private final AppointmentMapper appointmentMapper;
 
     @PostMapping("")
+    @Operation(summary = "약속 만들기 요청", description = "사용자가 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateAppointmentReq createAppointmentReq) {

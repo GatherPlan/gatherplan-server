@@ -2,6 +2,7 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.validation.NotBlankEmail;
 import com.example.gatherplan.common.validation.PatternCheckEmail;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(name = "이메일 인증")
 public class AuthenticateEmailReq {
+    @Schema(description = "이메일", example = "email@example.com")
     @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
     private String email;
