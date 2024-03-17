@@ -26,8 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.Random;
+
+import static java.time.LocalDateTime.now;
 
 
 @Service
@@ -57,14 +60,12 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
 
-        LocalDateTime createdTime = LocalDateTime.now();
-        LocalDateTime expiredTime = createdTime.plusMinutes(3);
+        LocalDateTime expiredTime = now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
 
         EmailAuth emailAuth = EmailAuth.builder()
                 .authCode(authCode)
                 .userEmail(email)
-                .createdTime(createdTime)
-                .expiredTime(expiredTime)
+                .expiredAt(expiredTime)
                 .build();
 
         memberRepository.saveEmailAuth(emailAuth);
@@ -88,6 +89,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void joinMember(CreateMemberReqDto createMemberReqDto) {
         String email = createMemberReqDto.getEmail();
         String authCode = createMemberReqDto.getAuthCode();
@@ -117,7 +119,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         EmailAuth emailAuth = findEmailAuth.get();
 
-        if (LocalDateTime.now().isAfter(emailAuth.getExpiredTime())) {
+        if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
             memberRepository.deleteEmailAuth(email); // 쿼리는 나가는데 삭제가 안됨
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
         }
@@ -144,7 +146,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         TempMember tempMember = TempMember.builder()
                 .name(name)
                 .password(password)
-                .role("ROLE_ADMIN")
                 .build();
 
         tempMemberRepository.saveTempMember(tempMember);
