@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(name = "요청 성공 여부")
+@Schema(description = "성공 여부 응답 객체")
 public class BooleanResp {
 
     @Schema(description = "성공 여부", example = "true")

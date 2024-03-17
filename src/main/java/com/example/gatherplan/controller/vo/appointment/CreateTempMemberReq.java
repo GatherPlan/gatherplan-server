@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Schema(name = "임시 회원가입")
+@Schema(description = "임시 회원가입 요청 객체")
 public class CreateTempMemberReq {
 
     @Schema(description = "이름", example = "홍길동")

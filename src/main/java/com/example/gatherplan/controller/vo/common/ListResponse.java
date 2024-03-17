@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(name = "응답 데이터 리스트")
+@Schema(description = "데이터 리스트 응답 객체")
 public class ListResponse<T> {
 
     @Schema(description = "메타데이터")

@@ -11,6 +11,7 @@ import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempMemberReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
+@Tag(name = "회원", description = "회원 관련된 기능을 제공합니다.")
 public class MemberController {
 
     private final MemberService memberService;

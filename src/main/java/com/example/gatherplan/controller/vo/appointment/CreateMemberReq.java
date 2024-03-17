@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Schema(name = "회원가입")
+@Schema(description = "회원가입 요청 객체")
 public class CreateMemberReq {
 
     @Schema(description = "이메일", example = "email@example.com")

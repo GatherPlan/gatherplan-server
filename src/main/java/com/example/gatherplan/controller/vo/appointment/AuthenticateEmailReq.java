@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(name = "이메일 인증")
+@Schema(description = "이메일 인증 요청 객체")
 public class AuthenticateEmailReq {
     @Schema(description = "이메일", example = "email@example.com")
     @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)

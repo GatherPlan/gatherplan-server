@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@Schema(name = "약속 만들기")
+@Schema(description = "약속 만들기 요청 객체")
 public class CreateAppointmentReq {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
