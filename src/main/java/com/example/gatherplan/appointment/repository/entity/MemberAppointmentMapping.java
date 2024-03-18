@@ -1,31 +1,38 @@
 package com.example.gatherplan.appointment.repository.entity;
 
+import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
-@Table(name = "TEMP_MEMBER")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempMember extends BaseAuditableEntity {
+@Table(name = "MEMBER_APPIONTMENT_MAPPING")
+public class MemberAppointmentMapping extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TEMP_MEMBER_ID")
     private Long id;
 
-    @Comment("사용자 이름")
     @Column(nullable = false)
-    private String name;
+    @Comment("Appointment Seq(PK)")
+    private Long appointmentSeq;
 
-    @Comment("이메일")
     @Column(nullable = false)
-    private String email;
+    @Comment("Member Seq(PK)")
+    private Long memberSeq;
 
-    @Comment("비밀번호")
     @Column(nullable = false)
-    private String password;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    @ElementCollection
+    private List<LocalDateTime> selectedDateTime;
+
 }
