@@ -7,6 +7,7 @@ import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
@@ -44,7 +45,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String notice = createAppointmentReqDto.getNotice();
         List<LocalDate> candidateDateList = createAppointmentReqDto.getCandidateDateList();
 
-        Long appointmentId = makeAppointment(appointmentName, notice, address, candidateTimeType,
+        Long appointmentId = saveAppointment(createAppointmentReqDto.getAppointmentName(), notice, address, candidateTimeType,
                 candidateTimeList, candidateDateList);
 
         CustomUserDetails customUserDetails = createAppointmentReqDto.getCustomUserDetails();
@@ -70,6 +71,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .address(address)
                 .notice(notice)
                 .hostName(member.getName())
+                .userType(UserType.REGULAR)
                 .candidateDateList(candidateDateList)
                 .candidateTimeList(candidateTimeList)
                 .build();
@@ -88,7 +90,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String name = createTempAppointmentReqDto.getName();
         String password = createTempAppointmentReqDto.getPassword();
 
-        Long appointmentId = makeAppointment(appointmentName, notice, address, candidateTimeType,
+        Long appointmentId = saveAppointment(appointmentName, notice, address, candidateTimeType,
                 candidateTimeList, candidateDateList);
 
         TempMember tempMember = TempMember.builder()
@@ -111,13 +113,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .address(address)
                 .notice(notice)
                 .hostName(name)
+                .userType(UserType.TEMPORARY)
                 .candidateDateList(candidateDateList)
                 .candidateTimeList(candidateTimeList)
                 .build();
     }
 
 
-    private Long makeAppointment(String appointmentName, String notice, Address address,
+    private Long saveAppointment(String appointmentName, String notice, Address address,
                                  CandidateTimeType candidateTimeType,
                                  List<CandidateTime> candidateTimeList,
                                  List<LocalDate> candidateDateList) {
@@ -132,7 +135,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         return appointmentRepository.saveAppointment(appointment);
-
     }
+
 
 }
