@@ -2,13 +2,11 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
-import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempMemberReq;
+import com.example.gatherplan.controller.vo.appointment.req.AuthenticateEmailReq;
+import com.example.gatherplan.controller.vo.appointment.req.CreateMemberReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,20 +50,6 @@ public class MemberController {
     ) {
         CreateMemberReqDto createMemberReqDto = memberMapper.to(createMemberReq);
         memberService.joinMember(createMemberReqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(true)
-        );
-    }
-
-    @PostMapping("/join/temporary")
-    @Operation(summary = "임시 회원가입 요청", description = "사용자가 새로운 임시 회원으로 가입할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> joinTemporaryMember(
-            @Validated(value = RequestValidationSequence.class)
-            @RequestBody CreateTempMemberReq createTempMemberReq
-    ) {
-        CreateTempMemberReqDto createTempMemberReqDto = memberMapper.to(createTempMemberReq);
-        memberService.joinTempMember(createTempMemberReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(true)

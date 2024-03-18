@@ -18,7 +18,8 @@ public class TempMemberRepositoryImpl implements TempMemberRepository {
     }
 
     @Override
-    public void saveTempMember(TempMember tempMember) {
+    public Long saveTempMember(TempMember tempMember) {
         entityManager.persist(tempMember);
+        return tempMember.getId();
     }
 }

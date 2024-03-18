@@ -2,10 +2,8 @@ package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
-import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
-import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempMemberReq;
+import com.example.gatherplan.controller.vo.appointment.req.AuthenticateEmailReq;
+import com.example.gatherplan.controller.vo.appointment.req.CreateMemberReq;
 import org.mapstruct.*;
 
 @Mapper(
@@ -19,7 +17,5 @@ public interface MemberMapper {
     AuthenticateEmailReqDto to(AuthenticateEmailReq authenticateEmailReq);
 
     CreateMemberReqDto to(CreateMemberReq createMemberReq);
-
-    CreateTempMemberReqDto to(CreateTempMemberReq createTempMemberReq);
 
 }

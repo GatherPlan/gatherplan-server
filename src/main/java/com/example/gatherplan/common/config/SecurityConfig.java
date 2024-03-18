@@ -50,8 +50,9 @@ public class SecurityConfig {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/members/**").permitAll()
-                        .requestMatchers("/api/v1/appointments/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/members/**",
+                                "/api/v1/appointments/temporary").permitAll()
+                        .requestMatchers("/api/v1/appointments").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         httpSecurity.addFilterBefore(jwtFilter(), LoginFilter.class);

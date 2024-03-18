@@ -1,15 +1,22 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateAppointmentRespDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.service.AppointmentService;
+import com.example.gatherplan.common.jwt.CustomUserDetails;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.common.BooleanResp;
+import com.example.gatherplan.controller.vo.appointment.req.CreateAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.req.CreateTempAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.resp.CreateAppointmentResp;
+import com.example.gatherplan.controller.vo.appointment.resp.CreateTempAppointmentResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,16 +33,35 @@ public class AppointmentController {
     private final AppointmentMapper appointmentMapper;
 
     @PostMapping("")
-    @Operation(summary = "약속 만들기 요청", description = "사용자가 새로운 약속을 생성할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> registerAppointment(
+    @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
+    public ResponseEntity<CreateAppointmentResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
-            @RequestBody CreateAppointmentReq createAppointmentReq) {
+            @RequestBody CreateAppointmentReq createAppointmentReq,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq);
-        appointmentService.registerAppointment(createAppointmentReqDto);
+        CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq, customUserDetails);
+        CreateAppointmentRespDto createAppointmentRespDto = appointmentService
+                .registerAppointment(createAppointmentReqDto);
+        CreateAppointmentResp createAppointmentResp = appointmentMapper.to(createAppointmentRespDto);
 
         return ResponseEntity.ok(
-                BooleanResp.of(true)
+                createAppointmentResp
+        );
+    }
+
+    @PostMapping("/temporary")
+    @Operation(summary = "임시 회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
+    public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
+            @Validated(value = RequestValidationSequence.class)
+            @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
+        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentMapper.to(createTempAppointmentReq);
+
+        CreateTempAppointmentRespDto createTempAppointmentRespDto = appointmentService
+                .registerTempAppointment(createTempAppointmentReqDto);
+        CreateTempAppointmentResp createTempAppointmentResp = appointmentMapper.to(createTempAppointmentRespDto);
+
+        return ResponseEntity.ok(
+                createTempAppointmentResp
         );
     }
 

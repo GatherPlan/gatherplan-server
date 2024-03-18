@@ -1,9 +1,7 @@
 package com.example.gatherplan.appointment.dto;
 
-import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
-import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,18 +10,13 @@ import java.util.List;
 
 @Data
 @Builder
-public class CreateAppointmentReqDto {
-
+public class CreateAppointmentRespDto {
     private String appointmentName;
-
-    private CandidateTimeType candidateTimeType;
-    private List<CandidateTime> candidateTimeList;
-
     private Address address;
-
     private String notice;
 
-    private List<LocalDate> candidateDateList;
+    private String hostName;
+    private List<CandidateTime> candidateTimeList;
 
-    private CustomUserDetails customUserDetails;
+    private List<LocalDate> candidateDateList;
 }

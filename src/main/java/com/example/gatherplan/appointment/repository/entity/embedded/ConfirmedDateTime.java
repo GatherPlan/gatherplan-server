@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
-public class Address {
-    private String level0;
-    private String level1;
-    private String level2;
-    private String level3;
-    private String level4;
+public class ConfirmedDateTime {
+    private LocalTime confirmedStartTime;
+    private LocalTime confirmedEndTime;
+    private LocalDate confirmedDate;
 }
