@@ -1,70 +1,138 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateAppointmentRespDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
-import com.example.gatherplan.appointment.repository.AppointmentRepository;
-import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.entity.*;
+import com.example.gatherplan.appointment.repository.entity.embedded.Address;
+import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import com.example.gatherplan.appointment.service.AppointmentService;
+import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final MemberRepository memberRepository;
+    private final MemberAppointmentMappingRepository memberAppointmentMappingRepository;
+    private final TempMemberRepository tempMemberRepository;
+    private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
 
     @Override
     @Transactional
-    public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto) {
-
-        String name = createAppointmentReqDto.getName();
+    public CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto) {
+        String appointmentName = createAppointmentReqDto.getAppointmentName();
+        CandidateTimeType candidateTimeType = createAppointmentReqDto.getCandidateTimeType();
+        List<CandidateTime> candidateTimeList = createAppointmentReqDto
+                .getCandidateTimeList();
+        Address address = createAppointmentReqDto.getAddress();
         String notice = createAppointmentReqDto.getNotice();
-        String place = createAppointmentReqDto.getPlace();
+        List<LocalDate> candidateDateList = createAppointmentReqDto.getCandidateDateList();
 
-        List<LocalTime> startTimes = new ArrayList<>();
-        List<LocalTime> endTimes = new ArrayList<>();
+        Long appointmentId = makeAppointment(appointmentName, notice, address, candidateTimeType,
+                candidateTimeList, candidateDateList);
 
-        CandidateTimeType candidateTimeType = CandidateTimeType.SECTION;
+        CustomUserDetails customUserDetails = createAppointmentReqDto.getCustomUserDetails();
+        String email = customUserDetails.getEmail();
 
-        if (createAppointmentReqDto.getCustom().equals(true)) {
-            startTimes.add(LocalTime.parse(createAppointmentReqDto.getCustomStartTime()));
-            endTimes.add(LocalTime.parse(createAppointmentReqDto.getCustomEndTime()));
-            candidateTimeType = CandidateTimeType.CUSTOM;
-        } else {
-            if (createAppointmentReqDto.getMorning().equals(true)) {
-                startTimes.add(LocalTime.parse("08:00"));
-                endTimes.add(LocalTime.parse("11:00"));
-            }
-
-            if (createAppointmentReqDto.getAfternoon().equals(true)) {
-                startTimes.add(LocalTime.parse("11:00"));
-                endTimes.add(LocalTime.parse("17:00"));
-            }
-
-            if (createAppointmentReqDto.getEvening().equals(true)) {
-                startTimes.add(LocalTime.parse("17:00"));
-                endTimes.add(LocalTime.parse("22:00"));
-            }
+        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
+        if (findMember.isEmpty()) {
+            throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다.");
         }
 
-        Appointment appointment = Appointment.builder()
-                .name(name)
-                .notice(notice)
-                .place(place)
-                .appointmentState(AppointmentState.UNCONFIRMED)
-                .candidateStartTimes(startTimes)
-                .candidateEndTimes(endTimes)
-                .candidateTimeType(candidateTimeType)
+        Member member = findMember.get();
+
+        MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
+                .appointmentSeq(appointmentId)
+                .memberSeq(member.getId())
+                .userRole(UserRole.HOST)
                 .build();
 
-        appointmentRepository.saveAppointment(appointment);
+        memberAppointmentMappingRepository.saveMemberAppointmentMapping(memberAppointmentMapping);
+
+        return CreateAppointmentRespDto.builder()
+                .appointmentName(appointmentName)
+                .address(address)
+                .notice(notice)
+                .hostName(member.getName())
+                .candidateDateList(candidateDateList)
+                .candidateTimeList(candidateTimeList)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public CreateTempAppointmentRespDto registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
+        String appointmentName = createTempAppointmentReqDto.getAppointmentName();
+        CandidateTimeType candidateTimeType = createTempAppointmentReqDto.getCandidateTimeType();
+        List<CandidateTime> candidateTimeList = createTempAppointmentReqDto
+                .getCandidateTimeList();
+        Address address = createTempAppointmentReqDto.getAddress();
+        String notice = createTempAppointmentReqDto.getNotice();
+        List<LocalDate> candidateDateList = createTempAppointmentReqDto.getCandidateDateList();
+        String name = createTempAppointmentReqDto.getName();
+        String password = createTempAppointmentReqDto.getPassword();
+
+        Long appointmentId = makeAppointment(appointmentName, notice, address, candidateTimeType,
+                candidateTimeList, candidateDateList);
+
+        TempMember tempMember = TempMember.builder()
+                .name(name)
+                .password(password)
+                .build();
+
+        Long tempMemberId = tempMemberRepository.saveTempMember(tempMember);
+
+        TempMemberAppointmentMapping tempMemberAppointmentMapping = TempMemberAppointmentMapping.builder()
+                .appointmentSeq(appointmentId)
+                .tempMemberSeq(tempMemberId)
+                .userRole(UserRole.HOST)
+                .build();
+
+        tempMemberAppointmentMappingRepository.saveTempMemberAppointmentMapping(tempMemberAppointmentMapping);
+
+        return CreateTempAppointmentRespDto.builder()
+                .appointmentName(appointmentName)
+                .address(address)
+                .notice(notice)
+                .hostName(name)
+                .candidateDateList(candidateDateList)
+                .candidateTimeList(candidateTimeList)
+                .build();
+    }
+
+
+    private Long makeAppointment(String appointmentName, String notice, Address address,
+                                 CandidateTimeType candidateTimeType,
+                                 List<CandidateTime> candidateTimeList,
+                                 List<LocalDate> candidateDateList) {
+        Appointment appointment = Appointment.builder()
+                .name(appointmentName)
+                .notice(notice)
+                .address(address)
+                .appointmentState(AppointmentState.UNCONFIRMED)
+                .candidateTimeType(candidateTimeType)
+                .candidateTimeList(candidateTimeList)
+                .candidateDateList(candidateDateList)
+                .build();
+
+        return appointmentRepository.saveAppointment(appointment);
+
     }
 
 }
