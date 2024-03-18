@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.dto;
 
+import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class CreateTempAppointmentRespDto {
     private String notice;
 
     private String hostName;
+    private UserType userType;
     private List<CandidateTime> candidateTimeList;
 
     private List<LocalDate> candidateDateList;

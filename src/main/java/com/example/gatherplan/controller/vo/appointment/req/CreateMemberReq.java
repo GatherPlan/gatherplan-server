@@ -19,10 +19,10 @@ public class CreateMemberReq {
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
     private String email;
 
-    @Schema(description = "인증코드", example = "123456")
+    @Schema(description = "인증코드(6자리)")
     private String authCode;
 
-    @Schema(description = "이름", example = "홍길동")
+    @Schema(description = "이름")
     @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckName.class)
     private String name;

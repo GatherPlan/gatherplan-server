@@ -1,5 +1,6 @@
 package com.example.gatherplan.controller.vo.appointment.resp;
 
+import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +26,9 @@ public class CreateTempAppointmentResp {
 
     @Schema(description = "호스트 이름")
     private String hostName;
+
+    @Schema(description = "회원 유형")
+    private UserType userType;
 
     @Schema(description = "약속 후보 시간")
     private List<CandidateTime> candidateTimeList;

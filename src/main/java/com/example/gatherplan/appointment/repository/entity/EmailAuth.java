@@ -19,9 +19,9 @@ public class EmailAuth extends BaseAuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("사용자 이메일")
+    @Comment("이메일")
     @Column(nullable = false)
-    private String userEmail;
+    private String email;
 
     @Comment("인증 코드")
     @Column(nullable = false)

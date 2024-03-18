@@ -2,15 +2,12 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
-import com.example.gatherplan.appointment.repository.TempMemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.repository.entity.TempMember;
 import com.example.gatherplan.appointment.service.MemberService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -38,7 +35,6 @@ import static java.time.LocalDateTime.now;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
-    private final TempMemberRepository tempMemberRepository;
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -49,6 +45,14 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String email = authenticateEmailReqDto.getEmail();
         checkEmailDuplicate(email);
         sendAuthCodeToEmail(email);
+    }
+
+    public void checkEmailDuplicate(String email) {
+        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
+
+        if (memberByEmail.isPresent()) {
+            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
+        }
     }
 
     public void sendAuthCodeToEmail(String email) {
@@ -64,7 +68,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         EmailAuth emailAuth = EmailAuth.builder()
                 .authCode(authCode)
-                .userEmail(email)
+                .email(email)
                 .expiredAt(expiredTime)
                 .build();
 
@@ -78,14 +82,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         javaMailSender.send(simpleMailMessage);
 
-    }
-
-    public void checkEmailDuplicate(String email) {
-        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
-
-        if (memberByEmail.isPresent()) {
-            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
-        }
     }
 
     @Override
@@ -120,7 +116,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         EmailAuth emailAuth = findEmailAuth.get();
 
         if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
-            memberRepository.deleteEmailAuth(email); // 쿼리는 나가는데 삭제가 안됨
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
         }
 
@@ -135,21 +130,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         if (findMember.isPresent()) {
             throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
         }
-    }
-
-    @Override
-    @Transactional
-    public void joinTempMember(CreateTempMemberReqDto createTempMemberReqDto) {
-        String name = createTempMemberReqDto.getName();
-        String password = createTempMemberReqDto.getPassword();
-
-        TempMember tempMember = TempMember.builder()
-                .name(name)
-                .password(password)
-                .build();
-
-        tempMemberRepository.saveTempMember(tempMember);
-
     }
 
     @Override

@@ -45,7 +45,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Optional<EmailAuth> findEmailAuthByEmail(String email) {
         EmailAuth result = jpaQueryFactory
                 .selectFrom(emailAuth)
-                .where(emailAuth.userEmail.eq(email))
+                .where(emailAuth.email.eq(email))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -56,7 +56,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public void deleteEmailAuth(String email) {
         jpaQueryFactory
                 .delete(emailAuth)
-                .where(emailAuth.userEmail.eq(email))
+                .where(emailAuth.email.eq(email))
                 .execute();
     }
 
