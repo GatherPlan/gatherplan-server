@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
 
@@ -12,5 +13,10 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface AppointmentMapper {
-    Appointment to(CreateAppointmentReqDto reqDto);
+
+    Appointment to(CreateAppointmentReqDto request);
+
+    Appointment to(CreateTempAppointmentReqDto request);
+
+
 }
