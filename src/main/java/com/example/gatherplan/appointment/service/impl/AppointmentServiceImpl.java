@@ -2,11 +2,11 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.MemberInfoReqDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
@@ -19,11 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
+
+    private final AppointmentMapper appointmentMapper;
 
     private final AppointmentRepository appointmentRepository;
     private final MemberRepository memberRepository;
@@ -33,18 +34,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, MemberInfoReqDto memberInfoReqDto) {
-        Long appointmentId = saveAppointment(
-                createAppointmentReqDto.getAppointmentName(),
-                createAppointmentReqDto.getNotice(),
-                createAppointmentReqDto.getAddress(),
-                createAppointmentReqDto.getCandidateTimeType(),
-                createAppointmentReqDto.getCandidateTimeList(),
-                createAppointmentReqDto.getCandidateDateList()
-        );
+    public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email) {
 
-        Optional<Member> findMember = memberRepository.findMemberByEmail(memberInfoReqDto.getEmail());
-        Member member = findMember.orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
+        Appointment appointment = appointmentMapper.to(createAppointmentReqDto);
+        Long appointmentId = appointmentRepository.save(appointment);
+
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
         MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
@@ -52,7 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .userRole(UserRole.HOST)
                 .build();
 
-        memberAppointmentMappingRepository.saveMemberAppointmentMapping(memberAppointmentMapping);
+        memberAppointmentMappingRepository.save(memberAppointmentMapping);
 
     }
 
@@ -73,7 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .password(createTempAppointmentReqDto.getPassword())
                 .build();
 
-        Long tempMemberId = tempMemberRepository.saveTempMember(tempMember);
+        Long tempMemberId = tempMemberRepository.save(tempMember);
 
         TempMemberAppointmentMapping tempMemberAppointmentMapping = TempMemberAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
@@ -81,7 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .userRole(UserRole.HOST)
                 .build();
 
-        tempMemberAppointmentMappingRepository.saveTempMemberAppointmentMapping(tempMemberAppointmentMapping);
+        tempMemberAppointmentMappingRepository.save(tempMemberAppointmentMapping);
 
     }
 
@@ -98,7 +94,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .candidateDateList(candidateDateList)
                 .build();
 
-        return appointmentRepository.saveAppointment(appointment);
+        return appointmentRepository.save(appointment);
     }
 
 

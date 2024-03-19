@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment.req;
+package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-@Schema(description = "약속 만들기 요청 객체")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "약속 만들기 요청 객체")
 public class CreateAppointmentReq {
+
     @Schema(description = "약속 이름")
     @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 1, max = 12, message = "약속 이름은 1자 이상 12자 이하여야 합니다.", groups = SizeCheckName.class)

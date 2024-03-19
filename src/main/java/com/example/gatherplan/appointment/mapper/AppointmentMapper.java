@@ -1,11 +1,7 @@
 package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.MemberInfoReqDto;
-import com.example.gatherplan.common.jwt.CustomUserDetails;
-import com.example.gatherplan.controller.vo.appointment.req.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.req.CreateTempAppointmentReq;
+import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
 
 @Mapper(
@@ -16,10 +12,5 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface AppointmentMapper {
-
-    CreateTempAppointmentReqDto to(CreateTempAppointmentReq createTempAppointmentReq);
-    
-    CreateAppointmentReqDto to(CreateAppointmentReq createAppointmentReq);
-
-    MemberInfoReqDto to(CustomUserDetails customUserDetails);
+    Appointment to(CreateAppointmentReqDto reqDto);
 }

@@ -1,9 +1,9 @@
-package com.example.gatherplan.appointment.mapper;
+package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.controller.vo.appointment.req.AuthenticateEmailReq;
-import com.example.gatherplan.controller.vo.appointment.req.CreateMemberReq;
+import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
+import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
 import org.mapstruct.*;
 
 @Mapper(
@@ -13,9 +13,9 @@ import org.mapstruct.*;
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
-public interface MemberMapper {
-    AuthenticateEmailReqDto to(AuthenticateEmailReq authenticateEmailReq);
+public interface MemberControllerMapper {
+    AuthenticateEmailReqDto to(AuthenticateEmailReq request);
 
-    CreateMemberReqDto to(CreateMemberReq createMemberReq);
+    CreateMemberReqDto to(CreateMemberReq request);
 
 }

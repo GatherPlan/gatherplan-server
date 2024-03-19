@@ -18,7 +18,7 @@ public class TempMemberAppointmentMappingRepositoryImpl implements TempMemberApp
     }
 
     @Override
-    public void saveTempMemberAppointmentMapping(TempMemberAppointmentMapping tempMemberAppointmentMapping) {
+    public void save(TempMemberAppointmentMapping tempMemberAppointmentMapping) {
         entityManager.persist(tempMemberAppointmentMapping);
     }
 

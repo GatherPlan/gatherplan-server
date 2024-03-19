@@ -19,7 +19,7 @@ public class MemberAppointmentMappingRepositoryImpl implements MemberAppointment
 
 
     @Override
-    public void saveMemberAppointmentMapping(MemberAppointmentMapping memberAppointmentMapping) {
+    public void save(MemberAppointmentMapping memberAppointmentMapping) {
         entityManager.persist(memberAppointmentMapping);
     }
 }
