@@ -2,11 +2,12 @@ package com.example.gatherplan.controller.vo.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@Builder
+
 @Schema(description = "데이터 리스트 응답 객체")
+@Getter
+@Builder
 public class ListResponse<T> {
 
     @Schema(description = "메타데이터")

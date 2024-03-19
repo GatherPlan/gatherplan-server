@@ -10,9 +10,9 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 
+@Schema(description = "회원의 약속 만들기 응답 객체")
 @Getter
 @AllArgsConstructor
-@Schema(description = "회원의 약속 만들기 응답 객체")
 public class CreateAppointmentResp {
 
     @Schema(description = "약속 이름")
