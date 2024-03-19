@@ -1,9 +1,6 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentRespDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
@@ -39,9 +36,12 @@ public class AppointmentController {
             @RequestBody CreateAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq, customUserDetails);
+        CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq);
+        MemberInfoReqDto memberInfoReqDto = appointmentMapper.to(customUserDetails);
+
         CreateAppointmentRespDto createAppointmentRespDto = appointmentService
-                .registerAppointment(createAppointmentReqDto);
+                .registerAppointment(createAppointmentReqDto, memberInfoReqDto);
+
         CreateAppointmentResp createAppointmentResp = appointmentMapper.to(createAppointmentRespDto);
 
         return ResponseEntity.ok(

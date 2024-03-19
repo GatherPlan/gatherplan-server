@@ -3,7 +3,6 @@ package com.example.gatherplan.appointment.dto;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
-import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,6 +24,4 @@ public class CreateAppointmentReqDto {
     private String notice;
 
     private List<LocalDate> candidateDateList;
-
-    private CustomUserDetails customUserDetails;
 }

@@ -1,9 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentRespDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -15,7 +12,6 @@ import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +32,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto) {
+    public CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, MemberInfoReqDto memberInfoReqDto) {
         String appointmentName = createAppointmentReqDto.getAppointmentName();
         CandidateTimeType candidateTimeType = createAppointmentReqDto.getCandidateTimeType();
         List<CandidateTime> candidateTimeList = createAppointmentReqDto
@@ -48,8 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Long appointmentId = saveAppointment(createAppointmentReqDto.getAppointmentName(), notice, address, candidateTimeType,
                 candidateTimeList, candidateDateList);
 
-        CustomUserDetails customUserDetails = createAppointmentReqDto.getCustomUserDetails();
-        String email = customUserDetails.getEmail();
+        String email = memberInfoReqDto.getEmail();
 
         Optional<Member> findMember = memberRepository.findMemberByEmail(email);
         if (findMember.isEmpty()) {

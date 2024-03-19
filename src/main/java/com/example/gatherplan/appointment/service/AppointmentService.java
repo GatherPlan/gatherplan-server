@@ -1,12 +1,9 @@
 package com.example.gatherplan.appointment.service;
 
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentRespDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentRespDto;
+import com.example.gatherplan.appointment.dto.*;
 
 public interface AppointmentService {
-    CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto);
+    CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, MemberInfoReqDto memberInfoReqDto);
 
     CreateTempAppointmentRespDto registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto);
 }
