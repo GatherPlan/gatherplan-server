@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Optional;
 import java.util.Random;
 
 import static java.time.LocalDateTime.now;
@@ -44,9 +43,9 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     public void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto) {
         String email = authenticateEmailReqDto.getEmail();
 
-        if (isEmailDuplicate(email)) {
-            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
-        }
+        memberRepository.findMemberByEmail(email).ifPresent(member -> {
+            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
+        });
 
         if (!sendAuthCodeToEmail(email)) {
             throw new MemberException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
@@ -61,8 +60,20 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String name = createMemberReqDto.getName();
         String password = createMemberReqDto.getPassword();
 
-        checkAuthCodeCorrect(authCode, email);
-        checkNameDuplicate(name);
+        EmailAuth emailAuth = memberRepository.findEmailAuthByEmail(email)
+                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
+
+        if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
+            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
+        }
+
+        if (!StringUtils.equals(authCode, emailAuth.getAuthCode())) {
+            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
+        }
+
+        memberRepository.findMemberByName(name).ifPresent(member -> {
+            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
+        });
 
         Member member = Member.builder()
                 .email(email)
@@ -83,18 +94,12 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return new CustomUserDetails(member);
     }
 
-    private boolean isEmailDuplicate(String email) {
-        return memberRepository.findMemberByEmail(email).isPresent();
-    }
-
     private boolean sendAuthCodeToEmail(String email) {
-
         if (memberRepository.findEmailAuthByEmail(email).isPresent()) {
             memberRepository.deleteEmailAuth(email);
         }
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
-
         LocalDateTime expiredTime = now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
 
         EmailAuth emailAuth = EmailAuth.builder()
@@ -118,27 +123,6 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         } catch (MailException e) {
             return false;
         }
-    }
-
-    private void checkAuthCodeCorrect(String authCode, String email) {
-        EmailAuth emailAuth = memberRepository.findEmailAuthByEmail(email)
-                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
-
-        if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
-            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
-        }
-
-        if (!StringUtils.equals(authCode, emailAuth.getAuthCode())) {
-            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
-        }
-    }
-
-    private void checkNameDuplicate(String name) {
-        Optional<Member> findMember = memberRepository.findMemberByName(name);
-
-        findMember.ifPresent(value -> {
-            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
-        });
     }
 }
 
