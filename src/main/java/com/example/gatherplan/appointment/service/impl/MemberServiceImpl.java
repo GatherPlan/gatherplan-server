@@ -86,6 +86,10 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .build();
 
         memberRepository.save(member);
+
+        if (emailAuthRepository.findEmailAuthByEmail(email).isPresent()) {
+            emailAuthRepository.delete(email);
+        }
     }
 
     @Override
