@@ -12,6 +12,7 @@ import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,20 +43,21 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     @Transactional
     public void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto) {
         String email = authenticateEmailReqDto.getEmail();
-        checkEmailDuplicate(email);
-        sendAuthCodeToEmail(email);
-    }
 
-    public void checkEmailDuplicate(String email) {
-        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
-
-        memberByEmail.ifPresent(value -> {
+        if (isEmailDuplicate(email)) {
             throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
-        });
+        }
 
+        if (!sendAuthCodeToEmail(email)) {
+            throw new MemberException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
+        }
     }
 
-    public void sendAuthCodeToEmail(String email) {
+    public boolean isEmailDuplicate(String email) {
+        return memberRepository.findMemberByEmail(email).isPresent();
+    }
+
+    public boolean sendAuthCodeToEmail(String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
 
         if (findEmailAuth.isPresent()) {
@@ -74,14 +76,19 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         memberRepository.saveEmailAuth(emailAuth);
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(email);
-        simpleMailMessage.setFrom("dlwogns1205@gmail.com");
-        simpleMailMessage.setSubject("[Gather Plan] 일반 회원가입 이메일 인증");
-        simpleMailMessage.setText("Gather Plan에 방문해주셔서 감사합니다.\n\n" + "인증번호는 " + authCode + " 입니다." + "\n\n 인증번호를 인증코드란에 입력해주세요.");
+        try {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setFrom("dlwogns1205@gmail.com");
+            simpleMailMessage.setSubject("[Gather Plan] 일반 회원가입 이메일 인증");
+            simpleMailMessage.setText("Gather Plan에 방문해주셔서 감사합니다.\n\n" + "인증번호는 " + authCode + " 입니다." + "\n\n 인증번호를 인증코드란에 입력해주세요.");
 
-        javaMailSender.send(simpleMailMessage);
+            javaMailSender.send(simpleMailMessage);
+            return true;
 
+        } catch (MailException e) {
+            return false;
+        }
     }
 
     @Override
