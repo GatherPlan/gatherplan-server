@@ -3,7 +3,6 @@ package com.example.gatherplan.appointment.service.impl;
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
@@ -50,9 +49,10 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     public void checkEmailDuplicate(String email) {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
 
-        if (memberByEmail.isPresent()) {
-            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
-        }
+        memberByEmail.ifPresent(value -> {
+            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이메일입니다.");
+        });
+
     }
 
     public void sendAuthCodeToEmail(String email) {
@@ -108,12 +108,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     public void checkAuthCodeCorrect(String authCode, String email) {
         Optional<EmailAuth> findEmailAuth = memberRepository.findEmailAuthByEmail(email);
-
-        if (findEmailAuth.isEmpty()) {
-            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다.");
-        }
-
-        EmailAuth emailAuth = findEmailAuth.get();
+        EmailAuth emailAuth = findEmailAuth.orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
         if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
@@ -127,14 +122,13 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     private void checkNameDuplicate(String name) {
         Optional<Member> findMember = memberRepository.findMemberByName(name);
 
-        if (findMember.isPresent()) {
-            throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
-        }
+        findMember.ifPresent(value -> {
+            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용 중인 이름입니다.");
+        });
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         Optional<Member> findMemberByEmail = memberRepository.findMemberByEmail(email);
 
         if (findMemberByEmail.isPresent()) {
