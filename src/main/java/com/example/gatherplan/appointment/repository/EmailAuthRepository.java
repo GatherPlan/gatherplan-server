@@ -8,7 +8,9 @@ public interface EmailAuthRepository {
 
     void save(EmailAuth emailAuth);
 
-    void delete(String email);
+    void deleteById(Long id);
+
+    void deleteByEmail(String email);
 
     Optional<EmailAuth> findEmailAuthByEmail(String email);
 }
