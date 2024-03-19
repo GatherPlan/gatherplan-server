@@ -8,15 +8,18 @@ import com.example.gatherplan.common.validation.SizeCheckName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@AllArgsConstructor
 @Schema(description = "약속 만들기 요청 객체")
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateAppointmentReq {
     @Schema(description = "약속 이름")
     @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)

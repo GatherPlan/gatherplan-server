@@ -2,11 +2,12 @@ package com.example.gatherplan.controller.vo.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@Builder
+
 @Schema(description = "성공 여부 응답 객체")
+@Getter
+@Builder
 public class BooleanResp {
 
     @Schema(description = "성공 여부", example = "true")
