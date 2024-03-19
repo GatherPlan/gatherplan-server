@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.repository.EmailAuthRepository;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
@@ -37,6 +38,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailAuthRepository emailAuthRepository;
 
     @Override
     @Transactional
@@ -60,7 +62,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         String name = createMemberReqDto.getName();
         String password = createMemberReqDto.getPassword();
 
-        EmailAuth emailAuth = memberRepository.findEmailAuthByEmail(email)
+        EmailAuth emailAuth = emailAuthRepository.findEmailAuthByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
         if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
@@ -95,8 +97,8 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     }
 
     private boolean sendAuthCodeToEmail(String email) {
-        if (memberRepository.findEmailAuthByEmail(email).isPresent()) {
-            memberRepository.deleteEmailAuth(email);
+        if (emailAuthRepository.findEmailAuthByEmail(email).isPresent()) {
+            emailAuthRepository.delete(email);
         }
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
@@ -108,7 +110,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
                 .expiredAt(expiredTime)
                 .build();
 
-        memberRepository.saveEmailAuth(emailAuth);
+        emailAuthRepository.save(emailAuth);
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(email);
