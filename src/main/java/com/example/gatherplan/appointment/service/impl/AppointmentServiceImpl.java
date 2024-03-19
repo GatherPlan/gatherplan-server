@@ -44,14 +44,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Long appointmentId = saveAppointment(createAppointmentReqDto.getAppointmentName(), notice, address, candidateTimeType,
                 candidateTimeList, candidateDateList);
 
-        String email = memberInfoReqDto.getEmail();
-
-        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
-        if (findMember.isEmpty()) {
-            throw new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다.");
-        }
-
-        Member member = findMember.get();
+        Optional<Member> findMember = memberRepository.findMemberByEmail(memberInfoReqDto.getEmail());
+        Member member = findMember.orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
         MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
