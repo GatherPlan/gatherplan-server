@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QEmailAuth.emailAuth;
 
+
 @Repository
 public class EmailAuthRepositoryImpl implements EmailAuthRepository {
 
@@ -29,7 +30,15 @@ public class EmailAuthRepositoryImpl implements EmailAuthRepository {
     }
 
     @Override
-    public void delete(String email) {
+    public void deleteById(Long id) {
+        jpaQueryFactory
+                .delete(emailAuth)
+                .where(emailAuth.id.eq(id))
+                .execute();
+    }
+
+    @Override
+    public void deleteByEmail(String email) {
         jpaQueryFactory
                 .delete(emailAuth)
                 .where(emailAuth.email.eq(email))

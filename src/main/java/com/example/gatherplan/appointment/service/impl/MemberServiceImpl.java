@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.repository.EmailAuthRepository;
 import com.example.gatherplan.appointment.repository.MemberRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
@@ -35,15 +36,18 @@ import static java.time.LocalDateTime.now;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService, UserDetailsService {
     private final MemberRepository memberRepository;
+    private final EmailAuthRepository emailAuthRepository;
+
+    private final MemberMapper memberMapper;
+
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final EmailAuthRepository emailAuthRepository;
 
     @Override
     @Transactional
-    public void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto) {
-        String email = authenticateEmailReqDto.getEmail();
+    public void authenticateEmail(AuthenticateEmailReqDto reqDto) {
+        String email = reqDto.getEmail();
 
         memberRepository.findMemberByEmail(email).ifPresent(member -> {
             throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
@@ -56,40 +60,32 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     @Transactional
-    public void joinMember(CreateMemberReqDto createMemberReqDto) {
-        String email = createMemberReqDto.getEmail();
-        String authCode = createMemberReqDto.getAuthCode();
-        String name = createMemberReqDto.getName();
-        String password = createMemberReqDto.getPassword();
+    public void joinMember(CreateMemberReqDto reqDto) {
+        String email = reqDto.getEmail();
 
         EmailAuth emailAuth = emailAuthRepository.findEmailAuthByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
-        if (now(ZoneId.of("Asia/Seoul")).isAfter(emailAuth.getExpiredAt())) {
+        if (now().isAfter(emailAuth.getExpiredAt())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
         }
 
-        if (!StringUtils.equals(authCode, emailAuth.getAuthCode())) {
+        if (!StringUtils.equals(reqDto.getAuthCode(), emailAuth.getAuthCode())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
 
-        memberRepository.findMemberByName(name).ifPresent(member -> {
-            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
+        memberRepository.findMemberByName(reqDto.getName()).ifPresent(member -> {
+            throw new MemberException(ErrorCode.RESOURCE_CONFLICT,
+                    String.format("%s 은 이미 사용중인 이름입니다.", member.getName()));
         });
 
-        Member member = Member.builder()
-                .email(email)
-                .name(name)
-                .password(bCryptPasswordEncoder.encode(password))
-                .userAuthType(UserAuthType.LOCAL)
-                .role("ROLE_ADMIN")
-                .build();
+        String encodedPassword = bCryptPasswordEncoder.encode(reqDto.getPassword());
+
+        Member member = memberMapper.to(reqDto, encodedPassword, UserAuthType.LOCAL, "ROLE_ADMIN");
 
         memberRepository.save(member);
 
-        if (emailAuthRepository.findEmailAuthByEmail(email).isPresent()) {
-            emailAuthRepository.delete(email);
-        }
+        emailAuthRepository.deleteByEmail(emailAuth.getEmail());
     }
 
     @Override
@@ -101,9 +97,8 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     }
 
     private boolean sendAuthCodeToEmail(String email) {
-        if (emailAuthRepository.findEmailAuthByEmail(email).isPresent()) {
-            emailAuthRepository.delete(email);
-        }
+        emailAuthRepository.findEmailAuthByEmail(email)
+                .ifPresent(emailAuth -> emailAuthRepository.deleteByEmail(emailAuth.getEmail()));
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
         LocalDateTime expiredTime = now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
