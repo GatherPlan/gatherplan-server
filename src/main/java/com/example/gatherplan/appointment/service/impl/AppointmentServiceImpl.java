@@ -1,10 +1,11 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.MemberInfoReqDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.enums.UserRole;
-import com.example.gatherplan.appointment.enums.UserType;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
@@ -32,17 +33,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public CreateAppointmentRespDto registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, MemberInfoReqDto memberInfoReqDto) {
-        String appointmentName = createAppointmentReqDto.getAppointmentName();
-        CandidateTimeType candidateTimeType = createAppointmentReqDto.getCandidateTimeType();
-        List<CandidateTime> candidateTimeList = createAppointmentReqDto
-                .getCandidateTimeList();
-        Address address = createAppointmentReqDto.getAddress();
-        String notice = createAppointmentReqDto.getNotice();
-        List<LocalDate> candidateDateList = createAppointmentReqDto.getCandidateDateList();
-
-        Long appointmentId = saveAppointment(createAppointmentReqDto.getAppointmentName(), notice, address, candidateTimeType,
-                candidateTimeList, candidateDateList);
+    public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, MemberInfoReqDto memberInfoReqDto) {
+        Long appointmentId = saveAppointment(
+                createAppointmentReqDto.getAppointmentName(),
+                createAppointmentReqDto.getNotice(),
+                createAppointmentReqDto.getAddress(),
+                createAppointmentReqDto.getCandidateTimeType(),
+                createAppointmentReqDto.getCandidateTimeList(),
+                createAppointmentReqDto.getCandidateDateList()
+        );
 
         Optional<Member> findMember = memberRepository.findMemberByEmail(memberInfoReqDto.getEmail());
         Member member = findMember.orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
@@ -55,36 +54,23 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         memberAppointmentMappingRepository.saveMemberAppointmentMapping(memberAppointmentMapping);
 
-        return CreateAppointmentRespDto.builder()
-                .appointmentName(appointmentName)
-                .address(address)
-                .notice(notice)
-                .hostName(member.getName())
-                .userType(UserType.REGULAR)
-                .candidateDateList(candidateDateList)
-                .candidateTimeList(candidateTimeList)
-                .build();
     }
 
     @Override
     @Transactional
-    public CreateTempAppointmentRespDto registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
-        String appointmentName = createTempAppointmentReqDto.getAppointmentName();
-        CandidateTimeType candidateTimeType = createTempAppointmentReqDto.getCandidateTimeType();
-        List<CandidateTime> candidateTimeList = createTempAppointmentReqDto
-                .getCandidateTimeList();
-        Address address = createTempAppointmentReqDto.getAddress();
-        String notice = createTempAppointmentReqDto.getNotice();
-        List<LocalDate> candidateDateList = createTempAppointmentReqDto.getCandidateDateList();
-        String name = createTempAppointmentReqDto.getName();
-        String password = createTempAppointmentReqDto.getPassword();
-
-        Long appointmentId = saveAppointment(appointmentName, notice, address, candidateTimeType,
-                candidateTimeList, candidateDateList);
+    public void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
+        Long appointmentId = saveAppointment(
+                createTempAppointmentReqDto.getAppointmentName(),
+                createTempAppointmentReqDto.getNotice(),
+                createTempAppointmentReqDto.getAddress(),
+                createTempAppointmentReqDto.getCandidateTimeType(),
+                createTempAppointmentReqDto.getCandidateTimeList(),
+                createTempAppointmentReqDto.getCandidateDateList()
+        );
 
         TempMember tempMember = TempMember.builder()
-                .name(name)
-                .password(password)
+                .name(createTempAppointmentReqDto.getName())
+                .password(createTempAppointmentReqDto.getPassword())
                 .build();
 
         Long tempMemberId = tempMemberRepository.saveTempMember(tempMember);
@@ -97,21 +83,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         tempMemberAppointmentMappingRepository.saveTempMemberAppointmentMapping(tempMemberAppointmentMapping);
 
-        return CreateTempAppointmentRespDto.builder()
-                .appointmentName(appointmentName)
-                .address(address)
-                .notice(notice)
-                .hostName(name)
-                .userType(UserType.TEMPORARY)
-                .candidateDateList(candidateDateList)
-                .candidateTimeList(candidateTimeList)
-                .build();
     }
 
-
     private Long saveAppointment(String appointmentName, String notice, Address address,
-                                 CandidateTimeType candidateTimeType,
-                                 List<CandidateTime> candidateTimeList,
+                                 CandidateTimeType candidateTimeType, List<CandidateTime> candidateTimeList,
                                  List<LocalDate> candidateDateList) {
         Appointment appointment = Appointment.builder()
                 .name(appointmentName)
