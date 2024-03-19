@@ -22,11 +22,12 @@ public class CreateMemberReq {
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
     private String email;
 
-    @NotBlank()
-    @Schema(description = "인증코드(6자리)")
+    @Schema(description = "인증코드(6자리)", example = "123456")
+    @NotBlank(message = "인증번호는 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
+    @Size(min = 6, max = 6, message = "인증번호는 6자입니다.", groups = SizeCheckName.class)
     private String authCode;
 
-    @Schema(description = "이름")
+    @Schema(description = "이름", example = "홍길동")
     @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckName.class)
     private String name;
