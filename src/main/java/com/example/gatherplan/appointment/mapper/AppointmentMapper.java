@@ -1,11 +1,11 @@
 package com.example.gatherplan.appointment.mapper;
 
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.MemberInfoReqDto;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
 import com.example.gatherplan.controller.vo.appointment.req.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.req.CreateTempAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.resp.CreateAppointmentResp;
-import com.example.gatherplan.controller.vo.appointment.resp.CreateTempAppointmentResp;
 import org.mapstruct.*;
 
 @Mapper(
@@ -17,13 +17,8 @@ import org.mapstruct.*;
 )
 public interface AppointmentMapper {
 
-    CreateAppointmentResp to(CreateAppointmentRespDto createAppointmentRespDto);
-
-
     CreateTempAppointmentReqDto to(CreateTempAppointmentReq createTempAppointmentReq);
-
-    CreateTempAppointmentResp to(CreateTempAppointmentRespDto createTempAppointmentRespDto);
-
+    
     CreateAppointmentReqDto to(CreateAppointmentReq createAppointmentReq);
 
     MemberInfoReqDto to(CustomUserDetails customUserDetails);
