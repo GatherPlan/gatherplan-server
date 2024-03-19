@@ -18,7 +18,7 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
     }
 
     @Override
-    public Long saveAppointment(Appointment appointment) {
+    public Long save(Appointment appointment) {
         entityManager.persist(appointment);
         return appointment.getId();
     }

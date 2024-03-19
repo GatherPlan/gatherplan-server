@@ -2,13 +2,12 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.MemberInfoReqDto;
-import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
+import com.example.gatherplan.controller.mapper.AppointmentControllerMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.req.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.req.CreateTempAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,22 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    private final AppointmentMapper appointmentMapper;
+    private final AppointmentControllerMapper appointmentControllerMapper;
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        CreateAppointmentReqDto createAppointmentReqDto = appointmentMapper.to(createAppointmentReq);
-        MemberInfoReqDto memberInfoReqDto = appointmentMapper.to(customUserDetails);
-
-        appointmentService.registerAppointment(createAppointmentReqDto, memberInfoReqDto);
+        CreateAppointmentReqDto createAppointmentReqDto = appointmentControllerMapper.to(createAppointmentReq);
+        appointmentService.registerAppointment(createAppointmentReqDto, customUserDetails.getEmail());
 
         return ResponseEntity.ok(
-                BooleanResp.of(true)
+                BooleanResp.success()
         );
     }
 
@@ -53,11 +50,11 @@ public class AppointmentController {
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
 
-        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentMapper.to(createTempAppointmentReq);
+        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentControllerMapper.to(createTempAppointmentReq);
         appointmentService.registerTempAppointment(createTempAppointmentReqDto);
 
         return ResponseEntity.ok(
-                BooleanResp.of(true)
+                BooleanResp.success()
         );
     }
 

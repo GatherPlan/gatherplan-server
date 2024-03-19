@@ -4,5 +4,5 @@ import com.example.gatherplan.appointment.repository.entity.MemberAppointmentMap
 
 public interface MemberAppointmentMappingRepository {
 
-    void saveMemberAppointmentMapping(MemberAppointmentMapping memberAppointmentMapping);
+    void save(MemberAppointmentMapping memberAppointmentMapping);
 }

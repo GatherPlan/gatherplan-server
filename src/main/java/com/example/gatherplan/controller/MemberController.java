@@ -2,11 +2,11 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
-import com.example.gatherplan.appointment.mapper.MemberMapper;
 import com.example.gatherplan.appointment.service.MemberService;
+import com.example.gatherplan.controller.mapper.MemberControllerMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.req.AuthenticateEmailReq;
-import com.example.gatherplan.controller.vo.appointment.req.CreateMemberReq;
+import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
+import com.example.gatherplan.controller.vo.appointment.CreateMemberReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberMapper memberMapper;
+    private final MemberControllerMapper memberControllerMapper;
 
     @PostMapping("/auth/email")
     @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
@@ -34,11 +34,11 @@ public class MemberController {
             @Validated(value = RequestValidationSequence.class)
             @RequestBody AuthenticateEmailReq authenticateEmailReq) {
 
-        AuthenticateEmailReqDto authenticateEmailReqDto = memberMapper.to(authenticateEmailReq);
+        AuthenticateEmailReqDto authenticateEmailReqDto = memberControllerMapper.to(authenticateEmailReq);
         memberService.authenticateEmail(authenticateEmailReqDto);
 
         return ResponseEntity.ok(
-                BooleanResp.of(true)
+                BooleanResp.success()
         );
     }
 
@@ -48,11 +48,11 @@ public class MemberController {
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateMemberReq createMemberReq
     ) {
-        CreateMemberReqDto createMemberReqDto = memberMapper.to(createMemberReq);
+        CreateMemberReqDto createMemberReqDto = memberControllerMapper.to(createMemberReq);
         memberService.joinMember(createMemberReqDto);
 
         return ResponseEntity.ok(
-                BooleanResp.of(true)
+                BooleanResp.success()
         );
     }
 

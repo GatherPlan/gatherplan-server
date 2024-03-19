@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment.req;
+package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.validation.NotBlankEmail;
 import com.example.gatherplan.common.validation.PatternCheckEmail;
@@ -10,10 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "이메일 인증 요청 객체")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "이메일 인증 요청 객체")
 public class AuthenticateEmailReq {
 
     @Schema(description = "이메일", example = "email@example.com")

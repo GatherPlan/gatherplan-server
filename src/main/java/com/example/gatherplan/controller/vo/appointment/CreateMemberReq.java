@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment.req;
+package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.validation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,10 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "회원가입 요청 객체")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "회원가입 요청 객체")
 public class CreateMemberReq {
 
     @Schema(description = "이메일", example = "email@example.com")
@@ -22,6 +22,7 @@ public class CreateMemberReq {
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)
     private String email;
 
+    @NotBlank()
     @Schema(description = "인증코드(6자리)")
     private String authCode;
 

@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface MemberRepository {
     Optional<Member> findMemberByEmail(String email);
 
+    // 분리
     void saveEmailAuth(EmailAuth emailAuth);
 
     Optional<EmailAuth> findEmailAuthByEmail(String email);
@@ -16,5 +17,5 @@ public interface MemberRepository {
 
     Optional<Member> findMemberByName(String name);
 
-    void saveMember(Member member);
+    void save(Member member);
 }

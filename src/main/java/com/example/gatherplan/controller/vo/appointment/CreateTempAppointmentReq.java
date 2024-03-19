@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment.req;
+package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-@Schema(description = "임시 회원 약속 만들기 요청 객체")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "임시 회원 약속 만들기 요청 객체")
 public class CreateTempAppointmentReq {
 
     @Schema(description = "약속 이름")
