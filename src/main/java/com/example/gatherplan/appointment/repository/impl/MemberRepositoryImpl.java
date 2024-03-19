@@ -1,7 +1,6 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.repository.MemberRepository;
-import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.gatherplan.appointment.repository.entity.QEmailAuth.emailAuth;
 import static com.example.gatherplan.appointment.repository.entity.QMember.member;
 
 
@@ -34,30 +32,6 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
-    }
-
-    @Override
-    public void saveEmailAuth(EmailAuth emailAuth) {
-        entityManager.persist(emailAuth);
-    }
-
-    @Override
-    public Optional<EmailAuth> findEmailAuthByEmail(String email) {
-        EmailAuth result = jpaQueryFactory
-                .selectFrom(emailAuth)
-                .where(emailAuth.email.eq(email))
-                .fetchOne();
-
-        return Optional.ofNullable(result);
-
-    }
-
-    @Override
-    public void deleteEmailAuth(String email) {
-        jpaQueryFactory
-                .delete(emailAuth)
-                .where(emailAuth.email.eq(email))
-                .execute();
     }
 
     @Override
