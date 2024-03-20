@@ -14,6 +14,7 @@ import org.mapstruct.*;
 )
 public interface MemberMapper {
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "reqDto.name")
     @Mapping(target = "password", source = "encodedPassword")
     @Mapping(target = "userAuthType", source = "userAuthType")
