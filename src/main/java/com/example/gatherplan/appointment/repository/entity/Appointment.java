@@ -28,7 +28,7 @@ public class Appointment extends BaseAuditableEntity {
 
     @Column(nullable = false)
     @Comment("약속 이름")
-    private String name;
+    private String appointmentName;
 
     @Comment("약속 안내 사항")
     private String notice;

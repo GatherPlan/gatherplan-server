@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
-
     private final AppointmentRepository appointmentRepository;
     private final MemberRepository memberRepository;
     private final MemberAppointmentMappingRepository memberAppointmentMappingRepository;
@@ -29,10 +29,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email) {
-
-        Appointment appointment = appointmentMapper.to(createAppointmentReqDto);
+        Appointment appointment = appointmentMapper.to(createAppointmentReqDto, AppointmentState.UNCONFIRMED);
         Long appointmentId = appointmentRepository.save(appointment);
-
         Member member = memberRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
@@ -49,7 +47,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
-        Appointment appointment = appointmentMapper.to(createTempAppointmentReqDto);
+        Appointment appointment = appointmentMapper.to(createTempAppointmentReqDto, AppointmentState.UNCONFIRMED);
         Long appointmentId = appointmentRepository.save(appointment);
 
         TempMember tempMember = TempMember.builder()
@@ -66,7 +64,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         tempMemberAppointmentMappingRepository.save(tempMemberAppointmentMapping);
-
     }
 
 }
