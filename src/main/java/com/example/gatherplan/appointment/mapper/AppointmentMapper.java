@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
 
@@ -14,9 +15,9 @@ import org.mapstruct.*;
 )
 public interface AppointmentMapper {
 
-    Appointment to(CreateAppointmentReqDto request);
+    @Mapping(target = "appointmentState", source = "appointmentState")
+    Appointment to(CreateAppointmentReqDto request, AppointmentState appointmentState);
 
-    Appointment to(CreateTempAppointmentReqDto request);
-
-
+    @Mapping(target = "appointmentState", source = "appointmentState")
+    Appointment to(CreateTempAppointmentReqDto request, AppointmentState appointmentState);
 }
