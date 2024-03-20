@@ -30,8 +30,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email) {
         Appointment appointment = appointmentMapper.to(createAppointmentReqDto, AppointmentState.UNCONFIRMED);
-        Long appointmentId = appointmentRepository.save(appointment);
-        Member member = memberRepository.findMemberByEmail(email)
+        Long appointmentId = appointmentRepository.save(appointment).getId();
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
         MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
@@ -48,14 +48,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
         Appointment appointment = appointmentMapper.to(createTempAppointmentReqDto, AppointmentState.UNCONFIRMED);
-        Long appointmentId = appointmentRepository.save(appointment);
+        Long appointmentId = appointmentRepository.save(appointment).getId();
 
         TempMember tempMember = TempMember.builder()
                 .name(createTempAppointmentReqDto.getName())
                 .password(createTempAppointmentReqDto.getPassword())
                 .build();
 
-        Long tempMemberId = tempMemberRepository.save(tempMember);
+        Long tempMemberId = tempMemberRepository.save(tempMember).getId();
 
         TempMemberAppointmentMapping tempMemberAppointmentMapping = TempMemberAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
