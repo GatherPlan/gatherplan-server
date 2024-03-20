@@ -49,7 +49,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     public void authenticateEmail(AuthenticateEmailReqDto reqDto) {
         String email = reqDto.getEmail();
 
-        memberRepository.findMemberByEmail(email).ifPresent(member -> {
+        memberRepository.findByEmail(email).ifPresent(member -> {
             throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
         });
 
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     public void joinMember(CreateMemberReqDto reqDto) {
         String email = reqDto.getEmail();
 
-        EmailAuth emailAuth = emailAuthRepository.findEmailAuthByEmail(email)
+        EmailAuth emailAuth = emailAuthRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
         if (now().isAfter(emailAuth.getExpiredAt())) {
@@ -74,7 +74,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
 
-        memberRepository.findMemberByName(reqDto.getName()).ifPresent(member -> {
+        memberRepository.findByName(reqDto.getName()).ifPresent(member -> {
             throw new MemberException(ErrorCode.RESOURCE_CONFLICT,
                     String.format("%s 은 이미 사용중인 이름입니다.", member.getName()));
         });
@@ -90,14 +90,14 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findMemberByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
         return new CustomUserDetails(member);
     }
 
     private boolean sendAuthCodeToEmail(String email) {
-        emailAuthRepository.findEmailAuthByEmail(email)
+        emailAuthRepository.findByEmail(email)
                 .ifPresent(emailAuth -> emailAuthRepository.deleteByEmail(emailAuth.getEmail()));
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);

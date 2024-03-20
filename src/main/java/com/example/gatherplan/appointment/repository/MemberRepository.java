@@ -1,13 +1,12 @@
 package com.example.gatherplan.appointment.repository;
 
 import com.example.gatherplan.appointment.repository.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface MemberRepository {
-    Optional<Member> findMemberByEmail(String email);
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    Optional<Member> findByEmail(String email);
 
-    Optional<Member> findMemberByName(String name);
-
-    void save(Member member);
+    Optional<Member> findByName(String name);
 }
