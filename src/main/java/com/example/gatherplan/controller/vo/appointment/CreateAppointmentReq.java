@@ -1,7 +1,6 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
-import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import com.example.gatherplan.common.validation.NotBlankName;
 import com.example.gatherplan.common.validation.SizeCheckName;
@@ -36,11 +35,12 @@ public class CreateAppointmentReq {
 
     @Schema(description = "약속 장소", example = "{\"level0\": \"대한민국\", \"level1\":" +
             " \"서울특별시\", \"level2\": \"성동구\", \"level3\": \"용답동\", \"level4\": \"\", \"level5\": \"13-22\"}")
-    private Address address;
+    private AddressReq address;
 
     @Schema(description = "약속 메모", example = "점심 약속입니다.")
     private String notice;
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
+    
 }

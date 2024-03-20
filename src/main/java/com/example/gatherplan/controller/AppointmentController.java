@@ -29,14 +29,13 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final AppointmentControllerMapper appointmentControllerMapper;
-    
+
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
         CreateAppointmentReqDto createAppointmentReqDto = appointmentControllerMapper.to(createAppointmentReq);
         appointmentService.registerAppointment(createAppointmentReqDto, customUserDetails.getEmail());
 

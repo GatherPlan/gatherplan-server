@@ -1,7 +1,9 @@
 package com.example.gatherplan.controller.mapper;
 
+import com.example.gatherplan.appointment.dto.AddressDto;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.controller.vo.appointment.AddressReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
 import org.mapstruct.*;
@@ -14,7 +16,10 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface AppointmentControllerMapper {
-    CreateAppointmentReqDto to(CreateAppointmentReq createAppointmentReq);
+    CreateAppointmentReqDto to(CreateAppointmentReq request);
 
-    CreateTempAppointmentReqDto to(CreateTempAppointmentReq createTempAppointmentReq);
+    CreateTempAppointmentReqDto to(CreateTempAppointmentReq request);
+
+    AddressDto to(AddressReq request);
+
 }

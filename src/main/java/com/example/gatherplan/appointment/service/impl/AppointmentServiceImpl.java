@@ -41,13 +41,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         memberAppointmentMappingRepository.save(memberAppointmentMapping);
-
     }
 
     @Override
     @Transactional
     public void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
         Appointment appointment = appointmentMapper.to(createTempAppointmentReqDto, AppointmentState.UNCONFIRMED);
+
         Long appointmentId = appointmentRepository.save(appointment).getId();
 
         TempMember tempMember = TempMember.builder()
