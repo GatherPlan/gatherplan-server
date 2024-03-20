@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import com.example.gatherplan.common.validation.NotBlankName;
 import com.example.gatherplan.common.validation.SizeCheckName;
+import com.example.gatherplan.controller.vo.common.AddressReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -42,5 +43,5 @@ public class CreateAppointmentReq {
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
-    
+
 }

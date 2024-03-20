@@ -38,7 +38,7 @@ public class AppointmentController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         CreateAppointmentReqDto createAppointmentReqDto = appointmentControllerMapper.to(createAppointmentReq);
         appointmentService.registerAppointment(createAppointmentReqDto, customUserDetails.getEmail());
-
+ 
         return ResponseEntity.ok(
                 BooleanResp.success()
         );

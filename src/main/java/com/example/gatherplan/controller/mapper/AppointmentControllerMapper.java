@@ -3,9 +3,9 @@ package com.example.gatherplan.controller.mapper;
 import com.example.gatherplan.appointment.dto.AddressDto;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.controller.vo.appointment.AddressReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
+import com.example.gatherplan.controller.vo.common.AddressReq;
 import org.mapstruct.*;
 
 @Mapper(
