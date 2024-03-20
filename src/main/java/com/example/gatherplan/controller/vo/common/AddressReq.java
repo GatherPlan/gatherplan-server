@@ -1,12 +1,13 @@
-package com.example.gatherplan.controller.vo.appointment;
+package com.example.gatherplan.controller.vo.common;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AddressReq {
     private String level0;
     private String level1;

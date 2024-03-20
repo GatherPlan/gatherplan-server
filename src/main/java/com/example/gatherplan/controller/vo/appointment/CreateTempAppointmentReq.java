@@ -3,6 +3,7 @@ package com.example.gatherplan.controller.vo.appointment;
 import com.example.gatherplan.appointment.enums.CandidateTimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
 import com.example.gatherplan.common.validation.*;
+import com.example.gatherplan.controller.vo.common.AddressReq;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
