@@ -2,6 +2,8 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.SearchPlaceReqDto;
+import com.example.gatherplan.appointment.dto.SearchPlaceRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.MemberException;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final MemberAppointmentMappingRepository memberAppointmentMappingRepository;
     private final TempMemberRepository tempMemberRepository;
     private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
+    private final RegionRepository regionRepository;
+
+    @Override
+    public SearchPlaceRespDto searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
+        List<Region> regionList = regionRepository.findByRegionNameContaining(searchPlaceReqDto.getKeyword());
+
+        return SearchPlaceRespDto.builder()
+                .regionList(regionList)
+                .build();
+    }
 
     @Override
     @Transactional
