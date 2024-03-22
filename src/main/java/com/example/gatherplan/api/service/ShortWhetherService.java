@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.service.impl;
+package com.example.gatherplan.api.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

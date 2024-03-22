@@ -1,13 +1,13 @@
 package com.example.gatherplan.appointment.service;
 
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.SearchPlaceReqDto;
-import com.example.gatherplan.appointment.dto.SearchPlaceRespDto;
+import com.example.gatherplan.appointment.dto.*;
+import org.json.JSONException;
 
 public interface AppointmentService {
 
     SearchPlaceRespDto searchPlace(SearchPlaceReqDto searchPlaceReqDto);
+
+    SearchPlaceDetailRespDto searchPlaceDetail(SearchPlaceDetailReqDto searchPlaceDetailReqDto) throws JSONException;
 
     void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
 

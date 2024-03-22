@@ -1,21 +1,16 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.SearchPlaceReqDto;
-import com.example.gatherplan.appointment.dto.SearchPlaceRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
 import com.example.gatherplan.controller.mapper.AppointmentControllerMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.SearchPlaceReq;
-import com.example.gatherplan.controller.vo.appointment.SearchPlaceResp;
+import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -35,7 +30,7 @@ public class AppointmentController {
     private final AppointmentControllerMapper appointmentControllerMapper;
 
     @PostMapping("/search-place")
-    public ResponseEntity<SearchPlaceResp> registerAppointment(
+    public ResponseEntity<SearchPlaceResp> searchPlace(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchPlaceReq searchPlaceReq) {
 
@@ -48,6 +43,20 @@ public class AppointmentController {
         );
     }
 
+    @PostMapping("/search-place-detail")
+    public ResponseEntity<SearchPlaceDetailResp> searchPlaceDetail(
+            @Validated(value = RequestValidationSequence.class)
+            @RequestBody SearchPlaceDetailReq searchPlaceDetailReq) throws JSONException {
+
+        SearchPlaceDetailReqDto searchPlaceDetailReqDto = appointmentControllerMapper.to(searchPlaceDetailReq);
+        SearchPlaceDetailRespDto searchPlaceDetailRespDto = appointmentService.searchPlaceDetail(searchPlaceDetailReqDto);
+        SearchPlaceDetailResp searchPlaceDetailResp = appointmentControllerMapper.to(searchPlaceDetailRespDto);
+
+        return ResponseEntity.ok(
+                searchPlaceDetailResp
+        );
+    }
+    
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
