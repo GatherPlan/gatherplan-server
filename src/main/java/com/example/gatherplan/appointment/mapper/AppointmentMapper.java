@@ -26,6 +26,8 @@ public interface AppointmentMapper {
     @Mapping(target = "confirmedDateTime", ignore = true)
     @Mapping(target = "appointmentState", source = "appointmentState")
     Appointment to(CreateTempAppointmentReqDto request, AppointmentState appointmentState);
-    
+
     Address to(AddressDto request);
+
+
 }

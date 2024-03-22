@@ -2,12 +2,16 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.SearchPlaceReqDto;
+import com.example.gatherplan.appointment.dto.SearchPlaceRespDto;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
 import com.example.gatherplan.controller.mapper.AppointmentControllerMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.SearchPlaceReq;
+import com.example.gatherplan.controller.vo.appointment.SearchPlaceResp;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +34,20 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final AppointmentControllerMapper appointmentControllerMapper;
 
+    @PostMapping("/search-place")
+    public ResponseEntity<SearchPlaceResp> registerAppointment(
+            @Validated(value = RequestValidationSequence.class)
+            @RequestBody SearchPlaceReq searchPlaceReq) {
+
+        SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
+        SearchPlaceRespDto searchPlaceRespDto = appointmentService.searchPlace(searchPlaceReqDto);
+        SearchPlaceResp searchPlaceResp = appointmentControllerMapper.to(searchPlaceRespDto);
+
+        return ResponseEntity.ok(
+                searchPlaceResp
+        );
+    }
+
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
@@ -38,7 +56,7 @@ public class AppointmentController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         CreateAppointmentReqDto createAppointmentReqDto = appointmentControllerMapper.to(createAppointmentReq);
         appointmentService.registerAppointment(createAppointmentReqDto, customUserDetails.getEmail());
- 
+
         return ResponseEntity.ok(
                 BooleanResp.success()
         );
