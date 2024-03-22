@@ -13,9 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "¾à¼Ó Àå¼Ò °Ë»ö ÀÀ´ä °´Ã¼")
+@Schema(description = "ì•½ì† ì¥ì†Œ í–‰ì •êµ¬ì—­ ê²€ìƒ‰ ì‘ë‹µ ê°ì²´")
 public class SearchPlaceResp {
-
-    @Schema(description = "Å°¿öµå¿¡ ¸Â´Â Áö¿ª °á°ú (¼º¼öµ¿)", example = "[¼­¿ïÆ¯º°½Ã ¼ºµ¿±¸ ¼º¼öµ¿1°¡, ¼­¿ïÆ¯º°½Ã ¼ºµ¿±¸ ¼º¼öµ¿2°¡]")
+    @Schema(description = "ì•½ì† ì¥ì†Œ í–‰ì •êµ¬ì—­ ê²€ìƒ‰ ê²°ê³¼ ë¦¬ìŠ¤íŠ¸", example = "ë±ƒë†ˆ")
     List<Region> regionList;
 }

@@ -28,6 +28,4 @@ public interface AppointmentMapper {
     Appointment to(CreateTempAppointmentReqDto request, AppointmentState appointmentState);
 
     Address to(AddressDto request);
-
-
 }
