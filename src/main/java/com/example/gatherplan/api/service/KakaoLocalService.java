@@ -1,6 +1,5 @@
 package com.example.gatherplan.api.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,9 +8,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class KakaoLocalService {
     private final WebClient webClient;
-
-    @Value("${external.api.kakao.key}")
-    private String apiKey;
 
     public KakaoLocalService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("https://dapi.kakao.com/v2/local/search/keyword")
