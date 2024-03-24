@@ -14,6 +14,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 로컬 DB에 법정동, 법정동 코드 관련 csv 파일을 불러오기 위한 임시 컴포넌트입니다.
+ */
 @Component
 public class CSVReader {
 

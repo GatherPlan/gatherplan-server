@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 로컬 DB에 법정동, 법정동 코드 관련 csv 파일을 불러오기 위한 임시 서비스 클래스입니다.
+ */
 @Service
 @AllArgsConstructor
 public class RegionServiceImpl {
