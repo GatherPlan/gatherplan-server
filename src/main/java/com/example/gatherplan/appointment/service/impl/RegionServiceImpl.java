@@ -4,18 +4,16 @@ import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.appointment.repository.RegionRepository;
 import com.example.gatherplan.appointment.repository.entity.Region;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RegionServiceImpl {
 
-    @Autowired
     private RegionRepository regionRepository;
 
     @Transactional
@@ -23,6 +21,7 @@ public class RegionServiceImpl {
         List<Region> entities = new ArrayList<>();
         for (CSVRowDto row : rows) {
             Region entity = Region.builder()
+                    .regionCode(row.getRegionCode())
                     .regionName(row.getRegionName())
                     .build();
             entities.add(entity);

@@ -18,4 +18,6 @@ public class Region {
     private Long id;
     private String regionName;
 
+    private String regionCode;
+
 }
