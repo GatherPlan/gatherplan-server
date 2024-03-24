@@ -5,9 +5,9 @@ import org.json.JSONException;
 
 public interface AppointmentService {
 
-    SearchPlaceRespDto searchPlace(SearchPlaceReqDto searchPlaceReqDto);
+    SearchPlaceRespDto searchDisctrict(SearchPlaceReqDto searchPlaceReqDto);
 
-    SearchPlaceDetailRespDto searchPlaceDetail(SearchPlaceDetailReqDto searchPlaceDetailReqDto) throws JSONException;
+    SearchPlaceDetailRespDto searchPlace(SearchPlaceDetailReqDto searchPlaceDetailReqDto) throws JSONException;
 
     void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
 

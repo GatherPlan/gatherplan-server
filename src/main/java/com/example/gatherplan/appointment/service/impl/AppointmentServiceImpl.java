@@ -38,8 +38,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final KakaoLocalService kakaoLocalService;
 
     @Override
-    public SearchPlaceRespDto searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
+    public SearchPlaceRespDto searchDisctrict(SearchPlaceReqDto searchPlaceReqDto) {
         List<Region> regionList = regionRepository.findByRegionNameContaining(searchPlaceReqDto.getKeyword());
+        
 
         return SearchPlaceRespDto.builder()
                 .regionList(regionList)
@@ -47,7 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public SearchPlaceDetailRespDto searchPlaceDetail(SearchPlaceDetailReqDto searchPlaceDetailReqDto) {
+    public SearchPlaceDetailRespDto searchPlace(SearchPlaceDetailReqDto searchPlaceDetailReqDto) {
         Mono<String> stringMono = kakaoLocalService.callExternalAPI(searchPlaceDetailReqDto.getKeyword());
         String result = stringMono.block(); // 비동기 처리 결과를 동기적으로 가져옴
 
@@ -61,9 +62,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             for (JsonNode documentNode : documentsNode) {
                 String addressName = documentNode.get("address_name").asText();
                 String placeName = documentNode.get("place_name").asText();
+                String placeUrl = documentNode.get("place_url").asText();
+
                 PlaceDetail placeDetail = PlaceDetail.builder()
                         .placeName(placeName)
                         .addressName(addressName)
+                        .placeUrl(placeUrl)
                         .build();
                 placeDetails.add(placeDetail);
             }

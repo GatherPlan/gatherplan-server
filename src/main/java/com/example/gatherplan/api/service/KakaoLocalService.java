@@ -1,17 +1,20 @@
 package com.example.gatherplan.api.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 public class KakaoLocalService {
     private final WebClient webClient;
 
-    public KakaoLocalService(WebClient.Builder webClientBuilder) {
+    public KakaoLocalService(WebClient.Builder webClientBuilder, @Value("${external.api.kakao.key}") String apiKey) {
         this.webClient = webClientBuilder.baseUrl("https://dapi.kakao.com/v2/local/search/keyword")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "KakaoAK 1f7d606dfa9cdde5d43fb2d3ed525686")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, apiKey)
                 .build();
     }
 
@@ -24,7 +27,5 @@ public class KakaoLocalService {
                         .build())
                 .retrieve()
                 .bodyToMono(String.class);
-
-
     }
 }

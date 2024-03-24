@@ -29,13 +29,14 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final AppointmentControllerMapper appointmentControllerMapper;
 
-    @PostMapping("/search-place")
-    public ResponseEntity<SearchPlaceResp> searchPlace(
+    @PostMapping("/search-district")
+    @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
+    public ResponseEntity<SearchPlaceResp> searchDisctrict(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchPlaceReq searchPlaceReq) {
 
         SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
-        SearchPlaceRespDto searchPlaceRespDto = appointmentService.searchPlace(searchPlaceReqDto);
+        SearchPlaceRespDto searchPlaceRespDto = appointmentService.searchDisctrict(searchPlaceReqDto);
         SearchPlaceResp searchPlaceResp = appointmentControllerMapper.to(searchPlaceRespDto);
 
         return ResponseEntity.ok(
@@ -43,20 +44,21 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/search-place-detail")
-    public ResponseEntity<SearchPlaceDetailResp> searchPlaceDetail(
+    @PostMapping("/search-place")
+    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상새주소를 검색할 때 사용됩니다.")
+    public ResponseEntity<SearchPlaceDetailResp> searchPlace(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchPlaceDetailReq searchPlaceDetailReq) throws JSONException {
 
         SearchPlaceDetailReqDto searchPlaceDetailReqDto = appointmentControllerMapper.to(searchPlaceDetailReq);
-        SearchPlaceDetailRespDto searchPlaceDetailRespDto = appointmentService.searchPlaceDetail(searchPlaceDetailReqDto);
+        SearchPlaceDetailRespDto searchPlaceDetailRespDto = appointmentService.searchPlace(searchPlaceDetailReqDto);
         SearchPlaceDetailResp searchPlaceDetailResp = appointmentControllerMapper.to(searchPlaceDetailRespDto);
 
         return ResponseEntity.ok(
                 searchPlaceDetailResp
         );
     }
-    
+
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(

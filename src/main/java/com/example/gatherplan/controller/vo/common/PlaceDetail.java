@@ -8,4 +8,5 @@ import lombok.Getter;
 public class PlaceDetail {
     private String addressName;
     private String placeName;
+    private String placeUrl;
 }
