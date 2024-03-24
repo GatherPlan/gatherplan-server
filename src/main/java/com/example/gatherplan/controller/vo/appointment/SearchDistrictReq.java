@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 장소 상세주소 검색 요청 객체")
-public class SearchPlaceDetailReq {
-    @Schema(description = "약속 장소 검색 키워드", example = "뱃놈")
+@Schema(description = "약속 장소 행정구역 검색 요청 객체")
+public class SearchDistrictReq {
+    @Schema(description = "약속 장소 검색 키워드", example = "성수동")
     private String keyword;
 }

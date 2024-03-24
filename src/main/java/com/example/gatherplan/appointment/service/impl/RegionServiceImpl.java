@@ -24,8 +24,8 @@ public class RegionServiceImpl {
         List<Region> entities = new ArrayList<>();
         for (CSVRowDto row : rows) {
             Region entity = Region.builder()
-                    .regionCode(row.getRegionCode())
-                    .regionName(row.getRegionName())
+                    .code(row.getCode())
+                    .address(row.getAddress())
                     .build();
             entities.add(entity);
         }

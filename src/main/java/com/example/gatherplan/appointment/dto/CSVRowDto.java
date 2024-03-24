@@ -10,15 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CSVRowDto {
-    private String regionCode;
-    private String regionName;
-
+    private String code;
+    private String address;
 
     public static CSVRowDto fromString(String row) {
         String[] values = row.split(",");
         CSVRowDto csvRowDto = new CSVRowDto();
-        csvRowDto.setRegionCode(values[0]);
-        csvRowDto.setRegionName(values[1]);
+        csvRowDto.setCode(values[0]);
+        csvRowDto.setAddress(values[1]);
         return csvRowDto;
     }
 }

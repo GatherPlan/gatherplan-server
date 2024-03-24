@@ -3,11 +3,13 @@ package com.example.gatherplan.appointment.service;
 import com.example.gatherplan.appointment.dto.*;
 import org.json.JSONException;
 
+import java.util.List;
+
 public interface AppointmentService {
 
-    SearchPlaceRespDto searchDisctrict(SearchPlaceReqDto searchPlaceReqDto);
+    List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto);
 
-    SearchPlaceDetailRespDto searchPlace(SearchPlaceDetailReqDto searchPlaceDetailReqDto) throws JSONException;
+    List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) throws JSONException;
 
     void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
 
