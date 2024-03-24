@@ -12,7 +12,6 @@ public class MetaData {
 
     @Schema(description = "총 데이터 개수", example = "10")
     private int totalCount;
-
 }
 
 

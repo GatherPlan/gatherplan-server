@@ -1,7 +1,10 @@
 package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.*;
-import com.example.gatherplan.controller.vo.appointment.*;
+import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.SearchDistrictReq;
+import com.example.gatherplan.controller.vo.appointment.SearchPlaceReq;
 import com.example.gatherplan.controller.vo.common.AddressReq;
 import org.mapstruct.*;
 
@@ -19,13 +22,8 @@ public interface AppointmentControllerMapper {
 
     AddressDto to(AddressReq request);
 
+    SearchDistrictReqDto to(SearchDistrictReq searchDistrictReq);
+
     SearchPlaceReqDto to(SearchPlaceReq searchPlaceReq);
 
-    @Mapping(target = "regionList", source = "regionList")
-    SearchPlaceResp to(SearchPlaceRespDto searchPlaceRespDto);
-
-    SearchPlaceDetailReqDto to(SearchPlaceDetailReq searchPlaceDetailReq);
-
-    @Mapping(target = "placeDetails", source = "placeDetails")
-    SearchPlaceDetailResp to(SearchPlaceDetailRespDto searchPlaceDetailRespDto);
 }

@@ -1,6 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.api.service.KakaoLocalService;
+import com.example.gatherplan.api.service.KakaoLocalClient;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -10,18 +10,13 @@ import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.controller.vo.common.PlaceDetail;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,51 +30,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempMemberRepository tempMemberRepository;
     private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
     private final RegionRepository regionRepository;
-    private final KakaoLocalService kakaoLocalService;
+    private final KakaoLocalClient kakaoLocalClient;
 
     @Override
-    public SearchPlaceRespDto searchDisctrict(SearchPlaceReqDto searchPlaceReqDto) {
-        List<Region> regionList = regionRepository.findByRegionNameContaining(searchPlaceReqDto.getKeyword());
-        
+    public List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
+        List<Region> regionList = regionRepository.findByAddressContaining(searchDistrictReqDto.getKeyword());
 
-        return SearchPlaceRespDto.builder()
-                .regionList(regionList)
-                .build();
+        return regionList.stream()
+                .map(region -> searchDistrictRespDto.builder()
+                        .address(region.getAddress())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public SearchPlaceDetailRespDto searchPlace(SearchPlaceDetailReqDto searchPlaceDetailReqDto) {
-        Mono<String> stringMono = kakaoLocalService.callExternalAPI(searchPlaceDetailReqDto.getKeyword());
-        String result = stringMono.block(); // 비동기 처리 결과를 동기적으로 가져옴
-
-        List<PlaceDetail> placeDetails = new ArrayList<>();
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(result);
-            JsonNode documentsNode = jsonNode.get("documents");
-
-            for (JsonNode documentNode : documentsNode) {
-                String addressName = documentNode.get("address_name").asText();
-                String placeName = documentNode.get("place_name").asText();
-                String placeUrl = documentNode.get("place_url").asText();
-
-                PlaceDetail placeDetail = PlaceDetail.builder()
-                        .placeName(placeName)
-                        .addressName(addressName)
-                        .placeUrl(placeUrl)
-                        .build();
-                placeDetails.add(placeDetail);
-            }
-        } catch (JsonProcessingException e) {
-            log.info(e.getMessage());
-        }
-
-        return SearchPlaceDetailRespDto.builder()
-                .placeDetails(placeDetails)
-                .build();
+    public List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
+        return kakaoLocalClient.callExternalAPI(searchPlaceReqDto.getKeyword());
     }
-
 
     @Override
     @Transactional

@@ -3,6 +3,8 @@ package com.example.gatherplan.controller.vo.common;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -15,9 +17,13 @@ public class ListResponse<T> {
     private MetaData metaData;
 
     @Schema(description = "데이터")
-    private T data;
+    private List<T> data;
 
-    public static <T> ListResponse<T> of(MetaData metaData, T data) {
+    public static <T> ListResponse<T> of(List<T> data) {
+        MetaData metaData = MetaData.builder()
+                .totalCount(data.size())
+                .build();
+
         return ListResponse.<T>builder()
                 .metaData(metaData)
                 .data(data)
