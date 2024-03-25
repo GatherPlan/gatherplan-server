@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KakaoLocalClientRespDto {
+public class KakaoLocationClientRespDto {
     private String place_name;
     private String address_name;
     private String place_url;

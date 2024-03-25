@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.api.kakaolocal.KakaoLocalClient;
-import com.example.gatherplan.api.kakaolocal.KakaoLocalClientResp;
+import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
+import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -31,12 +31,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempMemberRepository tempMemberRepository;
     private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
     private final RegionRepository regionRepository;
-    private final KakaoLocalClient kakaoLocalClient;
+    private final KakaoLocationClient kakaoLocationClient;
 
     @Override
     public List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
         List<Region> regionList = regionRepository.findByAddressContaining(searchDistrictReqDto.getKeyword());
-        
+
         return regionList.stream()
                 .map(region -> searchDistrictRespDto.builder()
                         .address(region.getAddress())
@@ -46,9 +46,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
-        KakaoLocalClientResp kakaoLocalClientResp = kakaoLocalClient.callExternalAPI(searchPlaceReqDto.getKeyword());
+        KakaoLocationClientResp kakaoLocationClientResp =
+                kakaoLocationClient.searchLocationByKeyword(searchPlaceReqDto.getKeyword());
 
-        return kakaoLocalClientResp.getDocuments().stream()
+        return kakaoLocationClientResp.getDocuments().stream()
                 .map(document -> SearchPlaceRespDto.builder()
                         .placeName(document.getPlace_name())
                         .address(document.getAddress_name())

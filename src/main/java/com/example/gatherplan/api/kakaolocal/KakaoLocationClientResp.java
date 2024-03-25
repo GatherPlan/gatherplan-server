@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KakaoLocalClientResp {
-    private List<KakaoLocalClientRespDto> documents;
+public class KakaoLocationClientResp {
+    private List<KakaoLocationClientRespDto> documents;
 }
