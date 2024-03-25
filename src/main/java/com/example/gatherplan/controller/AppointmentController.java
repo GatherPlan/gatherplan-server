@@ -5,10 +5,7 @@ import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.CustomUserDetails;
 import com.example.gatherplan.controller.mapper.AppointmentControllerMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.SearchDistrictReq;
-import com.example.gatherplan.controller.vo.appointment.SearchPlaceReq;
+import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,7 +47,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/search-place")
-    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상새주소를 검색할 때 사용됩니다.")
+    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<SearchPlaceRespDto>> searchPlace(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchPlaceReq searchPlaceReq) throws JSONException {
@@ -58,6 +55,20 @@ public class AppointmentController {
         SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
         List<SearchPlaceRespDto> result = appointmentService.searchPlace(searchPlaceReqDto);
 
+        return ResponseEntity.ok(
+                ListResponse.of(result)
+        );
+    }
+
+    @PostMapping("/search-whether")
+    @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<SearchWhetherRespDto>> searchPlace(
+            @Validated(value = RequestValidationSequence.class)
+            @RequestBody SearchWhetherReq searchWhetherReq) throws JSONException {
+
+        SearchWhetherReqDto searchWhetherReqDto = appointmentControllerMapper.to(searchWhetherReq);
+        List<SearchWhetherRespDto> result = appointmentService.searchWhether(searchWhetherReqDto);
+        
         return ResponseEntity.ok(
                 ListResponse.of(result)
         );

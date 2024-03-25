@@ -2,13 +2,16 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
+import com.example.gatherplan.api.whethernews.WhetherNewsClient;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
+import com.example.gatherplan.appointment.repository.impl.CustomRegionRepositoryImpl;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
     private final RegionRepository regionRepository;
     private final KakaoLocationClient kakaoLocationClient;
+    private final WhetherNewsClient whetherNewsClient;
+    private final CustomRegionRepositoryImpl customRegionRepositoryImpl;
 
     @Override
     public List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
@@ -54,6 +59,23 @@ public class AppointmentServiceImpl implements AppointmentService {
                         .placeName(document.getPlace_name())
                         .address(document.getAddress_name())
                         .url(document.getPlace_url())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<SearchWhetherRespDto> searchWhether(SearchWhetherReqDto searchWhetherReqDto) {
+
+        Region region = customRegionRepositoryImpl.findRegionByAddressName(searchWhetherReqDto.getAddressName())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
+
+        return whetherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
+                .map(daily -> SearchWhetherRespDto.builder()
+                        .mon(daily.getMon())
+                        .day(daily.getDay())
+                        .whetherState(daily.getWx_text())
+                        .minTemporary(daily.getTmin())
+                        .maxTemporary(daily.getTmax())
                         .build())
                 .toList();
     }
