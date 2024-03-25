@@ -1,4 +1,4 @@
-package com.example.gatherplan.api.service;
+package com.example.gatherplan.api.whethernews;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

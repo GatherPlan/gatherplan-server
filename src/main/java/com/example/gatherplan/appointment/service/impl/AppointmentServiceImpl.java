@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.api.service.KakaoLocalClient;
+import com.example.gatherplan.api.kakaolocal.KakaoLocalClient;
+import com.example.gatherplan.api.kakaolocal.KakaoLocalClientResp;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -35,7 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
         List<Region> regionList = regionRepository.findByAddressContaining(searchDistrictReqDto.getKeyword());
-
+        
         return regionList.stream()
                 .map(region -> searchDistrictRespDto.builder()
                         .address(region.getAddress())
@@ -45,7 +46,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
-        return kakaoLocalClient.callExternalAPI(searchPlaceReqDto.getKeyword());
+        KakaoLocalClientResp kakaoLocalClientResp = kakaoLocalClient.callExternalAPI(searchPlaceReqDto.getKeyword());
+
+        return kakaoLocalClientResp.getDocuments().stream()
+                .map(document -> SearchPlaceRespDto.builder()
+                        .placeName(document.getPlace_name())
+                        .address(document.getAddress_name())
+                        .url(document.getPlace_url())
+                        .build())
+                .toList();
     }
 
     @Override
