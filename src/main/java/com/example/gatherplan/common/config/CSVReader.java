@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.component;
+package com.example.gatherplan.common.config;
 
 import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.appointment.service.impl.RegionServiceImpl;
