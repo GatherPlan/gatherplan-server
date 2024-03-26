@@ -11,7 +11,7 @@ public interface AppointmentService {
 
     List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) throws JSONException;
 
-    List<SearchWhetherRespDto> searchWhether(SearchWhetherReqDto searchWhetherReqDto);
+    List<SearchWeatherRespDto> searchWhether(SearchWeatherReqDto searchWeatherReqDto);
 
     void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
 

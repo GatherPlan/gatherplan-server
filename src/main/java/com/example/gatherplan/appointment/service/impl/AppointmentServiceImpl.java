@@ -2,7 +2,7 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
-import com.example.gatherplan.api.whethernews.WhetherNewsClient;
+import com.example.gatherplan.api.weathernews.WeatherNewsClient;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
     private final RegionRepository regionRepository;
     private final KakaoLocationClient kakaoLocationClient;
-    private final WhetherNewsClient whetherNewsClient;
+    private final WeatherNewsClient weatherNewsClient;
     private final CustomRegionRepositoryImpl customRegionRepositoryImpl;
 
     @Override
@@ -44,7 +43,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return regionList.stream()
                 .map(appointmentMapper::to)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -55,18 +54,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return kakaoLocationClientResp.getDocuments().stream()
                 .map(appointmentMapper::to)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public List<SearchWhetherRespDto> searchWhether(SearchWhetherReqDto searchWhetherReqDto) {
+    public List<SearchWeatherRespDto> searchWhether(SearchWeatherReqDto searchWeatherReqDto) {
 
-        Region region = customRegionRepositoryImpl.findRegionByAddressName(searchWhetherReqDto.getAddressName())
+        Region region = customRegionRepositoryImpl.findRegionByAddressName(searchWeatherReqDto.getAddressName())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
-        return whetherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
+        return weatherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
                 .map(appointmentMapper::to)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
