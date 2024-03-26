@@ -57,9 +57,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return kakaoLocationClientResp.getDocuments().stream()
                 .map(document -> SearchPlaceRespDto.builder()
-                        .placeName(document.getPlace_name())
-                        .address(document.getAddress_name())
-                        .url(document.getPlace_url())
+                        .placeName(document.getPlaceName())
+                        .address(document.getAddressName())
+                        .url(document.getPlaceUrl())
                         .build())
                 .toList();
     }
@@ -72,11 +72,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return whetherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
                 .map(daily -> SearchWhetherRespDto.builder()
-                        .mon(daily.getMon())
+                        .mon(daily.getMonth())
                         .day(daily.getDay())
-                        .whetherState(daily.getWx_text())
-                        .minTemporary(daily.getTmin())
-                        .maxTemporary(daily.getTmax())
+                        .whetherState(daily.getWhetherState())
+                        .minTemporary(daily.getMinTemporary())
+                        .maxTemporary(daily.getMaxTemporary())
                         .build())
                 .toList();
     }
