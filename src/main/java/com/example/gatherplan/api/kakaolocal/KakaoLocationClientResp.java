@@ -1,5 +1,7 @@
 package com.example.gatherplan.api.kakaolocal;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,18 +21,20 @@ public class KakaoLocationClientResp {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class KakaoLocationClientRespDocument {
-        private String place_name;
-        private String address_name;
-        private String place_url;
+        private String placeName;
+        private String addressName;
+        private String placeUrl;
     }
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class KakaoLocationClientRespMeta {
-        private String total_count;
-        private String pageable_count;
+        private String totalCount;
+        private String pageableCount;
     }
 }

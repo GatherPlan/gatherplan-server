@@ -1,5 +1,6 @@
 package com.example.gatherplan.api.whethernews;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +20,14 @@ public class WhetherNewsClientResp {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class WhetherNewsClientRespDocument {
-        private String wx_text;
-        private String mon;
+        @JsonProperty("wx_text")
+        private String whetherState;
+        @JsonProperty("mon")
+        private String month;
         private String day;
-        private String tmin;
-        private String tmax;
+        @JsonProperty("tmin")
+        private String minTemporary;
+        @JsonProperty("tmax")
+        private String maxTemporary;
     }
 }
