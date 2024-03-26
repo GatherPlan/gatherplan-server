@@ -24,7 +24,7 @@ public class CustomRegionRepositoryImpl implements CustomRegionRepository {
 
         BooleanExpression whereClause = null;
         for (String level : levels) {
-            BooleanExpression keywordExpression = region.address.like("%" + level + "%");
+            BooleanExpression keywordExpression = region.address.contains(level);
             if (whereClause == null) {
                 whereClause = keywordExpression;
             } else {
