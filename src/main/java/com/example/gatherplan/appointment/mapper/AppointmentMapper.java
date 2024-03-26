@@ -1,10 +1,11 @@
 package com.example.gatherplan.appointment.mapper;
 
-import com.example.gatherplan.appointment.dto.AddressDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
+import com.example.gatherplan.api.whethernews.WhetherNewsClientResp;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.Region;
 import com.example.gatherplan.appointment.repository.entity.embedded.Address;
 import org.mapstruct.*;
 
@@ -28,4 +29,10 @@ public interface AppointmentMapper {
     Appointment to(CreateTempAppointmentReqDto request, AppointmentState appointmentState);
 
     Address to(AddressDto request);
+
+    SearchDistrictRespDto to(Region request);
+
+    SearchPlaceRespDto to(KakaoLocationClientResp.KakaoLocationClientRespDocument request);
+
+    SearchWhetherRespDto to(WhetherNewsClientResp.WhetherNewsClientRespDocument request);
 }

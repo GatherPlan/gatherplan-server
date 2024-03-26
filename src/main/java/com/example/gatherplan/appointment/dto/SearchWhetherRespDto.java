@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SearchWhetherRespDto {
-    private String mon;
+    private String month;
     private String day;
     private String whetherState;
     private String minTemporary;
