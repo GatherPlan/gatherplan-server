@@ -52,7 +52,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
         KakaoLocationClientResp kakaoLocationClientResp =
-                kakaoLocationClient.searchLocationByKeyword(searchPlaceReqDto.getKeyword());
+                kakaoLocationClient.searchLocationByKeyword(searchPlaceReqDto.getKeyword(), searchPlaceReqDto.getPage(),
+                        searchPlaceReqDto.getSize());
 
         return kakaoLocationClientResp.getDocuments().stream()
                 .map(document -> SearchPlaceRespDto.builder()

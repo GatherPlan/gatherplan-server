@@ -1,5 +1,6 @@
 package com.example.gatherplan.api.whethernews;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -7,10 +8,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WhetherNewsClient {
     private final WebClient webClient;
 
-    public WhetherNewsClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://www.kr-weathernews.com/mv3/if/daily.fcgi")
+    public WhetherNewsClient(WebClient.Builder webClientBuilder, @Value("${external.api.whethernews.url}") String url) {
+        this.webClient = webClientBuilder.baseUrl(url)
                 .build();
     }
+
 
     public WhetherNewsClientResp searchWhetherByRegionCode(String regionCode) {
         return webClient.get()
