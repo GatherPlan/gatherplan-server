@@ -8,4 +8,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SearchPlaceReqDto {
     private String keyword;
+    private int page;
+    private int size;
+
 }

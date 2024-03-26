@@ -1,28 +1,27 @@
 package com.example.gatherplan.api.kakaolocal;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Slf4j
 @Service
 public class KakaoLocationClient {
     private final WebClient webClient;
 
-    public KakaoLocationClient(WebClient.Builder webClientBuilder, @Value("${external.api.kakao.key}") String apiKey) {
-        this.webClient = webClientBuilder.baseUrl("https://dapi.kakao.com/v2/local/search/keyword")
+    public KakaoLocationClient(WebClient.Builder webClientBuilder, @Value("${external.api.kakao.key}") String apiKey
+            , @Value("${external.api.kakao.url}") String url) {
+        this.webClient = webClientBuilder.baseUrl(url)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, apiKey)
                 .build();
     }
 
-    public KakaoLocationClientResp searchLocationByKeyword(String keyword) {
+    public KakaoLocationClientResp searchLocationByKeyword(String keyword, int page, int size) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("")
                         .queryParam("query", keyword)
-                        .queryParam("page", 1)
-                        .queryParam("size", 15)
+                        .queryParam("page", page)
+                        .queryParam("size", size)
                         .build())
                 .retrieve()
                 .bodyToMono(KakaoLocationClientResp.class)

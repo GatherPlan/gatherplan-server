@@ -12,5 +12,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WhetherNewsClientResp {
-    private List<WhetherNewsClientRespDto> daily;
+    private List<WhetherNewsClientRespDocument> daily;
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WhetherNewsClientRespDocument {
+        private String wx_text;
+        private String mon;
+        private String day;
+        private String tmin;
+        private String tmax;
+    }
 }
