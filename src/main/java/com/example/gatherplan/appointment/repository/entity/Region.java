@@ -1,10 +1,8 @@
 package com.example.gatherplan.appointment.repository.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -16,6 +14,12 @@ public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Comment("지역 이름")
+    @Column(nullable = false)
     private String address;
+
+    @Comment("지역 코드")
+    @Column(nullable = false)
     private String code;
 }
