@@ -34,12 +34,12 @@ public class AppointmentController {
 
     @PostMapping("/search-district")
     @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<searchDistrictRespDto>> searchDisctrict(
+    public ResponseEntity<ListResponse<SearchDistrictRespDto>> searchDisctrict(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchDistrictReq searchDistrictReq) {
 
         SearchDistrictReqDto searchDistrictReqDto = appointmentControllerMapper.to(searchDistrictReq);
-        List<searchDistrictRespDto> result = appointmentService.searchDisctrict(searchDistrictReqDto);
+        List<SearchDistrictRespDto> result = appointmentService.searchDisctrict(searchDistrictReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(result)
@@ -68,7 +68,7 @@ public class AppointmentController {
 
         SearchWhetherReqDto searchWhetherReqDto = appointmentControllerMapper.to(searchWhetherReq);
         List<SearchWhetherRespDto> result = appointmentService.searchWhether(searchWhetherReqDto);
-        
+
         return ResponseEntity.ok(
                 ListResponse.of(result)
         );

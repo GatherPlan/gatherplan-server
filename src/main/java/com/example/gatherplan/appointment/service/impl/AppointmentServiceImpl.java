@@ -39,13 +39,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomRegionRepositoryImpl customRegionRepositoryImpl;
 
     @Override
-    public List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
+    public List<SearchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
         List<Region> regionList = regionRepository.findByAddressContaining(searchDistrictReqDto.getKeyword());
 
         return regionList.stream()
-                .map(region -> searchDistrictRespDto.builder()
-                        .address(region.getAddress())
-                        .build())
+                .map(appointmentMapper::to)
                 .collect(Collectors.toList());
     }
 
@@ -56,12 +54,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         searchPlaceReqDto.getSize());
 
         return kakaoLocationClientResp.getDocuments().stream()
-                .map(document -> SearchPlaceRespDto.builder()
-                        .placeName(document.getPlaceName())
-                        .address(document.getAddressName())
-                        .url(document.getPlaceUrl())
-                        .build())
-                .toList();
+                .map(appointmentMapper::to)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -71,14 +65,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return whetherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
-                .map(daily -> SearchWhetherRespDto.builder()
-                        .mon(daily.getMonth())
-                        .day(daily.getDay())
-                        .whetherState(daily.getWhetherState())
-                        .minTemporary(daily.getMinTemporary())
-                        .maxTemporary(daily.getMaxTemporary())
-                        .build())
-                .toList();
+                .map(appointmentMapper::to)
+                .collect(Collectors.toList());
     }
 
     @Override

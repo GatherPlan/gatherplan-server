@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SearchPlaceRespDto {
-    private String address;
-    private String url;
+    private String addressName;
+    private String placeUrl;
     private String placeName;
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    List<searchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto);
+    List<SearchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto);
 
     List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) throws JSONException;
 
