@@ -6,10 +6,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchWhetherRespDto {
+public class SearchWeatherRespDto {
     private String month;
     private String day;
-    private String whetherState;
+    private String weatherState;
     private String minTemporary;
     private String maxTemporary;
 }

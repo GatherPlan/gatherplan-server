@@ -1,4 +1,4 @@
-package com.example.gatherplan.api.whethernews;
+package com.example.gatherplan.api.weathernews;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,16 +12,16 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WhetherNewsClientResp {
-    private List<WhetherNewsClientRespDocument> daily;
+public class WeatherNewsClientResp {
+    private List<WeatherNewsClientRespDocument> daily;
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WhetherNewsClientRespDocument {
+    public static class WeatherNewsClientRespDocument {
         @JsonProperty("wx_text")
-        private String whetherState;
+        private String weatherState;
         @JsonProperty("mon")
         private String month;
         private String day;

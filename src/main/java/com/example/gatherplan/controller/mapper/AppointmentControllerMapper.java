@@ -23,5 +23,5 @@ public interface AppointmentControllerMapper {
 
     SearchPlaceReqDto to(SearchPlaceReq searchPlaceReq);
 
-    SearchWhetherReqDto to(SearchWhetherReq searchWhetherReq);
+    SearchWeatherReqDto to(SearchWhetherReq searchWhetherReq);
 }

@@ -60,14 +60,14 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/search-whether")
+    @PostMapping("/search-weather")
     @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchWhetherRespDto>> searchPlace(
+    public ResponseEntity<ListResponse<SearchWeatherRespDto>> searchPlace(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody SearchWhetherReq searchWhetherReq) throws JSONException {
 
-        SearchWhetherReqDto searchWhetherReqDto = appointmentControllerMapper.to(searchWhetherReq);
-        List<SearchWhetherRespDto> result = appointmentService.searchWhether(searchWhetherReqDto);
+        SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
+        List<SearchWeatherRespDto> result = appointmentService.searchWhether(searchWeatherReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(result)

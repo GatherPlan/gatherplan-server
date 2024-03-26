@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
-import com.example.gatherplan.api.whethernews.WhetherNewsClientResp;
+import com.example.gatherplan.api.weathernews.WeatherNewsClientResp;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
@@ -34,5 +34,5 @@ public interface AppointmentMapper {
 
     SearchPlaceRespDto to(KakaoLocationClientResp.KakaoLocationClientRespDocument request);
 
-    SearchWhetherRespDto to(WhetherNewsClientResp.WhetherNewsClientRespDocument request);
+    SearchWeatherRespDto to(WeatherNewsClientResp.WeatherNewsClientRespDocument request);
 }
