@@ -22,11 +22,11 @@ public class KakaoLocationClient {
         return webClient
                 .get()
                 .uri(UriComponentsBuilder.fromHttpUrl(baseUrl)
-                        .path("v2/local/search/keyword.json")
+                        .path("v2/local/search/keyword")
                         .queryParam("query", keyword)
                         .queryParam("page", page)
                         .queryParam("size", size)
-                        .build().toUri())
+                        .build().toUriString())
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
                 .retrieve()
                 .bodyToMono(KakaoLocationClientResp.class)
