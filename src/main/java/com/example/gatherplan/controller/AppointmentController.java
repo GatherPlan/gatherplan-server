@@ -12,13 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,48 +29,6 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final AppointmentControllerMapper appointmentControllerMapper;
-
-    @PostMapping("/search-district")
-    @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchDistrictRespDto>> searchDisctrict(
-            @Validated(value = RequestValidationSequence.class)
-            @RequestBody SearchDistrictReq searchDistrictReq) {
-
-        SearchDistrictReqDto searchDistrictReqDto = appointmentControllerMapper.to(searchDistrictReq);
-        List<SearchDistrictRespDto> result = appointmentService.searchDisctrict(searchDistrictReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(result)
-        );
-    }
-
-    @PostMapping("/search-place")
-    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchPlaceRespDto>> searchPlace(
-            @Validated(value = RequestValidationSequence.class)
-            @RequestBody SearchPlaceReq searchPlaceReq) throws JSONException {
-
-        SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
-        List<SearchPlaceRespDto> result = appointmentService.searchPlace(searchPlaceReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(result)
-        );
-    }
-
-    @PostMapping("/search-weather")
-    @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchWeatherRespDto>> searchPlace(
-            @Validated(value = RequestValidationSequence.class)
-            @RequestBody SearchWhetherReq searchWhetherReq) throws JSONException {
-
-        SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
-        List<SearchWeatherRespDto> result = appointmentService.searchWhether(searchWeatherReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(result)
-        );
-    }
 
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
@@ -103,5 +59,45 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/search/district")
+    @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<SearchDistrictRespDto>> searchDisctrict(
+            @Validated(value = RequestValidationSequence.class)
+            @ModelAttribute @ParameterObject SearchDistrictReq searchDistrictReq) {
 
+        SearchDistrictReqDto searchDistrictReqDto = appointmentControllerMapper.to(searchDistrictReq);
+        List<SearchDistrictRespDto> result = appointmentService.searchDisctrict(searchDistrictReqDto);
+
+        return ResponseEntity.ok(
+                ListResponse.of(result)
+        );
+    }
+
+    @GetMapping("/search/place")
+    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<SearchPlaceRespDto>> searchPlace(
+            @Validated(value = RequestValidationSequence.class)
+            @ModelAttribute @ParameterObject SearchPlaceReq searchPlaceReq) {
+
+        SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
+        List<SearchPlaceRespDto> result = appointmentService.searchPlace(searchPlaceReqDto);
+
+        return ResponseEntity.ok(
+                ListResponse.of(result)
+        );
+    }
+
+    @GetMapping("/search/weather")
+    @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<SearchWeatherRespDto>> searchPlace(
+            @Validated(value = RequestValidationSequence.class)
+            @ModelAttribute @ParameterObject SearchWhetherReq searchWhetherReq) throws JSONException {
+
+        SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
+        List<SearchWeatherRespDto> result = appointmentService.searchWhether(searchWeatherReqDto);
+
+        return ResponseEntity.ok(
+                ListResponse.of(result)
+        );
+    }
 }
