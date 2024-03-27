@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 장소 상세주소 검색 요청 객체")
-public class SearchPlaceReq {
+public class KeywordPlaceReq {
 
     @NotBlank(message = "키워드는 공백일 수 없습니다")
     @Schema(description = "약속 장소 검색 키워드", example = "뱃놈")

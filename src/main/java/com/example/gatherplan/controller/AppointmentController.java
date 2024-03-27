@@ -62,43 +62,50 @@ public class AppointmentController {
 
     @GetMapping("/search/district")
     @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchDistrictResp>> searchDisctrict(
-            @ModelAttribute @ParameterObject @Valid SearchDistrictReq searchDistrictReq) {
+    public ResponseEntity<ListResponse<RegionResp>> searchRegion(
+            @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
 
-        SearchDistrictReqDto searchDistrictReqDto = appointmentControllerMapper.to(searchDistrictReq);
-        List<SearchDistrictRespDto> searchDistrictRespDtos = appointmentService.searchDisctrict(searchDistrictReqDto);
-        List<SearchDistrictResp> result = searchDistrictRespDtos.stream().map(appointmentControllerMapper::to).toList();
+        RegionReqDto regionReqDto = appointmentControllerMapper.to(regionReq);
+        List<RegionDto> regionDtos = appointmentService.searchRegion(regionReqDto);
 
         return ResponseEntity.ok(
-                ListResponse.of(result)
+                ListResponse.of(
+                        regionDtos.stream()
+                                .map(appointmentControllerMapper::to)
+                                .toList()
+                )
         );
     }
 
     @GetMapping("/search/place")
     @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchPlaceResp>> searchPlace(
-            @ModelAttribute @ParameterObject @Valid SearchPlaceReq searchPlaceReq) {
+    public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
+            @ModelAttribute @ParameterObject @Valid KeywordPlaceReq keywordPlaceReq) {
 
-        SearchPlaceReqDto searchPlaceReqDto = appointmentControllerMapper.to(searchPlaceReq);
-        List<SearchPlaceRespDto> searchPlaceRespDtos = appointmentService.searchPlace(searchPlaceReqDto);
-        List<SearchPlaceResp> result = searchPlaceRespDtos.stream().map(appointmentControllerMapper::to).toList();
+        KeywordPlaceReqDto keywordPlaceReqDto = appointmentControllerMapper.to(keywordPlaceReq);
+        List<KeywordPlaceRespDto> keywordPlaceRespDtos = appointmentService.searchKeywordPlace(keywordPlaceReqDto);
 
         return ResponseEntity.ok(
-                ListResponse.of(result)
+                ListResponse.of(
+                        keywordPlaceRespDtos.stream()
+                                .map(appointmentControllerMapper::to)
+                                .toList())
         );
     }
 
     @GetMapping("/search/weather")
     @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchWeatherResp>> searchWeather(
-            @ModelAttribute @ParameterObject @Valid SearchWhetherReq searchWhetherReq) throws JSONException {
+    public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
+            @ModelAttribute @ParameterObject @Valid DailyWhetherReq dailyWhetherReq) throws JSONException {
 
-        SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
-        List<SearchWeatherRespDto> searchWeatherRespDtos = appointmentService.searchWeather(searchWeatherReqDto);
-        List<SearchWeatherResp> result = searchWeatherRespDtos.stream().map(appointmentControllerMapper::to).toList();
+        DailyWeatherReqDto dailyWeatherReqDto = appointmentControllerMapper.to(dailyWhetherReq);
+        List<DailyWeatherRespDto> dailyWeatherRespDtos = appointmentService.searchDailyWeather(dailyWeatherReqDto);
 
         return ResponseEntity.ok(
-                ListResponse.of(result)
+                ListResponse.of(
+                        dailyWeatherRespDtos.stream()
+                                .map(appointmentControllerMapper::to)
+                                .toList())
         );
     }
 }

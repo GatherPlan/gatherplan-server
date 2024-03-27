@@ -17,7 +17,7 @@ public class KakaoLocationClient {
     @Value("${external.api.kakao.url}")
     private String baseUrl;
 
-    public KakaoLocationClientResp searchLocationByKeyword(String keyword, int page, int size) {
+    public KeywordPlaceClientResp searchLocationByKeyword(String keyword, int page, int size) {
 
         return webClient
                 .get()
@@ -29,7 +29,7 @@ public class KakaoLocationClient {
                         .build().toUriString())
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
                 .retrieve()
-                .bodyToMono(KakaoLocationClientResp.class)
+                .bodyToMono(KeywordPlaceClientResp.class)
                 .block();
     }
 }
