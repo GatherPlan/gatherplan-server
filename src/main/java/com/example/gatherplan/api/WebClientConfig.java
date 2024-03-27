@@ -1,24 +1,47 @@
 package com.example.gatherplan.api;
 
-import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
-import com.example.gatherplan.api.weathernews.WeatherNewsClient;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
+
+@Slf4j
 @Configuration
 public class WebClientConfig {
     @Bean
-    public KakaoLocationClient kakaoLocationClient(WebClient.Builder webClientBuilder,
-                                                   @Value("${external.api.kakao.key}") String apiKey,
-                                                   @Value("${external.api.kakao.url}") String url) {
-        return new KakaoLocationClient(webClientBuilder, apiKey, url);
-    }
+    public WebClient webClient() {
+        HttpClient httpClient = HttpClient.create().responseTimeout(Duration.ofSeconds(3));
 
-    @Bean
-    public WeatherNewsClient weatherNewsClient(WebClient.Builder webClientBuilder,
-                                               @Value("${external.api.weathernews.url}") String url) {
-        return new WeatherNewsClient(webClientBuilder, url);
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(
+                        ExchangeFilterFunction.ofRequestProcessor(
+                                clientRequest -> {
+                                    log.info("================= REQUEST INFO =================");
+                                    log.info("Base Info : {} {}", clientRequest.method(), clientRequest.url());
+                                    clientRequest.headers().forEach(
+                                            (name, values) -> values.forEach(value -> log.info("{} : {}", name, value))
+                                    );
+                                    return Mono.just(clientRequest);
+                                }
+                        )
+                ).filter(
+                        ExchangeFilterFunction.ofResponseProcessor(
+                                clientResponse -> {
+                                    log.info("================= RESPONSE INFO =================");
+                                    log.info("Result Status : {}", clientResponse.statusCode());
+                                    clientResponse.headers().asHttpHeaders().forEach(
+                                            (name, values) -> values.forEach(value -> log.info("{} : {}", name, value))
+                                    );
+                                    return Mono.just(clientResponse);
+                                }
+                        )
+                ).build();
     }
 }
