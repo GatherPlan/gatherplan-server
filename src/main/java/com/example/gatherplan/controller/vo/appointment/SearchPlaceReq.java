@@ -17,6 +17,6 @@ public class SearchPlaceReq {
     @Schema(description = "약속 장소 검색 페이지 수", example = "1")
     private int page;
 
-    @Schema(description = "약속 장소 검색 페이지 당 데이터 수, example = 15")
+    @Schema(description = "약속 장소 검색 페이지 당 데이터 수", example = "15")
     private int size;
 }
