@@ -3,6 +3,7 @@ package com.example.gatherplan.appointment.mapper;
 import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.common.jwt.RoleType;
 import org.mapstruct.*;
 
 @Mapper(
@@ -15,9 +16,9 @@ import org.mapstruct.*;
 public interface MemberMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", source = "reqDto.name")
+    @Mapping(target = "nickname", source = "reqDto.nickname")
     @Mapping(target = "password", source = "encodedPassword")
     @Mapping(target = "userAuthType", source = "userAuthType")
-    @Mapping(target = "role", source = "role")
-    Member to(CreateMemberReqDto reqDto, String encodedPassword, UserAuthType userAuthType, String role);
+    @Mapping(target = "roleType", source = "role")
+    Member to(CreateMemberReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType role);
 }

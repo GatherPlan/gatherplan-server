@@ -64,9 +64,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        UserInfo userInfo = (UserInfo) authentication.getPrincipal();
 
-        String email = customUserDetails.getEmail();
+        String email = userInfo.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();

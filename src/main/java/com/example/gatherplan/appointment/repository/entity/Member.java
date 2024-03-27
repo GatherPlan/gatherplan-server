@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
+import com.example.gatherplan.common.jwt.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -20,7 +21,7 @@ public class Member extends BaseAuditableEntity {
 
     @Comment("사용자 이름")
     @Column(nullable = false)
-    private String name;
+    private String nickname;
 
     @Comment("이메일")
     @Column(nullable = false)
@@ -32,8 +33,14 @@ public class Member extends BaseAuditableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Comment("사용자 인증 유형")
     private UserAuthType userAuthType;
 
-    // Spring Security 에 필요한 값인지 확인 필요
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Comment("Security 에 사용되는 Role")
+    private RoleType roleType;
+
+    public String getRole() {
+        return this.roleType.getRole();
+    }
 }

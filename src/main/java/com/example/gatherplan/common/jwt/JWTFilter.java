@@ -42,18 +42,17 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
+        RoleType roleType = RoleType.byRole(jwtUtil.getRole(token));
 
         Member member = Member.builder()
-                .email(email)
-                .role(role)
+                .email(jwtUtil.getEmail(token))
+                .roleType(roleType)
                 .build();
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+        UserInfo userInfo = new UserInfo(member);
 
         //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(userInfo, null, userInfo.getAuthorities());
 
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);

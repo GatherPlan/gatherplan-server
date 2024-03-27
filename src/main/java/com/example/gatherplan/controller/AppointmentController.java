@@ -2,8 +2,8 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
-import com.example.gatherplan.common.jwt.CustomUserDetails;
-import com.example.gatherplan.controller.mapper.AppointmentControllerMapper;
+import com.example.gatherplan.common.jwt.UserInfo;
+import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
@@ -29,17 +29,17 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    private final AppointmentControllerMapper appointmentControllerMapper;
+    private final AppointmentVoMapper appointmentVoMapper;
 
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateAppointmentReq createAppointmentReq,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @AuthenticationPrincipal UserInfo userInfo) {
 
-        CreateAppointmentReqDto createAppointmentReqDto = appointmentControllerMapper.to(createAppointmentReq);
-        appointmentService.registerAppointment(createAppointmentReqDto, customUserDetails.getEmail());
+        CreateAppointmentReqDto createAppointmentReqDto = appointmentVoMapper.to(createAppointmentReq);
+        appointmentService.registerAppointment(createAppointmentReqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -52,7 +52,7 @@ public class AppointmentController {
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
 
-        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentControllerMapper.to(createTempAppointmentReq);
+        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentVoMapper.to(createTempAppointmentReq);
         appointmentService.registerTempAppointment(createTempAppointmentReqDto);
 
         return ResponseEntity.ok(
@@ -65,13 +65,13 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
             @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
 
-        RegionReqDto regionReqDto = appointmentControllerMapper.to(regionReq);
+        RegionReqDto regionReqDto = appointmentVoMapper.to(regionReq);
         List<RegionDto> regionDtos = appointmentService.searchRegion(regionReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
                         regionDtos.stream()
-                                .map(appointmentControllerMapper::to)
+                                .map(appointmentVoMapper::to)
                                 .toList()
                 )
         );
@@ -82,13 +82,13 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
             @ModelAttribute @ParameterObject @Valid KeywordPlaceReq keywordPlaceReq) {
 
-        KeywordPlaceReqDto keywordPlaceReqDto = appointmentControllerMapper.to(keywordPlaceReq);
+        KeywordPlaceReqDto keywordPlaceReqDto = appointmentVoMapper.to(keywordPlaceReq);
         List<KeywordPlaceRespDto> keywordPlaceRespDtos = appointmentService.searchKeywordPlace(keywordPlaceReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
                         keywordPlaceRespDtos.stream()
-                                .map(appointmentControllerMapper::to)
+                                .map(appointmentVoMapper::to)
                                 .toList())
         );
     }
@@ -98,13 +98,13 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
             @ModelAttribute @ParameterObject @Valid DailyWhetherReq dailyWhetherReq) throws JSONException {
 
-        DailyWeatherReqDto dailyWeatherReqDto = appointmentControllerMapper.to(dailyWhetherReq);
+        DailyWeatherReqDto dailyWeatherReqDto = appointmentVoMapper.to(dailyWhetherReq);
         List<DailyWeatherRespDto> dailyWeatherRespDtos = appointmentService.searchDailyWeather(dailyWeatherReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
                         dailyWeatherRespDtos.stream()
-                                .map(appointmentControllerMapper::to)
+                                .map(appointmentVoMapper::to)
                                 .toList())
         );
     }

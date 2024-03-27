@@ -12,7 +12,7 @@ public class CreateMemberReqDto {
 
     private String authCode;
 
-    private String name;
+    private String nickname;
 
     private String password;
 }

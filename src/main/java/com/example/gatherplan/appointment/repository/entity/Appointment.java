@@ -1,11 +1,10 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.enums.CandidateTimeType;
-import com.example.gatherplan.appointment.repository.entity.embedded.Address;
-import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
+import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
+import com.example.gatherplan.common.unit.Address;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -33,8 +32,8 @@ public class Appointment extends BaseAuditableEntity {
     @Comment("약속 안내 사항")
     private String notice;
 
-    @Comment("약속 장소")
     @Embedded
+    @Comment("약속 장소")
     private Address address;
 
     @Enumerated(EnumType.STRING)
@@ -51,13 +50,9 @@ public class Appointment extends BaseAuditableEntity {
     @Comment("약속 후보 날짜들")
     private List<LocalDate> candidateDateList = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Comment("약속 지정 시간 타입 (직접 입력, 선택 입력)")
-    private CandidateTimeType candidateTimeType;
-
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     @Comment("약속 후보 시간들 (시작시간~종료시간)")
-    private List<CandidateTime> candidateTimeList = new ArrayList<>();
+    private List<TimeType> candidateTimeTypeList = new ArrayList<>();
 }

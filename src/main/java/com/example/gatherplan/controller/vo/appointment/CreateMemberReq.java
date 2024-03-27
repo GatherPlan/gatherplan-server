@@ -30,7 +30,7 @@ public class CreateMemberReq {
     @Schema(description = "이름", example = "홍길동")
     @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
     @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckName.class)
-    private String name;
+    private String nickname;
 
     @Schema(description = "비밀번호", example = "abcd1234")
     @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
