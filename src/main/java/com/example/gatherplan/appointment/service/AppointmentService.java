@@ -10,7 +10,7 @@ public interface AppointmentService {
 
     List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto);
 
-    List<SearchWeatherRespDto> searchWhether(SearchWeatherReqDto searchWeatherReqDto);
+    List<SearchWeatherRespDto> searchWeather(SearchWeatherReqDto searchWeatherReqDto);
 
     void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
 
