@@ -10,18 +10,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class UserInfo implements UserDetails {
 
     private final transient Member member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-
         collection.add((GrantedAuthority) member::getRole);
 
         return collection;
-
     }
 
     public String getEmail() {
@@ -35,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getName();
+        return member.getNickname();
     }
 
     @Override

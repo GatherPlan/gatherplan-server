@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.dto;
 
-import com.example.gatherplan.appointment.enums.CandidateTimeType;
-import com.example.gatherplan.appointment.repository.entity.embedded.CandidateTime;
+import com.example.gatherplan.appointment.enums.TimeType;
+import com.example.gatherplan.common.unit.Address;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,11 +14,9 @@ import java.util.List;
 public class CreateTempAppointmentReqDto {
     private String appointmentName;
 
-    private CandidateTimeType candidateTimeType;
+    private List<TimeType> candidateTimeTypeList;
 
-    private List<CandidateTime> candidateTimeList;
-
-    private AddressDto address;
+    private Address address;
 
     private String notice;
 

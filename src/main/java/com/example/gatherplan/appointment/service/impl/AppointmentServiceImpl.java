@@ -71,7 +71,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email) {
         Appointment appointment = appointmentMapper.to(createAppointmentReqDto, AppointmentState.UNCONFIRMED);
+
         Long appointmentId = appointmentRepository.save(appointment).getId();
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 

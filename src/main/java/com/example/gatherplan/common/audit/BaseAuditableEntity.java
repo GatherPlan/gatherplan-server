@@ -9,7 +9,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 //@Table(indexes = {@Index(columnList = "updatedAt")}) // BaseEntity 에 index 설정 가능하면 추가하기 -> 현재 오류
 //@Table(indexes = {@Index(columnList = "createdAt")}) // BaseEntity 에 index 설정 가능하면 추가하기 -> 현재 오류
-public class BaseAuditableEntity implements Serializable {
+public class BaseAuditableEntity {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)

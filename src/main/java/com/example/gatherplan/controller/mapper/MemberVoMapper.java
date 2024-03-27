@@ -13,7 +13,7 @@ import org.mapstruct.*;
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
-public interface MemberControllerMapper {
+public interface MemberVoMapper {
     AuthenticateEmailReqDto to(AuthenticateEmailReq request);
 
     CreateMemberReqDto to(CreateMemberReq request);
