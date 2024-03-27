@@ -65,7 +65,6 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<SearchDistrictResp>> searchDisctrict(
             @ModelAttribute @ParameterObject @Valid SearchDistrictReq searchDistrictReq) {
 
-        System.out.println(searchDistrictReq.getKeyword());
         SearchDistrictReqDto searchDistrictReqDto = appointmentControllerMapper.to(searchDistrictReq);
         List<SearchDistrictRespDto> searchDistrictRespDtos = appointmentService.searchDisctrict(searchDistrictReqDto);
         List<SearchDistrictResp> result = searchDistrictRespDtos.stream().map(appointmentControllerMapper::to).toList();
