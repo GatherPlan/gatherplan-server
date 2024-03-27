@@ -30,7 +30,8 @@ public class CreateTempAppointmentReq {
             "<br> MORNING : 오전, AFTERNOON : 오후, EVENING : 저녁", example = "[\"MORNING\", \"EVENING\"]")
     private List<TimeType> candidateTimeTypeList;
 
-    @Schema(description = "약속 장소", example = "{\"fullAddress\": \"서울 성동구 성수동2가 289-30\", " +
+    @Schema(description = "약속 장소", example = "{\"locationType\": \"DETAIL_ADDRESS\"," +
+            "\"fullAddress\": \"서울 성동구 성수동2가 289-30\", " +
             "\"placeName\": \"성수역 2호선 2번출구\", \"placeUrl\": \"http://place.map.kakao.com/7942972\"}")
     private Address address;
 
