@@ -97,7 +97,7 @@ public class AppointmentController {
         SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
         List<SearchWeatherRespDto> searchWeatherRespDtos = appointmentService.searchWhether(searchWeatherReqDto);
         List<SearchWeatherResp> result = searchWeatherRespDtos.stream().map(appointmentControllerMapper::to).toList();
-        
+
         return ResponseEntity.ok(
                 ListResponse.of(result)
         );

@@ -11,7 +11,6 @@ import com.example.gatherplan.appointment.exception.MemberException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
-import com.example.gatherplan.appointment.repository.impl.CustomRegionRepositoryImpl;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final RegionRepository regionRepository;
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
-    private final CustomRegionRepositoryImpl customRegionRepositoryImpl;
+    private final CustomRegionRepository customRegionRepository;
 
     @Override
     public List<SearchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
@@ -60,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<SearchWeatherRespDto> searchWhether(SearchWeatherReqDto searchWeatherReqDto) {
 
-        Region region = customRegionRepositoryImpl.findRegionByAddressName(searchWeatherReqDto.getAddressName())
+        Region region = customRegionRepository.findRegionByAddressName(searchWeatherReqDto.getAddressName())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return weatherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
