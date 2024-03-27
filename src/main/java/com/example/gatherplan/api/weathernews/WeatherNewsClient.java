@@ -16,7 +16,7 @@ public class WeatherNewsClient {
     String baseUrl;
 
 
-    public WeatherNewsClientResp searchWhetherByRegionCode(String regionCode) {
+    public WeatherNewsClientResp searchWheatherByRegionCode(String regionCode) {
 
         return webClient.get()
                 .uri(UriComponentsBuilder.fromHttpUrl(baseUrl)

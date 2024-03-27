@@ -90,11 +90,11 @@ public class AppointmentController {
 
     @GetMapping("/search/weather")
     @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<SearchWeatherResp>> searchPlace(
+    public ResponseEntity<ListResponse<SearchWeatherResp>> searchWeather(
             @ModelAttribute @ParameterObject @Valid SearchWhetherReq searchWhetherReq) throws JSONException {
 
         SearchWeatherReqDto searchWeatherReqDto = appointmentControllerMapper.to(searchWhetherReq);
-        List<SearchWeatherRespDto> searchWeatherRespDtos = appointmentService.searchWhether(searchWeatherReqDto);
+        List<SearchWeatherRespDto> searchWeatherRespDtos = appointmentService.searchWeather(searchWeatherReqDto);
         List<SearchWeatherResp> result = searchWeatherRespDtos.stream().map(appointmentControllerMapper::to).toList();
 
         return ResponseEntity.ok(

@@ -57,12 +57,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<SearchWeatherRespDto> searchWhether(SearchWeatherReqDto searchWeatherReqDto) {
+    public List<SearchWeatherRespDto> searchWeather(SearchWeatherReqDto searchWeatherReqDto) {
 
         Region region = customRegionRepository.findRegionByAddressName(searchWeatherReqDto.getAddressName())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
-        return weatherNewsClient.searchWhetherByRegionCode(region.getCode()).getDaily().stream()
+        return weatherNewsClient.searchWheatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(appointmentMapper::to)
                 .toList();
     }
