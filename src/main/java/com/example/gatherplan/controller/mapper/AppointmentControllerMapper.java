@@ -19,16 +19,16 @@ public interface AppointmentControllerMapper {
 
     AddressDto to(AddressReq request);
 
-    SearchDistrictReqDto to(SearchDistrictReq searchDistrictReq);
+    RegionReqDto to(RegionReq regionReq);
 
-    SearchPlaceReqDto to(SearchPlaceReq searchPlaceReq);
+    KeywordPlaceReqDto to(KeywordPlaceReq keywordPlaceReq);
 
-    SearchWeatherReqDto to(SearchWhetherReq searchWhetherReq);
+    DailyWeatherReqDto to(DailyWhetherReq dailyWhetherReq);
 
-    SearchDistrictResp to(SearchDistrictRespDto searchDistrictRespDto);
+    RegionResp to(RegionDto regionDto);
 
-    SearchPlaceResp to(SearchPlaceRespDto searchPlaceRespDto);
+    KeywordPlaceResp to(KeywordPlaceRespDto keywordPlaceRespDto);
 
-    SearchWeatherResp to(SearchWeatherRespDto searchWeatherRespDto);
+    DailyWeatherResp to(DailyWeatherRespDto dailyWeatherRespDto);
 
 }

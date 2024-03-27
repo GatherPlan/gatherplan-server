@@ -6,6 +6,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchDistrictRespDto {
-    private String address;
+public class KeywordPlaceRespDto {
+    private String addressName;
+    private String placeUrl;
+    private String placeName;
 }

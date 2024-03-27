@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QRegion.region;
@@ -22,19 +23,13 @@ public class CustomRegionRepositoryImpl implements CustomRegionRepository {
     public Optional<Region> findRegionByAddressName(String addressName) {
         String[] levels = addressName.split("\\s+");
 
-        BooleanExpression whereClause = null;
-        for (String level : levels) {
-            BooleanExpression keywordExpression = region.address.contains(level);
-            if (whereClause == null) {
-                whereClause = keywordExpression;
-            } else {
-                whereClause = whereClause.and(keywordExpression);
-            }
-        }
+        BooleanExpression[] booleanExpressions = Arrays.stream(levels)
+                .map(region.address::contains)
+                .toArray(BooleanExpression[]::new);
 
         Region result = jpaQueryFactory
                 .selectFrom(region)
-                .where(whereClause)
+                .where(booleanExpressions)
                 .fetchFirst();
 
         return Optional.ofNullable(result);

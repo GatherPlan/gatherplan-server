@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "약속 장소 상세주소 검색 응답 객체")
-public class SearchPlaceResp {
+public class KeywordPlaceResp {
     @Schema(description = "행정구역 주소", example = "서울 광진구 군자동 98")
     private String addressName;
 

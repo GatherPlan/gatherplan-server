@@ -12,11 +12,11 @@ import lombok.*;
 public class BooleanResp {
 
     @Schema(description = "성공 여부", example = "true")
-    private boolean success;
+    private boolean isSuccess;
 
     public static BooleanResp success() {
         return BooleanResp.builder()
-                .success(true)
+                .isSuccess(true)
                 .build();
     }
 

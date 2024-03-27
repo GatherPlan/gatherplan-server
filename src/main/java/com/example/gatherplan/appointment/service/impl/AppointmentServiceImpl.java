@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
-import com.example.gatherplan.api.kakaolocal.KakaoLocationClientResp;
+import com.example.gatherplan.api.kakaolocal.KeywordPlaceClientResp;
 import com.example.gatherplan.api.weathernews.WeatherNewsClient;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
@@ -37,8 +37,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomRegionRepository customRegionRepository;
 
     @Override
-    public List<SearchDistrictRespDto> searchDisctrict(SearchDistrictReqDto searchDistrictReqDto) {
-        List<Region> regionList = regionRepository.findByAddressContaining(searchDistrictReqDto.getKeyword());
+    public List<RegionDto> searchRegion(RegionReqDto regionReqDto) {
+        List<Region> regionList = regionRepository.findByAddressContaining(regionReqDto.getKeyword());
 
         return regionList.stream()
                 .map(appointmentMapper::to)
@@ -46,23 +46,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<SearchPlaceRespDto> searchPlace(SearchPlaceReqDto searchPlaceReqDto) {
-        KakaoLocationClientResp kakaoLocationClientResp =
-                kakaoLocationClient.searchLocationByKeyword(searchPlaceReqDto.getKeyword(), searchPlaceReqDto.getPage(),
-                        searchPlaceReqDto.getSize());
+    public List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto keywordPlaceReqDto) {
+        KeywordPlaceClientResp keywordPlaceClientResp =
+                kakaoLocationClient.searchLocationByKeyword(
+                        keywordPlaceReqDto.getKeyword(), keywordPlaceReqDto.getPage(), keywordPlaceReqDto.getSize());
 
-        return kakaoLocationClientResp.getDocuments().stream()
+        return keywordPlaceClientResp.getDocuments().stream()
                 .map(appointmentMapper::to)
                 .toList();
     }
 
     @Override
-    public List<SearchWeatherRespDto> searchWeather(SearchWeatherReqDto searchWeatherReqDto) {
+    public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto dailyWeatherReqDto) {
 
-        Region region = customRegionRepository.findRegionByAddressName(searchWeatherReqDto.getAddressName())
+        Region region = customRegionRepository.findRegionByAddressName(dailyWeatherReqDto.getAddressName())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
-        return weatherNewsClient.searchWheatherByRegionCode(region.getCode()).getDaily().stream()
+        return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(appointmentMapper::to)
                 .toList();
     }

@@ -12,14 +12,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeatherNewsClientResp {
-    private List<WeatherNewsClientRespDocument> daily;
+public class DailyWeatherClientResp {
+    private List<DailyWeatherInfo> daily;
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WeatherNewsClientRespDocument {
+    public static class DailyWeatherInfo {
         @JsonProperty("wx_text")
         private String weatherState;
         @JsonProperty("mon")

@@ -15,8 +15,7 @@ public class WeatherNewsClient {
     @Value("${external.api.weathernews.url}")
     String baseUrl;
 
-
-    public WeatherNewsClientResp searchWheatherByRegionCode(String regionCode) {
+    public DailyWeatherClientResp searchWeatherByRegionCode(String regionCode) {
 
         return webClient.get()
                 .uri(UriComponentsBuilder.fromHttpUrl(baseUrl)
@@ -24,7 +23,7 @@ public class WeatherNewsClient {
                         .queryParam("region", regionCode)
                         .build().toUri())
                 .retrieve()
-                .bodyToMono(WeatherNewsClientResp.class)
+                .bodyToMono(DailyWeatherClientResp.class)
                 .block();
     }
 }

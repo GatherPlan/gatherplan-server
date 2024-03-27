@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "약속 장소 날씨 검색 응답 객체")
-public class SearchWeatherResp {
+public class DailyWeatherResp {
     @Schema(description = "월", example = "3")
     private String month;
 

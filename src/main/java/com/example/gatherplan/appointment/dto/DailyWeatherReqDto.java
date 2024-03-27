@@ -6,9 +6,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchPlaceReqDto {
-    private String keyword;
-    private int page;
-    private int size;
-
+public class DailyWeatherReqDto {
+    private String addressName;
 }

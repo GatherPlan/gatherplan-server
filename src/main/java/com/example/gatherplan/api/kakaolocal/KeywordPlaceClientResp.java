@@ -2,27 +2,24 @@ package com.example.gatherplan.api.kakaolocal;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class KakaoLocationClientResp {
-    private List<KakaoLocationClientRespDocument> documents;
-    private KakaoLocationClientRespMeta meta;
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class KeywordPlaceClientResp {
+    private List<KeywordPlaceInfo> documents;
+    private MetaData meta;
 
     @Getter
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class KakaoLocationClientRespDocument {
+    public static class KeywordPlaceInfo {
         private String placeName;
         private String addressName;
         private String placeUrl;
@@ -30,10 +27,10 @@ public class KakaoLocationClientResp {
 
     @Getter
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class KakaoLocationClientRespMeta {
+    public static class MetaData {
         private String totalCount;
         private String pageableCount;
     }

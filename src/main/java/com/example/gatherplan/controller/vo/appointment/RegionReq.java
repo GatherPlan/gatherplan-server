@@ -8,10 +8,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 장소 날씨 검색 요청 객체")
-public class SearchWhetherReq {
+@Schema(description = "약속 장소 행정구역 검색 요청 객체")
+public class RegionReq {
 
     @NotBlank(message = "키워드는 공백일 수 없습니다")
-    @Schema(description = "날씨 검색할 주소", example = "서울특별시 성동구")
-    private String addressName;
+    @Schema(description = "약속 장소 검색 키워드", example = "성수동")
+    private String keyword;
 }
