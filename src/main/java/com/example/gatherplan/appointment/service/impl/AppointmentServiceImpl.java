@@ -37,8 +37,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomRegionRepository customRegionRepository;
 
     @Override
-    public List<RegionDto> searchRegion(RegionReqDto regionReqDto) {
-        List<Region> regionList = regionRepository.findByAddressContaining(regionReqDto.getKeyword());
+    public List<RegionDto> searchRegion(RegionReqDto reqDto) {
+        List<Region> regionList = regionRepository.findByAddressContaining(reqDto.getKeyword());
 
         return regionList.stream()
                 .map(appointmentMapper::to)
@@ -46,10 +46,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto keywordPlaceReqDto) {
+    public List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto) {
         KeywordPlaceClientResp keywordPlaceClientResp =
                 kakaoLocationClient.searchLocationByKeyword(
-                        keywordPlaceReqDto.getKeyword(), keywordPlaceReqDto.getPage(), keywordPlaceReqDto.getSize());
+                        reqDto.getKeyword(), reqDto.getPage(), reqDto.getSize());
 
         return keywordPlaceClientResp.getDocuments().stream()
                 .map(appointmentMapper::to)
@@ -57,9 +57,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto dailyWeatherReqDto) {
+    public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto) {
 
-        Region region = customRegionRepository.findRegionByAddressName(dailyWeatherReqDto.getAddressName())
+        Region region = customRegionRepository.findRegionByAddressName(reqDto.getAddressName())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
@@ -69,8 +69,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email) {
-        Appointment appointment = appointmentMapper.to(createAppointmentReqDto, AppointmentState.UNCONFIRMED);
+    public void registerAppointment(CreateAppointmentReqDto reqDto, String email) {
+        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED);
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
 
@@ -88,14 +88,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto) {
-        Appointment appointment = appointmentMapper.to(createTempAppointmentReqDto, AppointmentState.UNCONFIRMED);
+    public void registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
+        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED);
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
 
+        CreateTempAppointmentReqDto.TempMemberInfo tempMemberInfo = reqDto.getTempMemberInfo();
+
         TempMember tempMember = TempMember.builder()
-                .name(createTempAppointmentReqDto.getName())
-                .password(createTempAppointmentReqDto.getPassword())
+                .nickname(tempMemberInfo.getNickname())
+                .password(tempMemberInfo.getPassword())
                 .build();
 
         Long tempMemberId = tempMemberRepository.save(tempMember).getId();

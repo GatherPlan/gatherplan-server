@@ -18,11 +18,16 @@ public class CreateTempAppointmentReqDto {
 
     private Address address;
 
-    private String notice;
-
     private List<LocalDate> candidateDateList;
 
-    private String name;
+    private TempMemberInfo tempMemberInfo;
 
-    private String password;
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class TempMemberInfo {
+        private String nickname;
+        private String password;
+    }
 }

@@ -19,7 +19,5 @@ public class CreateAppointmentReqDto {
 
     private Address address;
 
-    private String notice;
-
     private List<LocalDate> candidateDateList;
 }

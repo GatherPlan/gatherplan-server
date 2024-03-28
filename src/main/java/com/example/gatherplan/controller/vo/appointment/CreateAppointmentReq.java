@@ -35,9 +35,6 @@ public class CreateAppointmentReq {
             "\"placeName\": \"성수역 2호선 2번출구\", \"placeUrl\": \"http://place.map.kakao.com/7942972\"}")
     private Address address;
 
-    @Schema(description = "약속 메모", example = "점심 약속입니다.")
-    private String notice;
-
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
 
