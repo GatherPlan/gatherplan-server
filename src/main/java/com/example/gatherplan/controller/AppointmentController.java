@@ -6,7 +6,6 @@ import com.example.gatherplan.common.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSequence;
 import com.example.gatherplan.controller.vo.appointment.*;
-import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,30 +32,34 @@ public class AppointmentController {
 
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> registerAppointment(
+    public ResponseEntity<CreateAppointmentResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentReqDto createAppointmentReqDto = appointmentVoMapper.to(createAppointmentReq);
-        appointmentService.registerAppointment(createAppointmentReqDto, userInfo.getEmail());
+        String appointmentCode = appointmentService.registerAppointment(createAppointmentReqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                BooleanResp.success()
+                CreateAppointmentResp.builder()
+                        .appointmentCode(appointmentCode)
+                        .build()
         );
     }
 
     @PostMapping("/temporary")
     @Operation(summary = "임시 회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> registerAppointment(
+    public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
             @Validated(value = RequestValidationSequence.class)
             @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
 
         CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentVoMapper.to(createTempAppointmentReq);
-        appointmentService.registerTempAppointment(createTempAppointmentReqDto);
+        String appointmentCode = appointmentService.registerTempAppointment(createTempAppointmentReqDto);
 
         return ResponseEntity.ok(
-                BooleanResp.success()
+                CreateTempAppointmentResp.builder()
+                        .appointmentCode(appointmentCode)
+                        .build()
         );
     }
 

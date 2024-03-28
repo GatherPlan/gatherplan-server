@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"APPOINTMENT_CODE"})})
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Appointment extends BaseAuditableEntity {
@@ -41,6 +42,10 @@ public class Appointment extends BaseAuditableEntity {
     @Embedded
     @Comment("약속 확정 날짜,시간")
     private ConfirmedDateTime confirmedDateTime;
+
+    @Column(nullable = false)
+    @Comment("약속 코드")
+    private String appointmentCode;
 
     @ElementCollection
     @Builder.Default
