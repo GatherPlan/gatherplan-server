@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    List<RegionDto> searchRegion(RegionReqDto regionReqDto);
+    List<RegionDto> searchRegion(RegionReqDto reqDto);
 
-    List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto keywordPlaceReqDto);
+    List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
 
-    List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto dailyWeatherReqDto);
+    List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto);
 
-    void registerAppointment(CreateAppointmentReqDto createAppointmentReqDto, String email);
+    void registerAppointment(CreateAppointmentReqDto reqDto, String email);
 
-    void registerTempAppointment(CreateTempAppointmentReqDto createTempAppointmentReqDto);
+    void registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
 }

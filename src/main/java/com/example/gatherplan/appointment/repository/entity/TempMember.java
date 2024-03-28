@@ -19,7 +19,7 @@ public class TempMember extends BaseAuditableEntity {
 
     @Comment("사용자 이름")
     @Column(nullable = false)
-    private String name;
+    private String nickname;
 
     @Comment("비밀번호")
     @Column(nullable = false)

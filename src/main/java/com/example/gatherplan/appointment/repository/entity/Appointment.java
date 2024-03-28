@@ -29,9 +29,6 @@ public class Appointment extends BaseAuditableEntity {
     @Comment("약속 이름")
     private String appointmentName;
 
-    @Comment("약속 안내 사항")
-    private String notice;
-
     @Embedded
     @Comment("약속 장소")
     private Address address;
