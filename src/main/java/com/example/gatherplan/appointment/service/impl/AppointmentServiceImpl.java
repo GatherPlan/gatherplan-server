@@ -13,6 +13,7 @@ import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,13 +70,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointment(CreateAppointmentReqDto reqDto, String email) {
-        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED);
+    public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
+        String appointmentCode = UuidUtils.generateRandomString(12);
 
-        Long appointmentId = appointmentRepository.save(appointment).getId();
+        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
+
+        Long appointmentId = appointmentRepository.save(appointment).getId();
 
         MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
@@ -84,22 +87,24 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         memberAppointmentMappingRepository.save(memberAppointmentMapping);
+
+        return appointmentCode;
     }
 
     @Override
     @Transactional
-    public void registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
-        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED);
+    public String registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
+        String appointmentCode = UuidUtils.generateRandomString(12);
 
-        Long appointmentId = appointmentRepository.save(appointment).getId();
+        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
         CreateTempAppointmentReqDto.TempMemberInfo tempMemberInfo = reqDto.getTempMemberInfo();
-
         TempMember tempMember = TempMember.builder()
                 .nickname(tempMemberInfo.getNickname())
                 .password(tempMemberInfo.getPassword())
                 .build();
 
+        Long appointmentId = appointmentRepository.save(appointment).getId();
         Long tempMemberId = tempMemberRepository.save(tempMember).getId();
 
         TempMemberAppointmentMapping tempMemberAppointmentMapping = TempMemberAppointmentMapping.builder()
@@ -109,6 +114,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         tempMemberAppointmentMappingRepository.save(tempMemberAppointmentMapping);
+
+        return appointmentCode;
     }
 
 }

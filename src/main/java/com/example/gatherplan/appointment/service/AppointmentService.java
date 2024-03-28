@@ -12,8 +12,8 @@ public interface AppointmentService {
 
     List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto);
 
-    void registerAppointment(CreateAppointmentReqDto reqDto, String email);
+    String registerAppointment(CreateAppointmentReqDto reqDto, String email);
 
-    void registerTempAppointment(CreateTempAppointmentReqDto reqDto);
+    String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
 }
