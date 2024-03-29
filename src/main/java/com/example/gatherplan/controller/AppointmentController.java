@@ -68,7 +68,8 @@ public class AppointmentController {
     @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
             @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
-
+        
+        System.out.println(regionReq.getKeyword());
         RegionReqDto regionReqDto = appointmentVoMapper.to(regionReq);
         List<RegionDto> regionDtos = appointmentService.searchRegion(regionReqDto);
 
@@ -100,9 +101,9 @@ public class AppointmentController {
     @GetMapping("/search/weather")
     @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
-            @ModelAttribute @ParameterObject @Valid DailyWhetherReq dailyWhetherReq) throws JSONException {
+            @ModelAttribute @ParameterObject @Valid DailyWeatherReq dailyWeatherReq) throws JSONException {
 
-        DailyWeatherReqDto dailyWeatherReqDto = appointmentVoMapper.to(dailyWhetherReq);
+        DailyWeatherReqDto dailyWeatherReqDto = appointmentVoMapper.to(dailyWeatherReq);
         List<DailyWeatherRespDto> dailyWeatherRespDtos = appointmentService.searchDailyWeather(dailyWeatherReqDto);
 
         return ResponseEntity.ok(
