@@ -5,9 +5,9 @@ import lombok.*;
 
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Schema(description = "성공 여부 응답 객체")
 public class BooleanResp {
 

@@ -7,9 +7,9 @@ import java.util.List;
 
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Schema(description = "데이터 리스트 응답 객체")
 public class ListResponse<T> {
 
