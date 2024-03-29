@@ -69,7 +69,6 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
             @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
         
-        System.out.println(regionReq.getKeyword());
         RegionReqDto regionReqDto = appointmentVoMapper.to(regionReq);
         List<RegionDto> regionDtos = appointmentService.searchRegion(regionReqDto);
 
