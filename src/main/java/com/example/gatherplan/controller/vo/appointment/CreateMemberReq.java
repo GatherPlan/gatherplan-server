@@ -23,13 +23,13 @@ public class CreateMemberReq {
     private String email;
 
     @Schema(description = "인증코드(6자리)", example = "123456")
-    @NotBlank(message = "인증번호는 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
-    @Size(min = 6, max = 6, message = "인증번호는 6자입니다.", groups = SizeCheckName.class)
+    @NotBlank(message = "인증번호는 공백이 될 수 없습니다.", groups = NotBlankAuthcode.class)
+    @Size(min = 6, max = 6, message = "인증번호는 6자입니다.", groups = SizeCheckAuthcode.class)
     private String authCode;
 
     @Schema(description = "이름", example = "홍길동")
-    @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
-    @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckName.class)
+    @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
+    @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
     private String nickname;
 
     @Schema(description = "비밀번호", example = "abcd1234")

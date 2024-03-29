@@ -2,8 +2,8 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
-import com.example.gatherplan.common.validation.NotBlankName;
-import com.example.gatherplan.common.validation.SizeCheckName;
+import com.example.gatherplan.common.validation.NotBlankAppointmentName;
+import com.example.gatherplan.common.validation.SizeCheckAppointmentName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,8 +22,8 @@ import java.util.List;
 public class CreateAppointmentReq {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
-    @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankName.class)
-    @Size(min = 1, max = 12, message = "약속 이름은 1자 이상 12자 이하여야 합니다.", groups = SizeCheckName.class)
+    @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankAppointmentName.class)
+    @Size(min = 1, max = 12, message = "약속 이름은 1자 이상 12자 이하여야 합니다.", groups = SizeCheckAppointmentName.class)
     private String appointmentName;
 
     @Schema(description = "약속 후보 시간" +

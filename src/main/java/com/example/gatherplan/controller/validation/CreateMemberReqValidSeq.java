@@ -4,7 +4,7 @@ import com.example.gatherplan.common.validation.*;
 import jakarta.validation.GroupSequence;
 
 @GroupSequence({NotBlankEmail.class, PatternCheckEmail.class, NotBlankAuthcode.class, SizeCheckAuthcode.class
-        , NotBlankName.class, SizeCheckName.class, NotBlankPassword.class, SizeCheckPassword.class,
+        , NotBlankNickName.class, SizeCheckNickName.class, NotBlankPassword.class, SizeCheckPassword.class,
         PatternCheckPassword.class})
-public interface RequestValidationSequence {
+public interface CreateMemberReqValidSeq {
 }
