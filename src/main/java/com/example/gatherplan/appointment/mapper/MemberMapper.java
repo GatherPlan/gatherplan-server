@@ -16,9 +16,6 @@ import org.mapstruct.*;
 public interface MemberMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "nickname", source = "reqDto.nickname")
     @Mapping(target = "password", source = "encodedPassword")
-    @Mapping(target = "userAuthType", source = "userAuthType")
-    @Mapping(target = "roleType", source = "role")
-    Member to(CreateMemberReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType role);
+    Member to(CreateMemberReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType roleType);
 }

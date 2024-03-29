@@ -19,12 +19,10 @@ public interface AppointmentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "confirmedDateTime", ignore = true)
-    @Mapping(target = "appointmentState", source = "appointmentState")
     Appointment to(CreateAppointmentReqDto request, AppointmentState appointmentState, String appointmentCode);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "confirmedDateTime", ignore = true)
-    @Mapping(target = "appointmentState", source = "appointmentState")
     Appointment to(CreateTempAppointmentReqDto request, AppointmentState appointmentState, String appointmentCode);
 
     RegionDto to(Region entity);
