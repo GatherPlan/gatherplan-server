@@ -14,8 +14,7 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface MemberVoMapper {
-    AuthenticateEmailReqDto to(AuthenticateEmailReq request);
-
     CreateMemberReqDto to(CreateMemberReq request);
 
+    AuthenticateEmailReqDto to(AuthenticateEmailReq request);
 }
