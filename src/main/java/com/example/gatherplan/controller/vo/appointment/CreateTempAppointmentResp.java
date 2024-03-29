@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
-@Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Schema(description = "임시 회원 약속 만들기 응답 객체")
 public class CreateTempAppointmentResp {
 
