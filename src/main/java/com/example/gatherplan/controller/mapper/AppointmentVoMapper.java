@@ -2,10 +2,6 @@ package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.controller.vo.appointment.*;
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
 import org.mapstruct.*;
 
 @Mapper(
@@ -20,11 +16,11 @@ public interface AppointmentVoMapper {
 
     CreateTempAppointmentReqDto to(CreateTempAppointmentReq request);
 
-    RegionReqDto to(RegionReq regionReq);
+    RegionReqDto to(RegionReq request);
+
+    DailyWeatherReqDto to(DailyWeatherReq request);
 
     KeywordPlaceReqDto to(KeywordPlaceReq keywordPlaceReq);
-
-    DailyWeatherReqDto to(DailyWhetherReq dailyWhetherReq);
 
     RegionResp to(RegionDto regionDto);
 
