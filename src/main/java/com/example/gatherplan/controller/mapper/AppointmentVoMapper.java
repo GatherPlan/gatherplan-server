@@ -12,20 +12,20 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface AppointmentVoMapper {
-    CreateAppointmentReqDto to(CreateAppointmentReq request);
+    CreateAppointmentReqDto to(CreateAppointmentReq req);
 
-    CreateTempAppointmentReqDto to(CreateTempAppointmentReq request);
+    CreateTempAppointmentReqDto to(CreateTempAppointmentReq req);
 
-    RegionReqDto to(RegionReq request);
+    RegionReqDto to(RegionReq req);
 
-    DailyWeatherReqDto to(DailyWeatherReq request);
+    DailyWeatherReqDto to(DailyWeatherReq req);
 
-    KeywordPlaceReqDto to(KeywordPlaceReq keywordPlaceReq);
+    KeywordPlaceReqDto to(KeywordPlaceReq req);
 
     RegionResp to(RegionDto regionDto);
 
-    KeywordPlaceResp to(KeywordPlaceRespDto keywordPlaceRespDto);
+    KeywordPlaceResp to(KeywordPlaceRespDto respDto);
 
-    DailyWeatherResp to(DailyWeatherRespDto dailyWeatherRespDto);
+    DailyWeatherResp to(DailyWeatherRespDto respDto);
 
 }

@@ -47,9 +47,9 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
     @Override
     @Transactional
-    public void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto) {
+    public void authenticateEmail(AuthenticateEmailReqDto reqDto) {
 
-        String email = authenticateEmailReqDto.getEmail();
+        String email = reqDto.getEmail();
 
         memberRepository.findByEmail(email).ifPresent(member -> {
             throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
