@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
+import com.example.gatherplan.common.jwt.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -24,4 +25,12 @@ public class TempMember extends BaseAuditableEntity {
     @Comment("비밀번호")
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Comment("Security 에 사용되는 Role")
+    private RoleType roleType;
+
+    public String getRole() {
+        return this.roleType.getRole();
+    }
 }
