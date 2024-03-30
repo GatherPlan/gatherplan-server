@@ -9,6 +9,7 @@ import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,11 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Order(1)
 public class SecurityConfig {
-
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -58,18 +60,20 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/appointments").hasRole(RoleType.USER.name())
                         .anyRequest().authenticated());
 
-        httpSecurity.addFilterBefore(jwtFilter(), LoginFilter.class);
-        httpSecurity.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginFilter(), JWTFilter.class);
 
         return httpSecurity.build();
+    }
+
+    private Filter jwtFilter() {
+        return new JWTFilter(jwtUtil);
     }
 
     private Filter loginFilter() throws Exception {
         return new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper);
     }
 
-    private Filter jwtFilter() {
-        return new JWTFilter(jwtUtil);
-    }
 
 }
