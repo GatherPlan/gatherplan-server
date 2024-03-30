@@ -7,7 +7,6 @@ import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
 import com.example.gatherplan.controller.validation.CreateTempAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
-import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,15 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -63,45 +57,12 @@ public class AppointmentController {
         CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentVoMapper.to(createTempAppointmentReq);
         String appointmentCode = appointmentService.registerTempAppointment(createTempAppointmentReqDto);
 
-        Authentication authentication = new AnonymousAuthenticationToken(
-                "abc", // 토큰의 키
-                "lee", // 익명 사용자의 이름
-                // 익명 사용자에게 할당되는 권한. 여기서는 빈 배열을 사용하여 권한이 없음을 나타냄
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return ResponseEntity.ok(
                 CreateTempAppointmentResp.builder()
                         .appointmentCode(appointmentCode)
                         .build()
         );
     }
-
-    @PostMapping("/temporary/check")
-    @Operation(summary = "임시 회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> registerAppointment() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication instanceof AnonymousAuthenticationToken) {
-            AnonymousAuthenticationToken anonymousToken = (AnonymousAuthenticationToken) authentication;
-            // Print out some information
-            System.out.println("Name: " + anonymousToken.getName());
-            System.out.println("Key: " + anonymousToken.getPrincipal());
-            System.out.println("Authorities: " + anonymousToken.getAuthorities());
-            System.out.println("Authorities: " + anonymousToken.getCredentials());
-            System.out.println("Authorities: " + anonymousToken.getKeyHash());
-            System.out.println("Authorities: " + anonymousToken.getDetails());
-        } else {
-            System.out.println("사용자 식별 불가");
-        }
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
 
     @GetMapping("/search/district")
     @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
