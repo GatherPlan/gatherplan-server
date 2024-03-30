@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +17,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-@Order(Ordered.LOWEST_PRECEDENCE)
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
@@ -55,7 +52,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userInfo, null, userInfo.getAuthorities());
-  
+
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
