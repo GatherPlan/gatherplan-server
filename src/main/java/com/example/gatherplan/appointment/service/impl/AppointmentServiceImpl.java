@@ -33,8 +33,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-    private final TempUserRepository tempUserRepository;
-    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final RegionRepository regionRepository;
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
