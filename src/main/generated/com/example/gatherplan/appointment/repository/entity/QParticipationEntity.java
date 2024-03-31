@@ -26,7 +26,7 @@ public class QParticipationEntity extends EntityPathBase<ParticipationEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final QMember member;
+    public final Quser user;
 
     public final ListPath<java.time.LocalDateTime, DateTimePath<java.time.LocalDateTime>> selectedDateTime = this.<java.time.LocalDateTime, DateTimePath<java.time.LocalDateTime>>createList("selectedDateTime", java.time.LocalDateTime.class, DateTimePath.class, PathInits.DIRECT2);
 
@@ -51,7 +51,7 @@ public class QParticipationEntity extends EntityPathBase<ParticipationEntity> {
     public QParticipationEntity(Class<? extends ParticipationEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.appointment = inits.isInitialized("appointment") ? new QAppointment(forProperty("appointment"), inits.get("appointment")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.user = inits.isInitialized("user") ? new Quser(forProperty("user")) : null;
     }
 
 }

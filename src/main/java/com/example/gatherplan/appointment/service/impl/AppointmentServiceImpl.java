@@ -7,7 +7,7 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.*;
@@ -28,10 +28,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
-    private final MemberRepository memberRepository;
-    private final MemberAppointmentMappingRepository memberAppointmentMappingRepository;
-    private final TempMemberRepository tempMemberRepository;
-    private final TempMemberAppointmentMappingRepository tempMemberAppointmentMappingRepository;
+    private final UserRepository userRepository;
+    private final UserAppointmentMappingRepository userAppointmentMappingRepository;
+    private final TempUserRepository tempUserRepository;
+    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final RegionRepository regionRepository;
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
@@ -75,18 +75,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
 
-        MemberAppointmentMapping memberAppointmentMapping = MemberAppointmentMapping.builder()
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
-                .memberSeq(member.getId())
+                .userSeq(user.getId())
                 .userRole(UserRole.HOST)
                 .build();
 
-        memberAppointmentMappingRepository.save(memberAppointmentMapping);
+        userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
     }
@@ -94,26 +94,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public String registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
+
+
         String appointmentCode = UuidUtils.generateRandomString(12);
 
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
-        CreateTempAppointmentReqDto.TempMemberInfo tempMemberInfo = reqDto.getTempMemberInfo();
-        TempMember tempMember = TempMember.builder()
-                .nickname(tempMemberInfo.getNickname())
-                .password(tempMemberInfo.getPassword())
+        CreateTempAppointmentReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
+        TempUser tempUser = TempUser.builder()
+                .nickname(tempUserInfo.getNickname())
+                .password(tempUserInfo.getPassword())
                 .build();
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
-        Long tempMemberId = tempMemberRepository.save(tempMember).getId();
+        Long tempUserId = tempUserRepository.save(tempUser).getId();
 
-        TempMemberAppointmentMapping tempMemberAppointmentMapping = TempMemberAppointmentMapping.builder()
+        TempUserAppointmentMapping tempUserAppointmentMapping = TempUserAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
-                .tempMemberSeq(tempMemberId)
+                .tempUserSeq(tempUserId)
                 .userRole(UserRole.HOST)
                 .build();
 
-        tempMemberAppointmentMappingRepository.save(tempMemberAppointmentMapping);
+        tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
 
         return appointmentCode;
     }

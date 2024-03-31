@@ -13,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Schema(description = "회원가입 요청 객체")
-public class CreateMemberReq {
+public class CreateUserReq {
 
     @Schema(description = "이메일", example = "email@example.com")
     @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)

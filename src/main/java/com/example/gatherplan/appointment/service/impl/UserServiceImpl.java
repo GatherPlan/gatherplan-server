@@ -1,15 +1,15 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
-import com.example.gatherplan.appointment.dto.CreateMemberReqDto;
+import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.exception.MemberException;
-import com.example.gatherplan.appointment.mapper.MemberMapper;
+import com.example.gatherplan.appointment.exception.UserException;
+import com.example.gatherplan.appointment.mapper.UserMapper;
 import com.example.gatherplan.appointment.repository.EmailAuthRepository;
-import com.example.gatherplan.appointment.repository.MemberRepository;
+import com.example.gatherplan.appointment.repository.UserRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
-import com.example.gatherplan.appointment.repository.entity.Member;
-import com.example.gatherplan.appointment.service.MemberService;
+import com.example.gatherplan.appointment.repository.entity.User;
+import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.jwt.RoleType;
@@ -34,10 +34,10 @@ import static java.time.LocalDateTime.now;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService, UserDetailsService {
-    private final MemberRepository memberRepository;
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private final UserRepository userRepository;
     private final EmailAuthRepository emailAuthRepository;
-    private final MemberMapper memberMapper;
+    private final UserMapper userMapper;
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -50,8 +50,8 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
 
         String email = reqDto.getEmail();
 
-        memberRepository.findByEmail(email).ifPresent(member -> {
-            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
+        userRepository.findByEmail(email).ifPresent(user -> {
+            throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
         });
 
         emailAuthRepository.findByEmail(email)
@@ -81,17 +81,17 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         try {
             javaMailSender.send(simpleMailMessage);
         } catch (MailException e) {
-            throw new MemberException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
+            throw new UserException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
         }
     }
 
     @Override
     @Transactional
-    public void joinMember(CreateMemberReqDto reqDto) {
+    public void joinuser(CreateUserReqDto reqDto) {
         String email = reqDto.getEmail();
 
         EmailAuth emailAuth = emailAuthRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
         if (now().isAfter(emailAuth.getExpiredAt())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
@@ -101,15 +101,15 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
 
-        memberRepository.findByNickname(reqDto.getNickname()).ifPresent(member -> {
-            throw new MemberException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
+        userRepository.findByNickname(reqDto.getNickname()).ifPresent(user -> {
+            throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
         });
 
         String encodedPassword = bCryptPasswordEncoder.encode(reqDto.getPassword());
 
-        Member member = memberMapper.to(reqDto, encodedPassword, UserAuthType.LOCAL, RoleType.USER);
+        User user = userMapper.to(reqDto, encodedPassword, UserAuthType.LOCAL, RoleType.USER);
 
-        memberRepository.save(member);
+        userRepository.save(user);
 
         emailAuthRepository.deleteByEmail(emailAuth.getEmail());
     }
@@ -124,10 +124,10 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
      */
     @Override
     public UserInfo loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
-        return new UserInfo(member);
+        return new UserInfo(user);
     }
 
 }

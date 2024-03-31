@@ -39,13 +39,13 @@ public class CreateTempAppointmentReq {
 
     @Schema(description = "약속 후보 날짜", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
-    private TempMemberInfo tempMemberInfo;
+    private TempUserInfo tempUserInfo;
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Schema(description = "임시 회원 정보")
-    public static class TempMemberInfo {
+    public static class TempUserInfo {
         @Schema(description = "임시 회원 이름", example = "홍길동")
         @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
         @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)

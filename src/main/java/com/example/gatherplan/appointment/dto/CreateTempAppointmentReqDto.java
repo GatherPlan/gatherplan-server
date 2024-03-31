@@ -20,13 +20,13 @@ public class CreateTempAppointmentReqDto {
 
     private List<LocalDate> candidateDateList;
 
-    private TempMemberInfo tempMemberInfo;
+    private TempUserInfo tempUserInfo;
 
     @Getter
     @Builder
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class TempMemberInfo {
+    public static class TempUserInfo {
         private String nickname;
         private String password;
     }

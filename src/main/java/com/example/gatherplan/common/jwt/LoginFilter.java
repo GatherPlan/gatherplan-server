@@ -1,6 +1,6 @@
 package com.example.gatherplan.common.jwt;
 
-import com.example.gatherplan.appointment.exception.MemberException;
+import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -36,14 +36,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
-        setFilterProcessesUrl("/api/v1/members/login");
+        setFilterProcessesUrl("/api/v1/users/login");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
-            throw new MemberException(ErrorCode.PARAMETER_VALIDATION_FAIL, "입력된 데이터가 JSON 형식이 아닙니다.");
+            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "입력된 데이터가 JSON 형식이 아닙니다.");
         }
 
         LoginReq loginReq;
@@ -51,7 +51,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             loginReq = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), LoginReq.class);
         } catch (IOException e) {
-            throw new MemberException(ErrorCode.PARAMETER_VALIDATION_FAIL, "요청된 입력을 파싱하는데 실패했습니다.");
+            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "요청된 입력을 파싱하는데 실패했습니다.");
         }
 
         String email = loginReq.getEmail();
@@ -71,7 +71,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
- 
+
         String role = auth.getAuthority();
         String token = jwtUtil.createJwt(email, role, 600 * 600 * 100L);
 
