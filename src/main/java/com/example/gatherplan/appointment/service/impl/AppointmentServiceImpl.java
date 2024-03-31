@@ -10,7 +10,10 @@ import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
-import com.example.gatherplan.appointment.repository.entity.*;
+import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.Region;
+import com.example.gatherplan.appointment.repository.entity.User;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.utils.UuidUtils;
@@ -87,35 +90,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
-
-        return appointmentCode;
-    }
-
-    @Override
-    @Transactional
-    public String registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
-
-
-        String appointmentCode = UuidUtils.generateRandomString(12);
-
-        Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
-
-        CreateTempAppointmentReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
-        TempUser tempUser = TempUser.builder()
-                .nickname(tempUserInfo.getNickname())
-                .password(tempUserInfo.getPassword())
-                .build();
-
-        Long appointmentId = appointmentRepository.save(appointment).getId();
-        Long tempUserId = tempUserRepository.save(tempUser).getId();
-
-        TempUserAppointmentMapping tempUserAppointmentMapping = TempUserAppointmentMapping.builder()
-                .appointmentSeq(appointmentId)
-                .tempUserSeq(tempUserId)
-                .userRole(UserRole.HOST)
-                .build();
-
-        tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
 
         return appointmentCode;
     }

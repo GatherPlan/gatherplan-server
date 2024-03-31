@@ -5,7 +5,6 @@ import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
-import com.example.gatherplan.controller.validation.CreateTempAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,22 +42,6 @@ public class AppointmentController {
 
         return ResponseEntity.ok(
                 CreateAppointmentResp.builder()
-                        .appointmentCode(appointmentCode)
-                        .build()
-        );
-    }
-
-    @PostMapping("/temporary")
-    @Operation(summary = "임시 회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
-    public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
-            @Validated(value = CreateTempAppointmentReqValidSeq.class)
-            @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
-
-        CreateTempAppointmentReqDto createTempAppointmentReqDto = appointmentVoMapper.to(createTempAppointmentReq);
-        String appointmentCode = appointmentService.registerTempAppointment(createTempAppointmentReqDto);
-
-        return ResponseEntity.ok(
-                CreateTempAppointmentResp.builder()
                         .appointmentCode(appointmentCode)
                         .build()
         );
