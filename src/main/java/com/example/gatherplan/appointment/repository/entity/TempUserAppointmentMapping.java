@@ -12,10 +12,10 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@Table(name = "TEMP_USER_APPOINTMENT_MAPPING")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_APPIONTMENT_MAPPING")
-public class MemberAppointmentMapping extends BaseAuditableEntity {
+public class TempUserAppointmentMapping extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +25,9 @@ public class MemberAppointmentMapping extends BaseAuditableEntity {
     private Long appointmentSeq;
 
     @Column(nullable = false)
-    @Comment("Member Seq(PK)")
-    private Long memberSeq;
+    @Comment("Temp USER Seq(PK)")
+    private Long tempUserSeq;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 

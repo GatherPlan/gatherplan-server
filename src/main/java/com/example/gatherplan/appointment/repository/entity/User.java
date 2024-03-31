@@ -13,10 +13,10 @@ import org.hibernate.annotations.Comment;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseAuditableEntity {
+public class User extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "USER_ID")
     private Long id;
 
     @Comment("사용자 이름")

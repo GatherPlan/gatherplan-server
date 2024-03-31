@@ -6,5 +6,5 @@ import jakarta.validation.GroupSequence;
 @GroupSequence({NotBlankEmail.class, PatternCheckEmail.class, NotBlankAuthcode.class, SizeCheckAuthcode.class
         , NotBlankNickName.class, SizeCheckNickName.class, NotBlankPassword.class, SizeCheckPassword.class,
         PatternCheckPassword.class})
-public interface CreateMemberReqValidSeq {
+public interface CreateUserReqValidSeq {
 }

@@ -6,6 +6,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberInfoReqDto {
+public class CreateUserReqDto {
+
     private String email;
+
+    private String authCode;
+
+    private String nickname;
+
+    private String password;
 }

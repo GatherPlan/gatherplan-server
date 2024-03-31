@@ -8,13 +8,13 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Getter
 @Builder
-@Table(name = "TEMP_MEMBER")
+@Table(name = "TEMP_USER")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempMember extends BaseAuditableEntity {
+public class TempUser extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TEMP_MEMBER_ID")
+    @Column(name = "TEMP_USER_ID")
     private Long id;
 
     @Comment("사용자 이름")

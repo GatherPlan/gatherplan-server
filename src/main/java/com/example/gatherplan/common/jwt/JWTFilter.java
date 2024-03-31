@@ -1,6 +1,6 @@
 package com.example.gatherplan.common.jwt;
 
-import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.appointment.repository.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,12 +43,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
         RoleType roleType = RoleType.byRole(jwtUtil.getRole(token));
 
-        Member member = Member.builder()
+        User user = User.builder()
                 .email(jwtUtil.getEmail(token))
                 .roleType(roleType)
                 .build();
 
-        UserInfo userInfo = new UserInfo(member);
+        UserInfo userInfo = new UserInfo(user);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userInfo, null, userInfo.getAuthorities());

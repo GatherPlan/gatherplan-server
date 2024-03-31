@@ -1,7 +1,7 @@
 package com.example.gatherplan.common.jwt;
 
 
-import com.example.gatherplan.appointment.repository.entity.Member;
+import com.example.gatherplan.appointment.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,28 +12,28 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserInfo implements UserDetails {
 
-    private final transient Member member;
+    private final transient User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) member::getRole);
+        collection.add((GrantedAuthority) user::getRole);
 
         return collection;
     }
 
     public String getEmail() {
-        return member.getEmail();
+        return user.getEmail();
     }
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.getNickname();
+        return user.getNickname();
     }
 
     @Override

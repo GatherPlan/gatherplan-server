@@ -11,14 +11,14 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QMember is a Querydsl query type for Member
+ * Quser is a Querydsl query type for user
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QMember extends EntityPathBase<Member> {
+public class Quser extends EntityPathBase<user> {
 
     private static final long serialVersionUID = -569882359L;
 
-    public static final QMember member = new QMember("member1");
+    public static final Quser user = new Quser("user1");
 
     public final StringPath email = createString("email");
 
@@ -34,16 +34,16 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.example.gatherplan.appointment.enums.UserType> userType = createEnum("userType", com.example.gatherplan.appointment.enums.UserType.class);
 
-    public QMember(String variable) {
-        super(Member.class, forVariable(variable));
+    public Quser(String variable) {
+        super(user.class, forVariable(variable));
     }
 
-    public QMember(Path<? extends Member> path) {
+    public Quser(Path<? extends user> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QMember(PathMetadata metadata) {
-        super(Member.class, metadata);
+    public Quser(PathMetadata metadata) {
+        super(user.class, metadata);
     }
 
 }
