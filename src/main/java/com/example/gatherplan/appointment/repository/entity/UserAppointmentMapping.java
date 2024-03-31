@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user_APPIONTMENT_MAPPING")
+@Table(name = "USER_APPIONTMENT_MAPPING")
 public class UserAppointmentMapping extends BaseAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     private Long appointmentSeq;
 
     @Column(nullable = false)
-    @Comment("user Seq(PK)")
+    @Comment("User Seq(PK)")
     private Long userSeq;
 
     @Column(nullable = false)
