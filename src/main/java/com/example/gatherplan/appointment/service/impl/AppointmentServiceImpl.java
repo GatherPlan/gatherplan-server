@@ -14,6 +14,8 @@ import com.example.gatherplan.appointment.repository.entity.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.utils.UuidUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -116,6 +118,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         tempMemberAppointmentMappingRepository.save(tempMemberAppointmentMapping);
 
         return appointmentCode;
+    }
+
+    @Override
+    public CheckTempAppointmentRespDto checkTempAppointment(CheckTempAppointmentReqDto reqDto, HttpServletRequest request) {
+
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 약속입니다."));
+
+        TempMemberAppointmentMapping table = tempMemberAppointmentMappingRepository
+                .findTempMemberAppointmentMappingByAppointmentSeq(appointment.getId())
+                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "관련된 회원을 찾을 수 없습니다."));
+
+        TempMember tempMember = tempMemberRepository.findById(table.getTempMemberSeq())
+                .orElseThrow(() -> new MemberException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        HttpSession httpSession = request.getSession(true);
+        httpSession.setAttribute("nickname", tempMember.getNickname());
+        httpSession.setAttribute("appointmentCode", reqDto.getAppointmentCode());
+
+        return CheckTempAppointmentRespDto.builder()
+                .appointmentName(appointment.getAppointmentName())
+                .appointmentState(appointment.getAppointmentState())
+                .candidateDateList(appointment.getCandidateDateList())
+                .candidateTimeTypeList(appointment.getCandidateTimeTypeList())
+                .confirmedDateTime(appointment.getConfirmedDateTime())
+                .appointmentCode(appointment.getAppointmentCode())
+                .address(appointment.getAddress())
+                .build();
+
     }
 
 }

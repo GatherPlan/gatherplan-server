@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface AppointmentService {
 
     String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
+    CheckTempAppointmentRespDto checkTempAppointment(CheckTempAppointmentReqDto reqDto, HttpServletRequest request);
 }

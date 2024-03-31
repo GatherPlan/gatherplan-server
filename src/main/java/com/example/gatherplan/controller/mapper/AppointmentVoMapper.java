@@ -28,4 +28,7 @@ public interface AppointmentVoMapper {
 
     DailyWeatherResp to(DailyWeatherRespDto respDto);
 
+    CheckTempAppointmentReqDto to(CheckTempAppointmentReq checkTempAppointmentReq);
+
+    CheckTempAppointmentResp to(CheckTempAppointmentRespDto checkTempAppointmentRespDto);
 }

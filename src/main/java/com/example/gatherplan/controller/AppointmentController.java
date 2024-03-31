@@ -10,6 +10,7 @@ import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -112,4 +113,24 @@ public class AppointmentController {
                                 .toList())
         );
     }
+
+    @PostMapping("/temp")
+    @Operation(summary = "임시회원의 약속 현황보기 요청", description = "임시회원이 약속 현황보기를 요청할 때 사용됩니다.")
+    public ResponseEntity<CheckTempAppointmentResp> checkTempAppointment(
+            @RequestBody CheckTempAppointmentReq checkTempAppointmentReq,
+            HttpServletRequest httpServletRequest) {
+
+        CheckTempAppointmentReqDto checkTempAppointmentReqDto = appointmentVoMapper.to(checkTempAppointmentReq);
+
+        CheckTempAppointmentRespDto checkTempAppointmentRespDto = appointmentService
+                .checkTempAppointment(checkTempAppointmentReqDto, httpServletRequest);
+
+        CheckTempAppointmentResp result = appointmentVoMapper.to(checkTempAppointmentRespDto);
+
+        return ResponseEntity.ok(
+                result
+        );
+    }
+
+
 }
