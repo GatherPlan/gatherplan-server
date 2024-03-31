@@ -2,7 +2,10 @@ package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.api.kakaolocal.KeywordPlaceClientResp;
 import com.example.gatherplan.api.weathernews.DailyWeatherClientResp;
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.DailyWeatherRespDto;
+import com.example.gatherplan.appointment.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.appointment.dto.RegionDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.Region;
@@ -20,10 +23,6 @@ public interface AppointmentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "confirmedDateTime", ignore = true)
-    Appointment to(CreateTempAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);
 
     RegionDto to(Region entity);
 

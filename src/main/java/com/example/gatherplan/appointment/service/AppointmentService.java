@@ -13,7 +13,4 @@ public interface AppointmentService {
     List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto);
 
     String registerAppointment(CreateAppointmentReqDto reqDto, String email);
-
-    String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
-
 }
