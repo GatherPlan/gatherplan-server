@@ -12,7 +12,7 @@ import org.mapstruct.*;
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
-public interface AppointmentTempMapper {
+public interface TempAppointmentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateTempAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);

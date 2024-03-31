@@ -3,14 +3,14 @@ package com.example.gatherplan.appointment.service.impl;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
-import com.example.gatherplan.appointment.mapper.AppointmentTempMapper;
+import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.TempUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.TempUserRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.TempUser;
 import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
-import com.example.gatherplan.appointment.service.AppointmentTempService;
+import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AppointmentTempServiceImpl implements AppointmentTempService {
+public class TempAppointmentServiceImpl implements TempAppointmentService {
 
-    private final AppointmentTempMapper appointmentTempMapper;
+    private final TempAppointmentMapper tempAppointmentMapper;
     private final AppointmentRepository appointmentRepository;
     private final TempUserRepository tempUserRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
@@ -34,7 +34,7 @@ public class AppointmentTempServiceImpl implements AppointmentTempService {
 
         String appointmentCode = UuidUtils.generateRandomString(12);
 
-        Appointment appointment = appointmentTempMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
+        Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
         CreateTempAppointmentReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
         TempUser tempUser = TempUser.builder()

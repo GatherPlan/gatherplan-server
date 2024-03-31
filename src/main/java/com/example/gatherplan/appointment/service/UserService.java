@@ -6,6 +6,6 @@ import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 public interface UserService {
     void authenticateEmail(AuthenticateEmailReqDto authenticateEmailReqDto);
 
-    void joinuser(CreateUserReqDto createUserReqDto);
+    void joinUser(CreateUserReqDto createUserReqDto);
 
 }

@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void joinuser(CreateUserReqDto reqDto) {
+    public void joinUser(CreateUserReqDto reqDto) {
         String email = reqDto.getEmail();
 
         EmailAuth emailAuth = emailAuthRepository.findByEmail(email)

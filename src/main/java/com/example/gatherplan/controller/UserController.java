@@ -44,12 +44,12 @@ public class UserController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> joinuser(
+    public ResponseEntity<BooleanResp> joinUser(
             @Validated(value = CreateUserReqValidSeq.class)
             @RequestBody CreateUserReq createUserReq
     ) {
         CreateUserReqDto createUserReqDto = userVoMapper.to(createUserReq);
-        userService.joinuser(createUserReqDto);
+        userService.joinUser(createUserReqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
