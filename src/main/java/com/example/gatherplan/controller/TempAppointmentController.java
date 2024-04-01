@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/temporary/appointments")
 @Tag(name = "약속", description = "임시 회원의 약속 관련된 기능을 제공합니다.")
-public class TempAppointmentsController {
+public class TempAppointmentController {
 
     private final TempAppointmentVoMapper tempAppointmentVoMapper;
     private final TempAppointmentService tempAppointmentService;

@@ -1,24 +1,22 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
-import com.example.gatherplan.controller.vo.appointment.*;
-import com.example.gatherplan.controller.vo.common.ListResponse;
+import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
+import com.example.gatherplan.controller.vo.appointment.CreateAppointmentResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -44,55 +42,6 @@ public class AppointmentController {
                 CreateAppointmentResp.builder()
                         .appointmentCode(appointmentCode)
                         .build()
-        );
-    }
-
-    @GetMapping("/search/district")
-    @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<RegionResp>> searchRegion(
-            @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
-
-        RegionReqDto regionReqDto = appointmentVoMapper.to(regionReq);
-        List<RegionDto> regionDtos = appointmentService.searchRegion(regionReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(
-                        regionDtos.stream()
-                                .map(appointmentVoMapper::to)
-                                .toList()
-                )
-        );
-    }
-
-    @GetMapping("/search/place")
-    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
-            @ModelAttribute @ParameterObject @Valid KeywordPlaceReq keywordPlaceReq) {
-
-        KeywordPlaceReqDto keywordPlaceReqDto = appointmentVoMapper.to(keywordPlaceReq);
-        List<KeywordPlaceRespDto> keywordPlaceRespDtos = appointmentService.searchKeywordPlace(keywordPlaceReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(
-                        keywordPlaceRespDtos.stream()
-                                .map(appointmentVoMapper::to)
-                                .toList())
-        );
-    }
-
-    @GetMapping("/search/weather")
-    @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
-            @ModelAttribute @ParameterObject @Valid DailyWeatherReq dailyWeatherReq) throws JSONException {
-
-        DailyWeatherReqDto dailyWeatherReqDto = appointmentVoMapper.to(dailyWeatherReq);
-        List<DailyWeatherRespDto> dailyWeatherRespDtos = appointmentService.searchDailyWeather(dailyWeatherReqDto);
-
-        return ResponseEntity.ok(
-                ListResponse.of(
-                        dailyWeatherRespDtos.stream()
-                                .map(appointmentVoMapper::to)
-                                .toList())
         );
     }
 }
