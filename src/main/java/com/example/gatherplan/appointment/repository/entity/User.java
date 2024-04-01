@@ -10,7 +10,7 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Getter
 @Builder
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+@Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseAuditableEntity {
