@@ -2,7 +2,7 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
-import com.example.gatherplan.common.jwt.UserInfo;
+import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.*;

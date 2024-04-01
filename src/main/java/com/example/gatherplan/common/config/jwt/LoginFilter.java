@@ -1,4 +1,4 @@
-package com.example.gatherplan.common.jwt;
+package com.example.gatherplan.common.config.jwt;
 
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.common.exception.ErrorCode;

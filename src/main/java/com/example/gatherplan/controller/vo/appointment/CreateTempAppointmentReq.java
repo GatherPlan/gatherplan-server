@@ -2,7 +2,7 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
-import com.example.gatherplan.common.validation.*;
+import com.example.gatherplan.controller.validation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

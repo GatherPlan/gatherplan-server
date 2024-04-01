@@ -1,5 +1,6 @@
-package com.example.gatherplan.api.kakaolocal;
+package com.example.gatherplan.api;
 
+import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

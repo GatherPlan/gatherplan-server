@@ -1,5 +1,6 @@
-package com.example.gatherplan.api.weathernews;
+package com.example.gatherplan.api;
 
+import com.example.gatherplan.api.vo.DailyWeatherClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

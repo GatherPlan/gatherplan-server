@@ -2,7 +2,7 @@ package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
-import com.example.gatherplan.common.jwt.RoleType;
+import com.example.gatherplan.common.config.jwt.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;

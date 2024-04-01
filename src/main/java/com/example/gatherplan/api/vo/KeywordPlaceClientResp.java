@@ -1,4 +1,4 @@
-package com.example.gatherplan.api.kakaolocal;
+package com.example.gatherplan.api.vo;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
