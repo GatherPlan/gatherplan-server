@@ -1,4 +1,4 @@
-package com.example.gatherplan.api.weathernews;
+package com.example.gatherplan.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

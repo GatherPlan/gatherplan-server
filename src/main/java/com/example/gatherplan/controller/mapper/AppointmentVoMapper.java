@@ -14,18 +14,15 @@ import org.mapstruct.*;
 public interface AppointmentVoMapper {
     CreateAppointmentReqDto to(CreateAppointmentReq req);
 
-    CreateTempAppointmentReqDto to(CreateTempAppointmentReq req);
-
     RegionReqDto to(RegionReq req);
-
-    DailyWeatherReqDto to(DailyWeatherReq req);
-
-    KeywordPlaceReqDto to(KeywordPlaceReq req);
 
     RegionResp to(RegionDto regionDto);
 
-    KeywordPlaceResp to(KeywordPlaceRespDto respDto);
+    DailyWeatherReqDto to(DailyWeatherReq req);
 
     DailyWeatherResp to(DailyWeatherRespDto respDto);
 
+    KeywordPlaceReqDto to(KeywordPlaceReq req);
+
+    KeywordPlaceResp to(KeywordPlaceRespDto respDto);
 }

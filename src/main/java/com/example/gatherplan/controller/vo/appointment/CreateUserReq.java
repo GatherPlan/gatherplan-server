@@ -1,6 +1,6 @@
 package com.example.gatherplan.controller.vo.appointment;
 
-import com.example.gatherplan.common.validation.*;
+import com.example.gatherplan.controller.validation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

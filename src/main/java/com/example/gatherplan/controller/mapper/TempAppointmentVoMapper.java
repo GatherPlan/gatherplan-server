@@ -12,5 +12,5 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface TempAppointmentVoMapper {
-    CreateTempAppointmentReqDto to(CreateTempAppointmentReq createTempAppointmentReq);
+    CreateTempAppointmentReqDto to(CreateTempAppointmentReq req);
 }

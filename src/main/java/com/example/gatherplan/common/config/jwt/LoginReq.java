@@ -1,4 +1,4 @@
-package com.example.gatherplan.common.jwt;
+package com.example.gatherplan.common.config.jwt;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

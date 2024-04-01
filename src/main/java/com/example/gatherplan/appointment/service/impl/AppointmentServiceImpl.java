@@ -1,8 +1,8 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.api.kakaolocal.KakaoLocationClient;
-import com.example.gatherplan.api.kakaolocal.KeywordPlaceClientResp;
-import com.example.gatherplan.api.weathernews.WeatherNewsClient;
+import com.example.gatherplan.api.KakaoLocationClient;
+import com.example.gatherplan.api.WeatherNewsClient;
+import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -72,12 +72,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
+
         String appointmentCode = UuidUtils.generateRandomString(12);
 
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
 

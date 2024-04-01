@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.mapper;
 
-import com.example.gatherplan.api.kakaolocal.KeywordPlaceClientResp;
-import com.example.gatherplan.api.weathernews.DailyWeatherClientResp;
+import com.example.gatherplan.api.vo.DailyWeatherClientResp;
+import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.DailyWeatherRespDto;
 import com.example.gatherplan.appointment.dto.KeywordPlaceRespDto;

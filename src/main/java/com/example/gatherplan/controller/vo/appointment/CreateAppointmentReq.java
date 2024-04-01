@@ -2,8 +2,8 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
-import com.example.gatherplan.common.validation.NotBlankAppointmentName;
-import com.example.gatherplan.common.validation.SizeCheckAppointmentName;
+import com.example.gatherplan.controller.validation.NotBlankAppointmentName;
+import com.example.gatherplan.controller.validation.SizeCheckAppointmentName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

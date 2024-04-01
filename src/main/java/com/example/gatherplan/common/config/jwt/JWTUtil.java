@@ -1,4 +1,4 @@
-package com.example.gatherplan.common.jwt;
+package com.example.gatherplan.common.config.jwt;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

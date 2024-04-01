@@ -1,4 +1,4 @@
-package com.example.gatherplan.api;
+package com.example.gatherplan.common.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

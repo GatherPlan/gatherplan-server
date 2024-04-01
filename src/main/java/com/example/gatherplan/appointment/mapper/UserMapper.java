@@ -3,7 +3,7 @@ package com.example.gatherplan.appointment.mapper;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
-import com.example.gatherplan.common.jwt.RoleType;
+import com.example.gatherplan.common.config.jwt.RoleType;
 import org.mapstruct.*;
 
 @Mapper(
