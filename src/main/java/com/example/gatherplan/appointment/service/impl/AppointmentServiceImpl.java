@@ -1,17 +1,14 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.api.KakaoLocationClient;
-import com.example.gatherplan.api.WeatherNewsClient;
-import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
-import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
-import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.UserRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.Region;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
@@ -22,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,41 +28,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-    private final RegionRepository regionRepository;
-    private final KakaoLocationClient kakaoLocationClient;
-    private final WeatherNewsClient weatherNewsClient;
-    private final CustomRegionRepository customRegionRepository;
 
-    @Override
-    public List<RegionDto> searchRegion(RegionReqDto reqDto) {
-        List<Region> regionList = regionRepository.findByAddressContaining(reqDto.getKeyword());
-
-        return regionList.stream()
-                .map(appointmentMapper::to)
-                .toList();
-    }
-
-    @Override
-    public List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto) {
-        KeywordPlaceClientResp keywordPlaceClientResp =
-                kakaoLocationClient.searchLocationByKeyword(
-                        reqDto.getKeyword(), reqDto.getPage(), reqDto.getSize());
-
-        return keywordPlaceClientResp.getDocuments().stream()
-                .map(appointmentMapper::to)
-                .toList();
-    }
-
-    @Override
-    public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto) {
-
-        Region region = customRegionRepository.findRegionByAddressName(reqDto.getAddressName())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
-
-        return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
-                .map(appointmentMapper::to)
-                .toList();
-    }
 
     @Override
     @Transactional

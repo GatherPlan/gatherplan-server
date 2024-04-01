@@ -53,8 +53,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/**").permitAll() // swagger 관련
                         .requestMatchers("/api/v1/users/**").permitAll()
-                        .requestMatchers("/api/v1/appointments/search/**").permitAll()
-                        .requestMatchers("/api/v1/appointments:temp/**").permitAll()
+                        .requestMatchers("/api/v1/region/**").permitAll()
+                        .requestMatchers("/api/v1/temporary/**").permitAll()
                         .requestMatchers("/api/v1/appointments", "/api/v1/appointments/**").hasRole(RoleType.USER.name())
                         .anyRequest().authenticated());
 
