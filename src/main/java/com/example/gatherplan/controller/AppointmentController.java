@@ -1,22 +1,24 @@
 package com.example.gatherplan.controller;
 
+import com.example.gatherplan.appointment.dto.CheckAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
+import com.example.gatherplan.controller.vo.appointment.CheckAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentResp;
+import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -44,4 +46,19 @@ public class AppointmentController {
                         .build()
         );
     }
+
+    @GetMapping("/check")
+    @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> checkParticipation(
+            @ModelAttribute @ParameterObject @Valid CheckAppointmentReq createAppointmentReq,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        CheckAppointmentReqDto checkAppointmentReqDto = appointmentVoMapper.to(createAppointmentReq);
+        appointmentService.checkParticipation(checkAppointmentReqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 }
