@@ -1,16 +1,11 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.CheckAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.GetAppointmentListRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
-import com.example.gatherplan.controller.vo.appointment.CheckAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateAppointmentResp;
-import com.example.gatherplan.controller.vo.appointment.GetAppointmentListResp;
+import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,13 +66,29 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentsList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<GetAppointmentListRespDto> appointmentsList = appointmentService.getAppointmentsList(userInfo.getEmail());
+        List<GetAppointmentListRespDto> getAppointmentListRespDtoList = appointmentService.getAppointmentList(userInfo.getEmail());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        appointmentsList.stream().map(appointmentVoMapper::to).toList()
+                        getAppointmentListRespDtoList.stream().map(appointmentVoMapper::to).toList()
                 )
         );
     }
 
+    @GetMapping("/list/search")
+    @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<GetAppointmentSearchListResp>> getAppointmentsList(
+            @ModelAttribute @ParameterObject @Valid GetAppointmentSearchListReq getAppointmentSearchListReq,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        GetAppointmentSearchListReqDto getAppointmentSearchListReqDto = appointmentVoMapper.to(getAppointmentSearchListReq);
+        List<GetAppointmentSearchListRespDto> getAppointmentListRespDtoList = appointmentService
+                .getAppointmentSearchList(getAppointmentSearchListReqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                ListResponse.of(
+                        getAppointmentListRespDtoList.stream().map(appointmentVoMapper::to).toList()
+                )
+        );
+    }
 }
