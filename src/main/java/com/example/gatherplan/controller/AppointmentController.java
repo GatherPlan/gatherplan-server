@@ -37,8 +37,8 @@ public class AppointmentController {
             @RequestBody CreateAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        CreateAppointmentReqDto createAppointmentReqDto = appointmentVoMapper.to(createAppointmentReq);
-        String appointmentCode = appointmentService.registerAppointment(createAppointmentReqDto, userInfo.getEmail());
+        CreateAppointmentReqDto reqDto = appointmentVoMapper.to(createAppointmentReq);
+        String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 CreateAppointmentResp.builder()
@@ -53,8 +53,8 @@ public class AppointmentController {
             @ModelAttribute @ParameterObject @Valid CheckAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        CheckAppointmentReqDto checkAppointmentReqDto = appointmentVoMapper.to(createAppointmentReq);
-        appointmentService.checkParticipation(checkAppointmentReqDto, userInfo.getEmail());
+        CheckAppointmentReqDto reqDto = appointmentVoMapper.to(createAppointmentReq);
+        appointmentService.checkParticipation(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -66,13 +66,10 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<GetAppointmentListRespDto> getAppointmentListRespDtoList = appointmentService
-                .getAppointmentList(userInfo.getEmail());
+        List<GetAppointmentListRespDto> respDtos = appointmentService.getAppointmentList(userInfo.getEmail());
 
         return ResponseEntity.ok(
-                ListResponse.of(
-                        getAppointmentListRespDtoList.stream().map(appointmentVoMapper::to).toList()
-                )
+                ListResponse.of(respDtos.stream().map(appointmentVoMapper::to).toList())
         );
     }
 
@@ -82,14 +79,15 @@ public class AppointmentController {
             @ModelAttribute @ParameterObject @Valid GetAppointmentSearchListReq getAppointmentSearchListReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentSearchListReqDto getAppointmentSearchListReqDto = appointmentVoMapper
+        GetAppointmentSearchListReqDto reqDto = appointmentVoMapper
                 .to(getAppointmentSearchListReq);
-        List<GetAppointmentSearchListRespDto> getAppointmentListRespDtoList = appointmentService
-                .getAppointmentSearchList(getAppointmentSearchListReqDto, userInfo.getEmail());
+
+        List<GetAppointmentSearchListRespDto> respDtos = appointmentService
+                .getAppointmentSearchList(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        getAppointmentListRespDtoList.stream().map(appointmentVoMapper::to).toList()
+                        respDtos.stream().map(appointmentVoMapper::to).toList()
                 )
         );
     }
@@ -100,12 +98,11 @@ public class AppointmentController {
             @ModelAttribute @ParameterObject @Valid GetAppointmentInfoReq getAppointmentInfoReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentInfoReqDto getAppointmentInfoReqDto = appointmentVoMapper.to(getAppointmentInfoReq);
-        GetAppointmentInfoRespDto getAppointmentInfoRespDto = appointmentService
-                .getAppointmentInfo(getAppointmentInfoReqDto, userInfo.getEmail());
+        GetAppointmentInfoReqDto reqDto = appointmentVoMapper.to(getAppointmentInfoReq);
+        GetAppointmentInfoRespDto respDto = appointmentService.getAppointmentInfo(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                appointmentVoMapper.to(getAppointmentInfoRespDto)
+                appointmentVoMapper.to(respDto)
         );
     }
 
@@ -115,14 +112,14 @@ public class AppointmentController {
             @ModelAttribute @ParameterObject @Valid GetAppointmentParticipationInfoReq getAppointmentParticipationInfoReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentParticipationInfoReqDto getAppointmentParticipationInfoReqDto = appointmentVoMapper
+        GetAppointmentParticipationInfoReqDto reqDto = appointmentVoMapper
                 .to(getAppointmentParticipationInfoReq);
 
-        GetAppointmentParticipationInfoRespDto appointmentParticipationInfo = appointmentService
-                .getAppointmentParticipationInfo(getAppointmentParticipationInfoReqDto, userInfo.getEmail());
+        GetAppointmentParticipationInfoRespDto respDto = appointmentService
+                .getAppointmentParticipationInfo(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                appointmentVoMapper.to(appointmentParticipationInfo)
+                appointmentVoMapper.to(respDto)
         );
     }
 

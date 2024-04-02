@@ -12,7 +12,7 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     List<UserAppointmentMapping> findByUserSeq(Long userId);
 
-    UserAppointmentMapping findByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
+    Optional<UserAppointmentMapping> findByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
 
     Optional<UserAppointmentMapping> findByAppointmentSeqAndUserSeq(Long appointmentId, Long userId);
 
