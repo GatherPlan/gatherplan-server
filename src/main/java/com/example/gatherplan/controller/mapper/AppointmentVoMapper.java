@@ -25,4 +25,9 @@ public interface AppointmentVoMapper {
     GetAppointmentInfoReqDto to(GetAppointmentInfoReq getAppointmentInfoReq);
 
     GetAppointmentInfoResp to(GetAppointmentInfoRespDto getAppointmentInfoRespDto);
+
+    GetAppointmentParticipationInfoReqDto to(GetAppointmentParticipationInfoReq getAppointmentParticipationInfoReq);
+
+
+    GetAppointmentParticipationInfoResp to(GetAppointmentParticipationInfoRespDto appointmentParticipationInfo);
 }
