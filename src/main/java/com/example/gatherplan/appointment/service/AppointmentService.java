@@ -19,4 +19,6 @@ public interface AppointmentService {
 
     GetAppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
             GetAppointmentParticipationInfoReqDto reqDto, String email);
+
+    void deleteAppointment(DeleteAppointmentReqDto reqDto, String email);
 }

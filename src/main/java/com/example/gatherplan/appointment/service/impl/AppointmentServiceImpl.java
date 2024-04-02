@@ -6,10 +6,9 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
-import com.example.gatherplan.appointment.repository.AppointmentRepository;
-import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.UserRepository;
+import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
@@ -31,6 +30,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
+    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
+    private final TempUserRepository tempUserRepository;
 
 
     @Override
@@ -159,6 +160,43 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
     }
 
+    @Override
+    public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
+
+        UserAppointmentMapping maps = userAppointmentMappingRepository
+                .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
+
+        User host = userRepository.findById(maps.getUserSeq())
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        if (!user.getId().equals(host.getId())) {
+            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트만 접근할 수 있습니다.");
+        }
+
+        List<TempUserAppointmentMapping> tempUserMaps = tempUserAppointmentMappingRepository
+                .findAllByAppointmentSeq(appointment.getId());
+
+        List<Long> tempUserDeleteList = tempUserMaps.stream()
+                .map(TempUserAppointmentMapping::getTempUserSeq)
+                .toList();
+
+        tempUserRepository.deleteAllById(tempUserDeleteList);
+
+        tempUserAppointmentMappingRepository.deleteAll(tempUserMaps);
+
+        List<UserAppointmentMapping> userMaps = userAppointmentMappingRepository
+                .findAllByAppointmentSeq(appointment.getId());
+
+        userAppointmentMappingRepository.deleteAll(userMaps);
+
+        appointmentRepository.deleteById(appointment.getId());
+    }
+
     private void checkUserParticipation(String email, String appointmentCode) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
@@ -169,6 +207,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .findByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), user.getId(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "참여하지 않은 약속입니다."));
     }
+
 
     private Appointment findAppointmentByCode(String appointmentCode) {
         return appointmentRepository
