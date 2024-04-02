@@ -147,13 +147,11 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(updateAppointmentReq);
-
         appointmentService.updateAppointment(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
         );
     }
-
 
 }

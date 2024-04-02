@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
@@ -161,6 +162,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
         Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
 
@@ -184,12 +186,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
         Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
-
     }
 
     private Appointment checkHost(String email, String appointmentCode) {
