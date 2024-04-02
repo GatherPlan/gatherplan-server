@@ -31,4 +31,6 @@ public interface AppointmentVoMapper {
     GetAppointmentParticipationInfoResp to(GetAppointmentParticipationInfoRespDto respDto);
 
     DeleteAppointmentReqDto to(DeleteAppointmentReq req);
+
+    UpdateAppointmentReqDto to(UpdateAppointmentReq req);
 }

@@ -57,4 +57,13 @@ public class Appointment extends BaseAuditableEntity {
     @Builder.Default
     @Comment("약속 후보 시간들 (시작시간~종료시간)")
     private List<TimeType> candidateTimeTypeList = new ArrayList<>();
+
+    public void update(String appointmentName, List<TimeType> candidateTimeTypeList,
+                       Address address, List<LocalDate> candidateDateList) {
+        this.appointmentName = appointmentName;
+        this.candidateTimeTypeList = candidateTimeTypeList;
+        this.address = address;
+        this.candidateDateList = candidateDateList;
+    }
+
 }

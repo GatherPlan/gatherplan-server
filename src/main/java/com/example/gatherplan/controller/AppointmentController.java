@@ -5,6 +5,7 @@ import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
+import com.example.gatherplan.controller.validation.UpdateAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
@@ -137,5 +138,22 @@ public class AppointmentController {
                 BooleanResp.success()
         );
     }
+
+    @PutMapping
+    @Operation(summary = "회원의 약속 삭제 요청", description = "회원이 약속을 삭제할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateAppointment(
+            @Validated(value = UpdateAppointmentReqValidSeq.class)
+            @RequestBody UpdateAppointmentReq updateAppointmentReq,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(updateAppointmentReq);
+
+        appointmentService.updateAppointment(reqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 
 }
