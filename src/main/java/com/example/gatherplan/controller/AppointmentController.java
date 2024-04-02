@@ -67,14 +67,16 @@ public class AppointmentController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "회원의 약속 리스트 조회 요청", description = "회원이 약속을 목록을 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentsList(@AuthenticationPrincipal UserInfo userInfo) {
+    @Operation(summary = "회원의 약속 목록 조회 요청", description = "회원이 약속 목록을 조회할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentsList(
+            @AuthenticationPrincipal UserInfo userInfo) {
 
         List<GetAppointmentListRespDto> appointmentsList = appointmentService.getAppointmentsList(userInfo.getEmail());
-        List<GetAppointmentListResp> result = appointmentsList.stream().map(appointmentVoMapper::to).toList();
 
         return ResponseEntity.ok(
-                ListResponse.of(result)
+                ListResponse.of(
+                        appointmentsList.stream().map(appointmentVoMapper::to).toList()
+                )
         );
     }
 
