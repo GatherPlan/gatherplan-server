@@ -162,21 +162,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
-
-        Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
-
-        UserAppointmentMapping maps = userAppointmentMappingRepository
-                .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
-
-        User host = userRepository.findById(maps.getUserSeq())
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
-
-        if (!user.getId().equals(host.getId())) {
-            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트만 접근할 수 있습니다.");
-        }
+        Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
 
         List<TempUserAppointmentMapping> tempUserMaps = tempUserAppointmentMappingRepository
                 .findAllByAppointmentSeq(appointment.getId());
@@ -195,6 +181,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         userAppointmentMappingRepository.deleteAll(userMaps);
 
         appointmentRepository.deleteById(appointment.getId());
+    }
+
+    @Override
+    public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
+        Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
+
+        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
+                reqDto.getAddress(), reqDto.getCandidateDateList());
+
+    }
+
+    private Appointment checkHost(String email, String appointmentCode) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        Appointment appointment = findAppointmentByCode(appointmentCode);
+
+        UserAppointmentMapping maps = userAppointmentMappingRepository
+                .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
+
+        User host = userRepository.findById(maps.getUserSeq())
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        if (!user.getId().equals(host.getId())) {
+            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트만 접근할 수 있습니다.");
+        }
+
+        return appointment;
     }
 
     private void checkUserParticipation(String email, String appointmentCode) {
