@@ -14,4 +14,6 @@ public interface AppointmentService {
 
     List<GetAppointmentSearchListRespDto> getAppointmentSearchList(
             GetAppointmentSearchListReqDto getAppointmentSearchListReqDto, String email);
+
+    GetAppointmentInfoRespDto getAppointmentInfo(GetAppointmentInfoReqDto getAppointmentInfoReqDto, String email);
 }

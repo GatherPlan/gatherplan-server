@@ -91,4 +91,20 @@ public class AppointmentController {
                 )
         );
     }
+
+    @GetMapping
+    @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<GetAppointmentInfoResp> getAppointmentsList(
+            @ModelAttribute @ParameterObject @Valid GetAppointmentInfoReq getAppointmentInfoReq,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        GetAppointmentInfoReqDto getAppointmentInfoReqDto = appointmentVoMapper.to(getAppointmentInfoReq);
+        GetAppointmentInfoRespDto getAppointmentInfoRespDto = appointmentService
+                .getAppointmentInfo(getAppointmentInfoReqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(getAppointmentInfoRespDto)
+        );
+    }
+
 }

@@ -21,4 +21,8 @@ public interface AppointmentVoMapper {
     GetAppointmentSearchListReqDto to(GetAppointmentSearchListReq reqDto);
 
     GetAppointmentSearchListResp to(GetAppointmentSearchListRespDto respDto);
+
+    GetAppointmentInfoReqDto to(GetAppointmentInfoReq getAppointmentInfoReq);
+
+    GetAppointmentInfoResp to(GetAppointmentInfoRespDto getAppointmentInfoRespDto);
 }
