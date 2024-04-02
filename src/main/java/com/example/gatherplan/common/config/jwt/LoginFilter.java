@@ -73,7 +73,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(email, role, 600 * 600 * 100L);
+        String token = jwtUtil.createJwt(email, role, 2 * 60 * 1000L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
