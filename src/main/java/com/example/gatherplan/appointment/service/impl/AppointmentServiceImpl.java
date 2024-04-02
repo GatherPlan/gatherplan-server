@@ -1,8 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.CheckAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.GetAppointmentListRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
@@ -78,7 +76,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<GetAppointmentListRespDto> getAppointmentsList(String email) {
+    public List<GetAppointmentListRespDto> getAppointmentList(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
@@ -91,7 +89,42 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(Optional::get)
                 .toList();
 
-        List<String> hostNames = maps.stream()
+        List<String> hostNames = getHostNames(maps);
+
+        return IntStream.range(0, appointments.size())
+                .mapToObj(index -> appointmentMapper.to(appointments.get(index), hostNames.get(index)))
+                .toList();
+
+    }
+
+    @Override
+    public List<GetAppointmentSearchListRespDto> getAppointmentSearchList(
+            GetAppointmentSearchListReqDto getAppointmentSearchListReqDto, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
+
+        List<Appointment> appointments = maps.stream()
+                .map(UserAppointmentMapping::getAppointmentSeq)
+                .map(appointmentRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(appointment -> appointment.getAppointmentName()
+                        .contains(getAppointmentSearchListReqDto.getKeyword()))
+                .toList();
+
+
+        List<String> hostNames = getHostNames(maps);
+
+        return IntStream.range(0, appointments.size())
+                .mapToObj(index -> appointmentMapper.toDto(appointments.get(index), hostNames.get(index)))
+                .toList();
+    }
+
+    private List<String> getHostNames(List<UserAppointmentMapping> maps) {
+        return maps.stream()
                 .map(UserAppointmentMapping::getAppointmentSeq)
                 .flatMap(appointmentSeq -> appointmentRepository.findById(appointmentSeq).stream())
                 .map(appointment -> userAppointmentMappingRepository
@@ -102,11 +135,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(Optional::get)
                 .map(User::getNickname)
                 .toList();
-
-        return IntStream.range(0, appointments.size())
-                .mapToObj(index -> appointmentMapper.to(appointments.get(index), hostNames.get(index)))
-                .toList();
     }
-
 
 }
