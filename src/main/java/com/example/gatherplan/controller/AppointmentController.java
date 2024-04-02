@@ -63,10 +63,11 @@ public class AppointmentController {
 
     @GetMapping("/list")
     @Operation(summary = "회원의 약속 목록 조회 요청", description = "회원이 약속 목록을 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentsList(
+    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<GetAppointmentListRespDto> getAppointmentListRespDtoList = appointmentService.getAppointmentList(userInfo.getEmail());
+        List<GetAppointmentListRespDto> getAppointmentListRespDtoList = appointmentService
+                .getAppointmentList(userInfo.getEmail());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -77,11 +78,12 @@ public class AppointmentController {
 
     @GetMapping("/list/search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<GetAppointmentSearchListResp>> getAppointmentsList(
+    public ResponseEntity<ListResponse<GetAppointmentSearchListResp>> getAppointmentSearchList(
             @ModelAttribute @ParameterObject @Valid GetAppointmentSearchListReq getAppointmentSearchListReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentSearchListReqDto getAppointmentSearchListReqDto = appointmentVoMapper.to(getAppointmentSearchListReq);
+        GetAppointmentSearchListReqDto getAppointmentSearchListReqDto = appointmentVoMapper
+                .to(getAppointmentSearchListReq);
         List<GetAppointmentSearchListRespDto> getAppointmentListRespDtoList = appointmentService
                 .getAppointmentSearchList(getAppointmentSearchListReqDto, userInfo.getEmail());
 
@@ -94,7 +96,7 @@ public class AppointmentController {
 
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<GetAppointmentInfoResp> getAppointmentsList(
+    public ResponseEntity<GetAppointmentInfoResp> getAppointment(
             @ModelAttribute @ParameterObject @Valid GetAppointmentInfoReq getAppointmentInfoReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
