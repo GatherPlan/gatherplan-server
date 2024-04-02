@@ -143,6 +143,41 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
     }
 
+    @Override
+    public GetAppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
+            GetAppointmentParticipationInfoReqDto getAppointmentParticipationInfoReqDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(getAppointmentParticipationInfoReqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 약속입니다."));
+
+        userAppointmentMappingRepository
+                .findByAppointmentSeqAndUserSeq(appointment.getId(), user.getId())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "매핑되어 있지 않은 약속입니다."));
+
+        List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByAppointmentSeq(appointment.getId());
+
+        List<GetAppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = maps.stream()
+                .map(mapping -> {
+                    User findUser = userRepository.findById(mapping.getUserSeq())
+                            .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+                    return GetAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                            .nickname(findUser.getNickname())
+                            .selectedDateTime(mapping.getSelectedDateTimeList())
+                            .build();
+                })
+                .toList();
+
+        return GetAppointmentParticipationInfoRespDto.builder()
+                .userParticipationInfo(userParticipationInfoList)
+                .candidateTimeTypeList(appointment.getCandidateTimeTypeList())
+                .candidateDateList(appointment.getCandidateDateList())
+                .build();
+    }
+
     private List<String> getHostNames(List<UserAppointmentMapping> maps) {
         return maps.stream()
                 .map(UserAppointmentMapping::getAppointmentSeq)

@@ -1,12 +1,12 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,6 +33,6 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     private UserRole userRole;
 
     @ElementCollection
-    private List<LocalDateTime> selectedDateTime;
+    private List<SelectedDateTime> selectedDateTimeList;
 
 }

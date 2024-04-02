@@ -2,10 +2,17 @@ package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.GetAppointmentListRespDto;
+import com.example.gatherplan.appointment.dto.GetAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.GetAppointmentSearchListRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
+import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.User;
+import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import org.mapstruct.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -23,4 +30,8 @@ public interface AppointmentMapper {
     GetAppointmentListRespDto to(Appointment entity, String hostName);
 
     GetAppointmentSearchListRespDto toDto(Appointment entity, String hostName);
+
+    GetAppointmentParticipationInfoRespDto to(
+            User user, List<SelectedDateTime> selectedDateTime, List<LocalDate> candidateDateList,
+            List<TimeType> candidateTimeTypeList);
 }
