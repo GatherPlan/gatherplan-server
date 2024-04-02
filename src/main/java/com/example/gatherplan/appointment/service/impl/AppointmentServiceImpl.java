@@ -123,6 +123,26 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .toList();
     }
 
+    @Override
+    public GetAppointmentInfoRespDto getAppointmentInfo
+            (GetAppointmentInfoReqDto getAppointmentInfoReqDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(getAppointmentInfoReqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 약속입니다."));
+
+        userAppointmentMappingRepository
+                .findByAppointmentSeqAndUserSeq(appointment.getId(), user.getId())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "매핑되어 있지 않은 약속입니다."));
+
+        return GetAppointmentInfoRespDto.builder()
+                .address(appointment.getAddress())
+                .confirmedDateTime(appointment.getConfirmedDateTime())
+                .build();
+    }
+
     private List<String> getHostNames(List<UserAppointmentMapping> maps) {
         return maps.stream()
                 .map(UserAppointmentMapping::getAppointmentSeq)

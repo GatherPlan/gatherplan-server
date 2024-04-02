@@ -5,6 +5,7 @@ import com.example.gatherplan.appointment.repository.entity.UserAppointmentMappi
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
     List<UserAppointmentMapping> findByAppointmentSeq(Long appointmentId);
@@ -12,4 +13,8 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
     List<UserAppointmentMapping> findByUserSeq(Long userId);
 
     UserAppointmentMapping findByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
+
+    Optional<UserAppointmentMapping> findByAppointmentSeqAndUserSeq(Long appointmentId, Long userId);
+
+
 }
