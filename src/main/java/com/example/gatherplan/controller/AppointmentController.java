@@ -121,10 +121,8 @@ public class AppointmentController {
         GetAppointmentParticipationInfoRespDto appointmentParticipationInfo = appointmentService
                 .getAppointmentParticipationInfo(getAppointmentParticipationInfoReqDto, userInfo.getEmail());
 
-        GetAppointmentParticipationInfoResp result = appointmentVoMapper.to(appointmentParticipationInfo);
-
         return ResponseEntity.ok(
-                result
+                appointmentVoMapper.to(appointmentParticipationInfo)
         );
     }
 

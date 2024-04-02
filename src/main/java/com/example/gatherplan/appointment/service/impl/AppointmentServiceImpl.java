@@ -68,11 +68,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .findByAppointmentCode(checkAppointmentReqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 약속입니다."));
 
-        List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByAppointmentSeq(appointment.getId());
-
-        if (maps.stream().noneMatch(map -> map.getUserSeq().equals(user.getId()))) {
-            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "참여하지 않은 약속입니다.");
-        }
+        userAppointmentMappingRepository
+                .findByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), user.getId(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "참여하지 않은 약속입니다."));
     }
 
     @Override
@@ -126,6 +124,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public GetAppointmentInfoRespDto getAppointmentInfo
             (GetAppointmentInfoReqDto getAppointmentInfoReqDto, String email) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
