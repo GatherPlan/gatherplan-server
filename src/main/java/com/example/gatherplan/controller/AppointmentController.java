@@ -123,4 +123,19 @@ public class AppointmentController {
         );
     }
 
+    @DeleteMapping
+    @Operation(summary = "회원의 약속 삭제 요청", description = "회원이 약속을 삭제할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> deleteAppointment(
+            @ModelAttribute @ParameterObject @Valid DeleteAppointmentReq deleteAppointmentReq,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        DeleteAppointmentReqDto reqDto = appointmentVoMapper.to(deleteAppointmentReq);
+
+        appointmentService.deleteAppointment(reqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 }

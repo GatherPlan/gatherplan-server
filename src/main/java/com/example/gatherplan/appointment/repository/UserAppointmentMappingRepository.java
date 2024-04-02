@@ -11,6 +11,8 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     List<UserAppointmentMapping> findByUserSeq(Long userId);
 
+    List<UserAppointmentMapping> findAllByAppointmentSeq(Long appointmentId);
+
     Optional<UserAppointmentMapping> findByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
 
     List<UserAppointmentMapping> findAllByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
