@@ -2,6 +2,7 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CheckAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.GetAppointmentListRespDto;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
@@ -9,7 +10,9 @@ import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq
 import com.example.gatherplan.controller.vo.appointment.CheckAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateAppointmentResp;
+import com.example.gatherplan.controller.vo.appointment.GetAppointmentListResp;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
+import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -48,7 +53,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/check")
-    @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
+    @Operation(summary = "회원의 약속 참여 여부 확인 요청", description = "회원의 약속 참여 여부를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkParticipation(
             @ModelAttribute @ParameterObject @Valid CheckAppointmentReq createAppointmentReq,
             @AuthenticationPrincipal UserInfo userInfo) {
@@ -58,6 +63,18 @@ public class AppointmentController {
 
         return ResponseEntity.ok(
                 BooleanResp.success()
+        );
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "회원의 약속 리스트 조회 요청", description = "회원이 약속을 목록을 조회할 때 사용됩니다.")
+    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentsList(@AuthenticationPrincipal UserInfo userInfo) {
+
+        List<GetAppointmentListRespDto> appointmentsList = appointmentService.getAppointmentsList(userInfo.getEmail());
+        List<GetAppointmentListResp> result = appointmentsList.stream().map(appointmentVoMapper::to).toList();
+
+        return ResponseEntity.ok(
+                ListResponse.of(result)
         );
     }
 
