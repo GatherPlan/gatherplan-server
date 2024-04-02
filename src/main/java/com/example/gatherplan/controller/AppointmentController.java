@@ -131,7 +131,6 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         DeleteAppointmentReqDto reqDto = appointmentVoMapper.to(deleteAppointmentReq);
-
         appointmentService.deleteAppointment(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
@@ -153,5 +152,6 @@ public class AppointmentController {
                 BooleanResp.success()
         );
     }
+
 
 }
