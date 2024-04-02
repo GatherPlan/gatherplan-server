@@ -16,18 +16,17 @@ public interface AppointmentVoMapper {
 
     CheckAppointmentReqDto to(CheckAppointmentReq req);
 
-    GetAppointmentListResp to(GetAppointmentListRespDto reqDto);
+    GetAppointmentListResp to(GetAppointmentListRespDto respDto);
 
-    GetAppointmentSearchListReqDto to(GetAppointmentSearchListReq reqDto);
+    GetAppointmentSearchListReqDto to(GetAppointmentSearchListReq req);
 
     GetAppointmentSearchListResp to(GetAppointmentSearchListRespDto respDto);
 
-    GetAppointmentInfoReqDto to(GetAppointmentInfoReq getAppointmentInfoReq);
+    GetAppointmentInfoReqDto to(GetAppointmentInfoReq req);
 
-    GetAppointmentInfoResp to(GetAppointmentInfoRespDto getAppointmentInfoRespDto);
+    GetAppointmentInfoResp to(GetAppointmentInfoRespDto respDto);
 
-    GetAppointmentParticipationInfoReqDto to(GetAppointmentParticipationInfoReq getAppointmentParticipationInfoReq);
+    GetAppointmentParticipationInfoReqDto to(GetAppointmentParticipationInfoReq req);
 
-
-    GetAppointmentParticipationInfoResp to(GetAppointmentParticipationInfoRespDto appointmentParticipationInfo);
+    GetAppointmentParticipationInfoResp to(GetAppointmentParticipationInfoRespDto respDto);
 }

@@ -18,10 +18,9 @@ public interface AppointmentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "confirmedDateTime", ignore = true)
-    Appointment to(CreateAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);
+    Appointment to(CreateAppointmentReqDto reqDto, AppointmentState appointmentState, String appointmentCode);
 
-    GetAppointmentListRespDto to(Appointment entity, String hostName);
+    GetAppointmentListRespDto toGetAppointmentListRespDto(Appointment entity, String hostName);
 
-    GetAppointmentSearchListRespDto toDto(Appointment entity, String hostName);
-
+    GetAppointmentSearchListRespDto toGetAppointmentSearchListRespDto(Appointment entity, String hostName);
 }
