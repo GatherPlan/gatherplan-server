@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@Schema(description = "약속 참여 현황 확인 요청 객체")
+@Schema(description = "약속 참여 상태 확인 요청 객체")
 public class ParticipationStatusReq {
 
     @Schema(description = "약속 코드", example = "abcd efgh j124")
