@@ -38,7 +38,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "해당 회원은 존재하지 않습니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
 
         String appointmentCode = UuidUtils.generateRandomString(12);
 
@@ -59,30 +59,38 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email) {
-        checkUserParticipation(email, reqDto.getAppointmentCode());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+
+        userAppointmentMappingRepository
+                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
     }
 
     @Override
     public List<AppointmentListRespDto> retrieveAppointmentList(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
 
         List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
 
         return maps.stream()
                 .map(mapping -> {
-                    Appointment appointment = appointmentRepository.findById(mapping.getAppointmentSeq())
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "약속을 찾을 수 없습니다."));
+                    Appointment appointment = appointmentRepository
+                            .findById(mapping.getAppointmentSeq())
+                            .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_ID));
 
                     UserAppointmentMapping hostMapping = userAppointmentMappingRepository
                             .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
                             .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
+                                    new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
                     User host = userRepository.findById(hostMapping.getUserSeq())
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
 
                     return appointmentMapper.toGetAppointmentListRespDto(appointment, host.getNickname());
                 })
@@ -94,25 +102,24 @@ public class AppointmentServiceImpl implements AppointmentService {
             AppointmentSearchListReqDto reqDto, String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
 
         List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
+
         return maps.stream()
                 .map(mapping -> {
                     Appointment appointment = appointmentRepository.findById(mapping.getAppointmentSeq())
                             .filter(filterAppointment -> filterAppointment.getAppointmentName()
                                     .contains(reqDto.getKeyword()))
                             .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "약속을 찾을 수 없습니다."));
+                                    new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_CONTAIN_KEYWORD));
 
                     UserAppointmentMapping hostMapping = userAppointmentMappingRepository
                             .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
+                            .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
                     User host = userRepository.findById(hostMapping.getUserSeq())
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
 
                     return appointmentMapper.toGetAppointmentSearchListRespDto(appointment, host.getNickname());
                 })
@@ -121,8 +128,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
-        checkUserParticipation(email, reqDto.getAppointmentCode());
-        Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+
+        userAppointmentMappingRepository
+                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
 
         return AppointmentInfoRespDto.builder()
                 .address(appointment.getAddress())
@@ -134,8 +149,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             AppointmentParticipationInfoReqDto reqDto, String email) {
 
-        checkUserParticipation(email, reqDto.getAppointmentCode());
-        Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+
+        userAppointmentMappingRepository
+                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
 
         List<UserAppointmentMapping> maps = userAppointmentMappingRepository
                 .findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
@@ -143,7 +166,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = maps.stream()
                 .map(mapping -> {
                     User findUser = userRepository.findById(mapping.getUserSeq())
-                            .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
 
                     return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findUser.getNickname())
@@ -162,7 +185,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
-        Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+
+        checkHost(user.getId(), appointment.getId());
 
         List<TempUserAppointmentMapping> tempUserMaps = tempUserAppointmentMappingRepository
                 .findAllByAppointmentSeq(appointment.getId());
@@ -186,48 +216,33 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
-        Appointment appointment = checkHost(email, reqDto.getAppointmentCode());
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+
+        checkHost(user.getId(), appointment.getId());
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
     }
 
-    private Appointment checkHost(String email, String appointmentCode) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
-        Appointment appointment = findAppointmentByCode(appointmentCode);
-
+    private void checkHost(Long userId, Long appointmentId) {
         UserAppointmentMapping maps = userAppointmentMappingRepository
-                .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트를 찾을 수 없습니다."));
+                .findByAppointmentSeqAndUserRole(appointmentId, UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
         User host = userRepository.findById(maps.getUserSeq())
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
 
-        if (!user.getId().equals(host.getId())) {
-            throw new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "호스트만 접근할 수 있습니다.");
+        if (!userId.equals(host.getId())) {
+            throw new AppointmentException(ErrorCode.SERVICE_ONLY_SUPPORT_HOST);
         }
 
-        return appointment;
-    }
-
-    private void checkUserParticipation(String email, String appointmentCode) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
-
-        Appointment appointment = findAppointmentByCode(appointmentCode);
-
-        userAppointmentMappingRepository
-                .findByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), user.getId(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "참여하지 않은 약속입니다."));
-    }
-
-
-    private Appointment findAppointmentByCode(String appointmentCode) {
-        return appointmentRepository
-                .findByAppointmentCode(appointmentCode)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 약속입니다."));
     }
 
 }
