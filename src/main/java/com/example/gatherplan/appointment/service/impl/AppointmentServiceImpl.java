@@ -34,7 +34,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final TempUserRepository tempUserRepository;
 
-
     @Override
     @Transactional
     public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
@@ -59,12 +58,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void checkParticipation(ParticipationStatusReqDto reqDto, String email) {
+    public void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email) {
         checkUserParticipation(email, reqDto.getAppointmentCode());
     }
 
     @Override
-    public List<AppointmentListRespDto> getAppointmentList(String email) {
+    public List<AppointmentListRespDto> retrieveAppointmentList(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
@@ -91,14 +90,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> getAppointmentSearchList(
+    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
             AppointmentSearchListReqDto reqDto, String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
         List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
-
         return maps.stream()
                 .map(mapping -> {
                     Appointment appointment = appointmentRepository.findById(mapping.getAppointmentSeq())
@@ -122,7 +120,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentInfoRespDto getAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
+    public AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
         checkUserParticipation(email, reqDto.getAppointmentCode());
         Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
 
@@ -133,7 +131,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
+    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             AppointmentParticipationInfoReqDto reqDto, String email) {
 
         checkUserParticipation(email, reqDto.getAppointmentCode());
