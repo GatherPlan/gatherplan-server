@@ -49,7 +49,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/participation-status")
-    @Operation(summary = "회원의 약속 참여 여부 확인 요청", description = "회원의 약속 참여 여부를 판단할 때 사용됩니다.")
+    @Operation(summary = "회원의 약속 참여 상태 확인 요청", description = "회원의 약속 참여 상태를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> retrieveParticipationStatus(
             @ModelAttribute @ParameterObject @Valid ParticipationStatusReq participationStatusReq,
             @AuthenticationPrincipal UserInfo userInfo) {
