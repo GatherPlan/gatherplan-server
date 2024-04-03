@@ -1,8 +1,8 @@
 package com.example.gatherplan.appointment.mapper;
 
+import com.example.gatherplan.appointment.dto.AppointmentListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
 import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.GetAppointmentListRespDto;
-import com.example.gatherplan.appointment.dto.GetAppointmentSearchListRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
@@ -20,7 +20,7 @@ public interface AppointmentMapper {
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateAppointmentReqDto reqDto, AppointmentState appointmentState, String appointmentCode);
 
-    GetAppointmentListRespDto toGetAppointmentListRespDto(Appointment entity, String hostName);
+    AppointmentListRespDto toGetAppointmentListRespDto(Appointment entity, String hostName);
 
-    GetAppointmentSearchListRespDto toGetAppointmentSearchListRespDto(Appointment entity, String hostName);
+    AppointmentSearchListRespDto toGetAppointmentSearchListRespDto(Appointment entity, String hostName);
 }

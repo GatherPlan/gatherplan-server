@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetAppointmentInfoRespDto {
+public class AppointmentInfoRespDto {
     private Address address;
     private ConfirmedDateTime confirmedDateTime;
 

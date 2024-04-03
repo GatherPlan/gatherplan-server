@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetAppointmentInfoReqDto {
+public class AppointmentInfoReqDto {
 
     private String appointmentCode;
 }

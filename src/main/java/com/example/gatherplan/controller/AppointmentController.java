@@ -48,13 +48,13 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/check")
+    @GetMapping("/participation-status")
     @Operation(summary = "회원의 약속 참여 여부 확인 요청", description = "회원의 약속 참여 여부를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkParticipation(
-            @ModelAttribute @ParameterObject @Valid CheckAppointmentReq createAppointmentReq,
+            @ModelAttribute @ParameterObject @Valid ParticipationStatusReq participationStatusReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        CheckAppointmentReqDto reqDto = appointmentVoMapper.to(createAppointmentReq);
+        ParticipationStatusReqDto reqDto = appointmentVoMapper.to(participationStatusReq);
         appointmentService.checkParticipation(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
@@ -64,10 +64,10 @@ public class AppointmentController {
 
     @GetMapping("/list")
     @Operation(summary = "회원의 약속 목록 조회 요청", description = "회원이 약속 목록을 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<GetAppointmentListResp>> getAppointmentList(
+    public ResponseEntity<ListResponse<AppointmentListResp>> getAppointmentList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<GetAppointmentListRespDto> respDtos = appointmentService.getAppointmentList(userInfo.getEmail());
+        List<AppointmentListRespDto> respDtos = appointmentService.getAppointmentList(userInfo.getEmail());
 
         return ResponseEntity.ok(
                 ListResponse.of(respDtos.stream().map(appointmentVoMapper::to).toList())
@@ -76,14 +76,14 @@ public class AppointmentController {
 
     @GetMapping("/list/search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<GetAppointmentSearchListResp>> getAppointmentSearchList(
-            @ModelAttribute @ParameterObject @Valid GetAppointmentSearchListReq getAppointmentSearchListReq,
+    public ResponseEntity<ListResponse<AppointmentSearchListResp>> getAppointmentSearchList(
+            @ModelAttribute @ParameterObject @Valid AppointmentSearchListReq appointmentSearchListReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentSearchListReqDto reqDto = appointmentVoMapper
-                .to(getAppointmentSearchListReq);
+        AppointmentSearchListReqDto reqDto = appointmentVoMapper
+                .to(appointmentSearchListReq);
 
-        List<GetAppointmentSearchListRespDto> respDtos = appointmentService
+        List<AppointmentSearchListRespDto> respDtos = appointmentService
                 .getAppointmentSearchList(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
@@ -95,12 +95,12 @@ public class AppointmentController {
 
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<GetAppointmentInfoResp> getAppointment(
-            @ModelAttribute @ParameterObject @Valid GetAppointmentInfoReq getAppointmentInfoReq,
+    public ResponseEntity<AppointmentInfoResp> getAppointment(
+            @ModelAttribute @ParameterObject @Valid AppointmentInfoReq appointmentInfoReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentInfoReqDto reqDto = appointmentVoMapper.to(getAppointmentInfoReq);
-        GetAppointmentInfoRespDto respDto = appointmentService.getAppointmentInfo(reqDto, userInfo.getEmail());
+        AppointmentInfoReqDto reqDto = appointmentVoMapper.to(appointmentInfoReq);
+        AppointmentInfoRespDto respDto = appointmentService.getAppointmentInfo(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
@@ -109,14 +109,14 @@ public class AppointmentController {
 
     @GetMapping("/participation")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<GetAppointmentParticipationInfoResp> getAppointment(
-            @ModelAttribute @ParameterObject @Valid GetAppointmentParticipationInfoReq getAppointmentParticipationInfoReq,
+    public ResponseEntity<AppointmentParticipationInfoResp> getAppointment(
+            @ModelAttribute @ParameterObject @Valid AppointmentParticipationInfoReq appointmentParticipationInfoReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        GetAppointmentParticipationInfoReqDto reqDto = appointmentVoMapper
-                .to(getAppointmentParticipationInfoReq);
+        AppointmentParticipationInfoReqDto reqDto = appointmentVoMapper
+                .to(appointmentParticipationInfoReq);
 
-        GetAppointmentParticipationInfoRespDto respDto = appointmentService
+        AppointmentParticipationInfoRespDto respDto = appointmentService
                 .getAppointmentParticipationInfo(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(

@@ -59,12 +59,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void checkParticipation(CheckAppointmentReqDto reqDto, String email) {
+    public void checkParticipation(ParticipationStatusReqDto reqDto, String email) {
         checkUserParticipation(email, reqDto.getAppointmentCode());
     }
 
     @Override
-    public List<GetAppointmentListRespDto> getAppointmentList(String email) {
+    public List<AppointmentListRespDto> getAppointmentList(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
@@ -91,8 +91,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<GetAppointmentSearchListRespDto> getAppointmentSearchList(
-            GetAppointmentSearchListReqDto reqDto, String email) {
+    public List<AppointmentSearchListRespDto> getAppointmentSearchList(
+            AppointmentSearchListReqDto reqDto, String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
@@ -122,19 +122,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public GetAppointmentInfoRespDto getAppointmentInfo(GetAppointmentInfoReqDto reqDto, String email) {
+    public AppointmentInfoRespDto getAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
         checkUserParticipation(email, reqDto.getAppointmentCode());
         Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
 
-        return GetAppointmentInfoRespDto.builder()
+        return AppointmentInfoRespDto.builder()
                 .address(appointment.getAddress())
                 .confirmedDateTime(appointment.getConfirmedDateTime())
                 .build();
     }
 
     @Override
-    public GetAppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
-            GetAppointmentParticipationInfoReqDto reqDto, String email) {
+    public AppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
+            AppointmentParticipationInfoReqDto reqDto, String email) {
 
         checkUserParticipation(email, reqDto.getAppointmentCode());
         Appointment appointment = findAppointmentByCode(reqDto.getAppointmentCode());
@@ -142,19 +142,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> maps = userAppointmentMappingRepository
                 .findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
-        List<GetAppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = maps.stream()
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = maps.stream()
                 .map(mapping -> {
                     User findUser = userRepository.findById(mapping.getUserSeq())
                             .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
-                    return GetAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                    return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findUser.getNickname())
                             .selectedDateTime(mapping.getSelectedDateTimeList())
                             .build();
                 })
                 .toList();
 
-        return GetAppointmentParticipationInfoRespDto.builder()
+        return AppointmentParticipationInfoRespDto.builder()
                 .userParticipationInfo(userParticipationInfoList)
                 .candidateTimeTypeList(appointment.getCandidateTimeTypeList())
                 .candidateDateList(appointment.getCandidateDateList())
