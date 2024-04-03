@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetAppointmentParticipationInfoRespDto {
+public class AppointmentParticipationInfoRespDto {
 
     private List<UserParticipationInfo> userParticipationInfo;
     private List<TimeType> candidateTimeTypeList;

@@ -14,21 +14,21 @@ import org.mapstruct.*;
 public interface AppointmentVoMapper {
     CreateAppointmentReqDto to(CreateAppointmentReq req);
 
-    CheckAppointmentReqDto to(CheckAppointmentReq req);
+    ParticipationStatusReqDto to(ParticipationStatusReq req);
 
-    GetAppointmentListResp to(GetAppointmentListRespDto respDto);
+    AppointmentListResp to(AppointmentListRespDto respDto);
 
-    GetAppointmentSearchListReqDto to(GetAppointmentSearchListReq req);
+    AppointmentSearchListReqDto to(AppointmentSearchListReq req);
 
-    GetAppointmentSearchListResp to(GetAppointmentSearchListRespDto respDto);
+    AppointmentSearchListResp to(AppointmentSearchListRespDto respDto);
 
-    GetAppointmentInfoReqDto to(GetAppointmentInfoReq req);
+    AppointmentInfoReqDto to(AppointmentInfoReq req);
 
-    GetAppointmentInfoResp to(GetAppointmentInfoRespDto respDto);
+    AppointmentInfoResp to(AppointmentInfoRespDto respDto);
 
-    GetAppointmentParticipationInfoReqDto to(GetAppointmentParticipationInfoReq req);
+    AppointmentParticipationInfoReqDto to(AppointmentParticipationInfoReq req);
 
-    GetAppointmentParticipationInfoResp to(GetAppointmentParticipationInfoRespDto respDto);
+    AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
 
     DeleteAppointmentReqDto to(DeleteAppointmentReq req);
 

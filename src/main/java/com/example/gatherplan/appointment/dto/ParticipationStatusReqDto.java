@@ -6,7 +6,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetAppointmentSearchListReqDto {
-
-    private String keyword;
+public class ParticipationStatusReqDto {
+    private String appointmentCode;
 }

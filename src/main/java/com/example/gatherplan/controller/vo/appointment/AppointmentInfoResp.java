@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "약속 목록 조회 응답 객체")
-public class GetAppointmentInfoResp {
+public class AppointmentInfoResp {
 
     @Schema(description = "약속 장소", example = "서울 성동구 용답동")
     private Address address;

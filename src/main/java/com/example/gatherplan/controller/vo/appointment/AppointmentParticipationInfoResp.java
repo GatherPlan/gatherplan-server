@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Builder
 @Schema(description = "약속 참여 정보 조회 응답 객체")
-public class GetAppointmentParticipationInfoResp {
+public class AppointmentParticipationInfoResp {
 
     @Schema(description = "약속 참여 정보 (회원)", example = "맨땅에 헤딩")
     private List<UserParticipationInfo> userParticipationInfo;
