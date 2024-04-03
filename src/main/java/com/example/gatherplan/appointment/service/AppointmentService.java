@@ -8,16 +8,16 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, String email);
 
-    void checkParticipation(ParticipationStatusReqDto reqDto, String email);
+    void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email);
 
-    List<AppointmentListRespDto> getAppointmentList(String email);
+    List<AppointmentListRespDto> retrieveAppointmentList(String email);
 
-    List<AppointmentSearchListRespDto> getAppointmentSearchList(
+    List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
             AppointmentSearchListReqDto reqDto, String email);
 
-    AppointmentInfoRespDto getAppointmentInfo(AppointmentInfoReqDto reqDto, String email);
+    AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email);
 
-    AppointmentParticipationInfoRespDto getAppointmentParticipationInfo(
+    AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             AppointmentParticipationInfoReqDto reqDto, String email);
 
     void deleteAppointment(DeleteAppointmentReqDto reqDto, String email);
