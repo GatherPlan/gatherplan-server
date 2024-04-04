@@ -31,7 +31,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public Boolean isUserMappedToAppointment(String email, String appointmentCode, UserRole userRole) {
+    public Boolean existUserMappedToAppointment(String email, String appointmentCode, UserRole userRole) {
         return jpaQueryFactory
                 .select(user.id.isNotNull())
                 .from(userAppointmentMapping)

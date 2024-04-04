@@ -60,7 +60,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
                 email, reqDto.getAppointmentCode(), UserRole.GUEST).equals(Boolean.FALSE)) {
             throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
         }
@@ -114,9 +114,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
                 email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
         Appointment appointment = appointmentRepository
@@ -145,17 +145,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
                 email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
-                reqDto.getAddress(), reqDto.getCandidateDateList());
+        appointment.update(reqDto.getAppointmentName()
+                , reqDto.getCandidateTimeTypeList(), reqDto.getAddress(), reqDto.getCandidateDateList());
     }
 
 }

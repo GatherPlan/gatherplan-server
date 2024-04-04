@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CustomUserAppointmentMappingRepository {
 
-    Boolean isUserMappedToAppointment(String email, String appointmentCode, UserRole userRole);
+    Boolean existUserMappedToAppointment(String email, String appointmentCode, UserRole userRole);
 
     List<UserAppointmentInfoDto> findAllAppointmentsWithHostByEmail(String email);
 

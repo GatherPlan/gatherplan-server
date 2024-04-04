@@ -20,7 +20,7 @@ public enum ErrorCode {
     NOT_FOUND_USER_BY_EMAIL(HttpStatus.NOT_FOUND, 3000, "해당 이메일을 가지는 회원을 찾을 수 없습니다."),
     NOT_FOUND_USER_BY_ID(HttpStatus.NOT_FOUND, 3001, "해당 아이디를 가지는 회원을 찾을 수 없습니다."),
     NOT_FOUND_HOST(HttpStatus.NOT_FOUND, 3002, "해당 약속의 호스트를 찾을 수 없습니다."),
-    SERVICE_ONLY_SUPPORT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 기능은 호스트만 접근할 수 있습니다."),
+    USER_NOT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 유저는 호스트가 아닙니다."),
 
     NOT_FOUND_APPOINTMENT_BY_ID(HttpStatus.NOT_FOUND, 4001, "해당 아이디를 가지는 약속을 찾을 수 없습니다."),
     NOT_FOUND_APPOINTMENT_BY_CODE(HttpStatus.NOT_FOUND, 4002, "해당 약속 코드를 가지는 약속을 찾을 수 없습니다."),
