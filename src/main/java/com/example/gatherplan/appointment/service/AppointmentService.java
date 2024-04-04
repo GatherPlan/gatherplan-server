@@ -12,8 +12,8 @@ public interface AppointmentService {
 
     List<AppointmentWithHostRespDto> retrieveAppointmentList(String email);
 
-    List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
-            AppointmentSearchListReqDto reqDto, String email);
+    List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(
+            AppointmentSearchReqDto reqDto, String email);
 
     AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email);
 

@@ -18,10 +18,8 @@ public interface AppointmentVoMapper {
 
     AppointmentWithHostResp to(AppointmentWithHostRespDto respDto);
 
-    AppointmentSearchListReqDto to(AppointmentSearchListReq req);
-
-    AppointmentSearchListResp to(AppointmentSearchListRespDto respDto);
-
+    AppointmentSearchReqDto to(AppointmentSearchReq req);
+    
     AppointmentInfoReqDto to(AppointmentInfoReq req);
 
     AppointmentInfoResp to(AppointmentInfoRespDto respDto);

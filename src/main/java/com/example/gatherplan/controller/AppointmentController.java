@@ -80,13 +80,13 @@ public class AppointmentController {
 
     @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<AppointmentSearchListResp>> retrieveAppointmentSearchList(
-            @ModelAttribute @ParameterObject @Valid AppointmentSearchListReq appointmentSearchListReq,
+    public ResponseEntity<ListResponse<AppointmentWithHostResp>> retrieveAppointmentSearchList(
+            @ModelAttribute @ParameterObject @Valid AppointmentSearchReq appointmentSearchReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentSearchListReqDto reqDto = appointmentVoMapper.to(appointmentSearchListReq);
+        AppointmentSearchReqDto reqDto = appointmentVoMapper.to(appointmentSearchReq);
 
-        List<AppointmentSearchListRespDto> respDtos = appointmentService
+        List<AppointmentWithHostRespDto> respDtos = appointmentService
                 .retrieveAppointmentSearchList(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(

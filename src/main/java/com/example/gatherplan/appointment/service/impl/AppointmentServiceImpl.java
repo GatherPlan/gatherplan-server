@@ -8,7 +8,6 @@ import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
@@ -31,9 +30,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
-    private final TempUserRepository tempUserRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
+    private final CustomTempUserRepository customTempUserRepository;
+    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -70,37 +69,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
-            AppointmentSearchListReqDto reqDto, String email) {
+    public List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(
+            AppointmentSearchReqDto reqDto, String email) {
         return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmailAndKeyword(
                 email, reqDto.getKeyword());
     }
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
-        AppointmentInfoDto appointmentInfoDto = customUserAppointmentMappingRepository
-                .findAppointmentInfoDto(email, reqDto.getAppointmentCode())
+        return customUserAppointmentMappingRepository
+                .findAppointmentInfo(email, reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
-
-        return appointmentMapper.to(appointmentInfoDto);
     }
 
     @Override
-    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
-            AppointmentParticipationInfoReqDto reqDto, String email) {
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(AppointmentParticipationInfoReqDto reqDto, String email) {
+        return customUserAppointmentMappingRepository
+                .findAppointmentParticipationInfo(email, reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
-
-        List<AppointmentParticipationInfoDto.UserParticipationInfo> appointmentParticipationInfoList =
-                customUserAppointmentMappingRepository.findAppointmentParticipationInfoList(email, reqDto.getAppointmentCode());
-
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = appointmentParticipationInfoList
-                .stream().map(appointmentMapper::to).toList();
-
-        return appointmentMapper.to(userParticipationInfoList, appointment.getCandidateTimeTypeList()
-                , appointment.getCandidateDateList());
     }
 
     @Override
@@ -115,23 +101,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        List<TempUserAppointmentMapping> tempUserMaps = tempUserAppointmentMappingRepository
-                .findAllByAppointmentSeq(appointment.getId());
+        Long appointmentId = appointment.getId();
 
-        List<Long> tempUserDeleteList = tempUserMaps.stream()
-                .map(TempUserAppointmentMapping::getTempUserSeq)
-                .toList();
-
-        tempUserRepository.deleteAllById(tempUserDeleteList);
-
-        tempUserAppointmentMappingRepository.deleteAll(tempUserMaps);
-
-        List<UserAppointmentMapping> userMaps = userAppointmentMappingRepository
-                .findAllByAppointmentSeq(appointment.getId());
-
-        userAppointmentMappingRepository.deleteAll(userMaps);
-
-        appointmentRepository.deleteById(appointment.getId());
+        customTempUserRepository.deleteAllByAppointmentId(appointmentId);
+        customTempUserAppointmentMappingRepository.deleteAllByAppointmentId(appointmentId);
+        customUserAppointmentMappingRepository.deleteAllByAppointmentId(appointmentId);
+        appointmentRepository.deleteById(appointmentId);
     }
 
     @Override
