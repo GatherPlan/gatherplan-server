@@ -16,7 +16,7 @@ public interface AppointmentVoMapper {
 
     ParticipationStatusReqDto to(ParticipationStatusReq req);
 
-    AppointmentListResp to(AppointmentListRespDto respDto);
+    AppointmentWithHostResp to(AppointmentWithHostRespDto respDto);
 
     AppointmentSearchListReqDto to(AppointmentSearchListReq req);
 

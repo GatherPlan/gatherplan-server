@@ -59,29 +59,21 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.GUEST).equals(Boolean.FALSE)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
-        }
+    public boolean isUserParticipated(ParticipationStatusReqDto reqDto, String email) {
+        return customUserAppointmentMappingRepository.existUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.GUEST);
     }
 
     @Override
-    public List<AppointmentListRespDto> retrieveAppointmentList(String email) {
-        List<UserAppointmentInfoDto> allAppointmentsWithHostByEmail = customUserAppointmentMappingRepository
-                .findAllAppointmentsWithHostByEmail(email);
-
-        return allAppointmentsWithHostByEmail.stream().map(appointmentMapper::to).toList();
+    public List<AppointmentWithHostRespDto> retrieveAppointmentList(String email) {
+        return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmail(email);
     }
 
     @Override
     public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
             AppointmentSearchListReqDto reqDto, String email) {
-
-        List<UserAppointmentKeywordInfoDto> allAppointmentsWithHostByEmailAndKeyword = customUserAppointmentMappingRepository
-                .findAllAppointmentsWithHostByEmailAndKeyword(email, reqDto.getKeyword());
-
-        return allAppointmentsWithHostByEmailAndKeyword.stream().map(appointmentMapper::to).toList();
+        return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmailAndKeyword(
+                email, reqDto.getKeyword());
     }
 
     @Override
@@ -114,8 +106,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
+        if (!customUserAppointmentMappingRepository.existUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.HOST)) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
@@ -145,8 +137,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
-        if (customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
+        if (!customUserAppointmentMappingRepository.existUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.HOST)) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
@@ -154,8 +146,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        appointment.update(reqDto.getAppointmentName()
-                , reqDto.getCandidateTimeTypeList(), reqDto.getAddress(), reqDto.getCandidateDateList());
+        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
+                reqDto.getAddress(), reqDto.getCandidateDateList());
     }
 
 }

@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "약속 목록 조회 응답 객체")
-public class AppointmentListResp {
+public class AppointmentWithHostResp {
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;
     @Schema(description = "호스트 이름", example = "박정빈")

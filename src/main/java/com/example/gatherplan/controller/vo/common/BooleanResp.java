@@ -20,4 +20,10 @@ public class BooleanResp {
                 .build();
     }
 
+    public static BooleanResp of(boolean isSuccess) {
+        return BooleanResp.builder()
+                .isSuccess(isSuccess)
+                .build();
+    }
+
 }
