@@ -1,6 +1,6 @@
-package com.example.gatherplan.appointment.repository;
+package com.example.gatherplan.region.repository;
 
-import com.example.gatherplan.appointment.repository.entity.Region;
+import com.example.gatherplan.region.repository.entity.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

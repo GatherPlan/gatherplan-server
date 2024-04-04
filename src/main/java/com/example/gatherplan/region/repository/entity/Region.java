@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.repository.entity;
+package com.example.gatherplan.region.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Comment("지역 이름")
     @Column(nullable = false)
     private String address;

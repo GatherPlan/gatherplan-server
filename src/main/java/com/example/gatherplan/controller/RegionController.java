@@ -1,10 +1,10 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.*;
-import com.example.gatherplan.appointment.service.RegionService;
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.ListResponse;
+import com.example.gatherplan.region.dto.*;
+import com.example.gatherplan.region.service.RegionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,9 +1,9 @@
 package com.example.gatherplan.common.config;
 
 import com.example.gatherplan.appointment.dto.CSVRowDto;
-import com.example.gatherplan.appointment.service.impl.RegionServiceImpl;
+import com.example.gatherplan.region.service.RegionService;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +18,12 @@ import java.util.List;
  * 로컬 DB에 법정동, 법정동 코드 관련 csv 파일을 불러오기 위한 임시 컴포넌트입니다.
  */
 @Component
+@RequiredArgsConstructor
 public class CSVReader {
 
+    private final RegionService regionService;
     @Value("${csv.file.path}")
     private String csvFilePath;
-
-    @Autowired
-    private RegionServiceImpl regionService;
 
     @PostConstruct
     public void readAndSaveCSV() throws IOException {

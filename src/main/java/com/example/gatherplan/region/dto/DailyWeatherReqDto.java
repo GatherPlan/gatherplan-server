@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.dto;
+package com.example.gatherplan.region.dto;
 
 import lombok.*;
 

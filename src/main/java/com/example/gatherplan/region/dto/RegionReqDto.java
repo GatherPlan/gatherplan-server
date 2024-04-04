@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.dto;
+package com.example.gatherplan.region.dto;
 
 import lombok.*;
 
@@ -6,9 +6,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KeywordPlaceReqDto {
+public class RegionReqDto {
     private String keyword;
-    private int page;
-    private int size;
-
 }
