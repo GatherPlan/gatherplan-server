@@ -33,6 +33,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final TempUserRepository tempUserRepository;
+    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -59,140 +60,68 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
-
-        userAppointmentMappingRepository
-                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
+        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.GUEST).equals(Boolean.FALSE)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
+        }
     }
 
     @Override
     public List<AppointmentListRespDto> retrieveAppointmentList(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+        List<UserAppointmentInfoDto> allAppointmentsWithHostByEmail = customUserAppointmentMappingRepository
+                .findAllAppointmentsWithHostByEmail(email);
 
-        List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
-
-        return maps.stream()
-                .map(mapping -> {
-                    Appointment appointment = appointmentRepository
-                            .findById(mapping.getAppointmentSeq())
-                            .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_ID));
-
-                    UserAppointmentMapping hostMapping = userAppointmentMappingRepository
-                            .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.NOT_FOUND_HOST));
-
-                    User host = userRepository.findById(hostMapping.getUserSeq())
-                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
-
-                    return appointmentMapper.toGetAppointmentListRespDto(appointment, host.getNickname());
-                })
-                .toList();
+        return allAppointmentsWithHostByEmail.stream().map(appointmentMapper::to).toList();
     }
 
     @Override
     public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
             AppointmentSearchListReqDto reqDto, String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+        List<UserAppointmentKeywordInfoDto> allAppointmentsWithHostByEmailAndKeyword = customUserAppointmentMappingRepository
+                .findAllAppointmentsWithHostByEmailAndKeyword(email, reqDto.getKeyword());
 
-        List<UserAppointmentMapping> maps = userAppointmentMappingRepository.findByUserSeq(user.getId());
-
-        return maps.stream()
-                .map(mapping -> {
-                    Appointment appointment = appointmentRepository.findById(mapping.getAppointmentSeq())
-                            .filter(filterAppointment -> filterAppointment.getAppointmentName()
-                                    .contains(reqDto.getKeyword()))
-                            .orElseThrow(() ->
-                                    new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_CONTAIN_KEYWORD));
-
-                    UserAppointmentMapping hostMapping = userAppointmentMappingRepository
-                            .findByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST)
-                            .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
-
-                    User host = userRepository.findById(hostMapping.getUserSeq())
-                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
-
-                    return appointmentMapper.toGetAppointmentSearchListRespDto(appointment, host.getNickname());
-                })
-                .toList();
+        return allAppointmentsWithHostByEmailAndKeyword.stream().map(appointmentMapper::to).toList();
     }
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+        AppointmentInfoDto appointmentInfoDto = customUserAppointmentMappingRepository
+                .findAppointmentInfoDto(email, reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        userAppointmentMappingRepository
-                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
-
-        return AppointmentInfoRespDto.builder()
-                .address(appointment.getAddress())
-                .confirmedDateTime(appointment.getConfirmedDateTime())
-                .build();
+        return appointmentMapper.to(appointmentInfoDto);
     }
 
     @Override
     public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             AppointmentParticipationInfoReqDto reqDto, String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
-
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        userAppointmentMappingRepository
-                .findByUserSeqAndAppointmentSeqAndUserRole(user.getId(), appointment.getId(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT));
+        List<AppointmentParticipationInfoDto.UserParticipationInfo> appointmentParticipationInfoList =
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfoList(email, reqDto.getAppointmentCode());
 
-        List<UserAppointmentMapping> maps = userAppointmentMappingRepository
-                .findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = appointmentParticipationInfoList
+                .stream().map(appointmentMapper::to).toList();
 
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = maps.stream()
-                .map(mapping -> {
-                    User findUser = userRepository.findById(mapping.getUserSeq())
-                            .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
-
-                    return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
-                            .nickname(findUser.getNickname())
-                            .selectedDateTime(mapping.getSelectedDateTimeList())
-                            .build();
-                })
-                .toList();
-
-        return AppointmentParticipationInfoRespDto.builder()
-                .userParticipationInfo(userParticipationInfoList)
-                .candidateTimeTypeList(appointment.getCandidateTimeTypeList())
-                .candidateDateList(appointment.getCandidateDateList())
-                .build();
+        return appointmentMapper.to(userParticipationInfoList, appointment.getCandidateTimeTypeList()
+                , appointment.getCandidateDateList());
     }
 
     @Override
     @Transactional
     public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
+        }
 
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
-
-        checkHost(user.getId(), appointment.getId());
 
         List<TempUserAppointmentMapping> tempUserMaps = tempUserAppointmentMappingRepository
                 .findAllByAppointmentSeq(appointment.getId());
@@ -216,33 +145,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+        if (customUserAppointmentMappingRepository.isUserMappedToAppointment(
+                email, reqDto.getAppointmentCode(), UserRole.HOST).equals(Boolean.FALSE)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_PARTICIPATE_APPOINTMENT);
+        }
 
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
-        checkHost(user.getId(), appointment.getId());
-
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
-    }
-
-
-    private void checkHost(Long userId, Long appointmentId) {
-        UserAppointmentMapping maps = userAppointmentMappingRepository
-                .findByAppointmentSeqAndUserRole(appointmentId, UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
-
-        User host = userRepository.findById(maps.getUserSeq())
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_ID));
-
-        if (!userId.equals(host.getId())) {
-            throw new AppointmentException(ErrorCode.SERVICE_ONLY_SUPPORT_HOST);
-        }
-
     }
 
 }
