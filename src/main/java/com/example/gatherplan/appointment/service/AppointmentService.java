@@ -8,9 +8,9 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, String email);
 
-    void retrieveParticipationStatus(ParticipationStatusReqDto reqDto, String email);
+    boolean isUserParticipated(ParticipationStatusReqDto reqDto, String email);
 
-    List<AppointmentListRespDto> retrieveAppointmentList(String email);
+    List<AppointmentWithHostRespDto> retrieveAppointmentList(String email);
 
     List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(
             AppointmentSearchListReqDto reqDto, String email);

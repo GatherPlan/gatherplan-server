@@ -2,15 +2,17 @@ package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentInfoDto;
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoDto;
-import com.example.gatherplan.appointment.dto.UserAppointmentInfoDto;
-import com.example.gatherplan.appointment.dto.UserAppointmentKeywordInfoDto;
+import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -31,76 +33,68 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public Boolean existUserMappedToAppointment(String email, String appointmentCode, UserRole userRole) {
-        return jpaQueryFactory
-                .select(user.id.isNotNull())
-                .from(userAppointmentMapping)
+    public boolean existUserMappedToAppointment(String email, String appointmentCode, UserRole userRole) {
+        UserAppointmentMapping result = jpaQueryFactory
+                .selectFrom(userAppointmentMapping)
                 .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
                 .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
                 .where(user.email.eq(email)
                         .and(appointment.appointmentCode.eq(appointmentCode))
                         .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchOne();
+                .fetchFirst();
+
+        return ObjectUtils.isNotEmpty(result);
     }
 
     @Override
-    public List<UserAppointmentInfoDto> findAllAppointmentsWithHostByEmail(String email) {
-        Long userId = jpaQueryFactory
-                .select(user.id)
-                .from(user)
-                .where(user.email.eq(email))
-                .fetchOne();
-
+    public List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmail(String email) {
         return jpaQueryFactory
-                .select(Projections.constructor(UserAppointmentInfoDto.class,
+                .select(Projections.constructor(AppointmentWithHostRespDto.class,
                         user.nickname,
                         appointment.appointmentCode,
                         appointment.appointmentName,
                         appointment.appointmentState))
                 .from(userAppointmentMapping)
-                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .join(user).on(userAppointmentMapping.userSeq.eq(user.id).and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .where(userAppointmentMapping.userSeq.eq(userId))
+                .join(appointment).on(
+                        userAppointmentMapping.appointmentSeq.eq(appointment.id))
+                .join(user).on(
+                        userAppointmentMapping.userSeq.eq(user.id)
+                                .and(user.email.eq(email)))
+                .where(userAppointmentMapping.userRole.eq(UserRole.HOST))
                 .fetch();
     }
 
     @Override
-    public List<UserAppointmentKeywordInfoDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
-        Long userId = jpaQueryFactory
-                .select(user.id)
-                .from(user)
-                .where(user.email.eq(email))
-                .fetchOne();
-
+    public List<AppointmentSearchListRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
         return jpaQueryFactory
-                .select(Projections.constructor(UserAppointmentKeywordInfoDto.class,
+                .select(Projections.constructor(AppointmentSearchListRespDto.class,
                         user.nickname,
                         appointment.appointmentCode,
                         appointment.appointmentName,
                         appointment.appointmentState))
                 .from(userAppointmentMapping)
                 .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .join(user).on(userAppointmentMapping.userSeq.eq(user.id).and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .where(userAppointmentMapping.userSeq.eq(userId).and(appointment.appointmentName.contains(keyword)))
+                .join(user).on(
+                        userAppointmentMapping.userSeq.eq(user.id)
+                                .and(user.email.eq(email)))
+                .where(appointment.appointmentName.contains(keyword)
+                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetch();
     }
 
     @Override
     public Optional<AppointmentInfoDto> findAppointmentInfoDto(String email, String appointmentCode) {
-        Long userId = jpaQueryFactory
-                .select(user.id)
-                .from(user)
-                .where(user.email.eq(email))
-                .fetchOne();
-
         return Optional.ofNullable(jpaQueryFactory
                 .select(Projections.constructor(AppointmentInfoDto.class,
                         appointment.address,
                         appointment.confirmedDateTime))
                 .from(userAppointmentMapping)
-                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id)
-                        .and(appointment.appointmentCode.eq(appointmentCode)))
-                .join(user).on(userAppointmentMapping.appointmentSeq.eq(userId))
+                .join(appointment).on(
+                        userAppointmentMapping.appointmentSeq.eq(appointment.id)
+                                .and(appointment.appointmentCode.eq(appointmentCode)))
+                .join(user).on(
+                        userAppointmentMapping.appointmentSeq.eq(user.id)
+                                .and(user.email.eq(email)))
                 .where(userAppointmentMapping.userRole.eq(UserRole.GUEST))
                 .fetchOne());
     }

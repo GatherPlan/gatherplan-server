@@ -22,14 +22,6 @@ public interface AppointmentMapper {
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateAppointmentReqDto reqDto, AppointmentState appointmentState, String appointmentCode);
 
-    AppointmentListRespDto toGetAppointmentListRespDto(Appointment entity, String hostName);
-
-    AppointmentSearchListRespDto toGetAppointmentSearchListRespDto(Appointment entity, String hostName);
-
-    AppointmentListRespDto to(UserAppointmentInfoDto dto);
-
-    AppointmentSearchListRespDto to(UserAppointmentKeywordInfoDto dto);
-
     AppointmentInfoRespDto to(AppointmentInfoDto dto);
 
     AppointmentParticipationInfoRespDto.UserParticipationInfo to(AppointmentParticipationInfoDto.UserParticipationInfo dto);

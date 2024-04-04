@@ -55,40 +55,44 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ParticipationStatusReqDto reqDto = appointmentVoMapper.to(participationStatusReq);
-        appointmentService.retrieveParticipationStatus(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                BooleanResp.success()
+                BooleanResp.of(
+                        appointmentService.isUserParticipated(reqDto, userInfo.getEmail())
+                )
         );
     }
 
     @GetMapping("/list")
     @Operation(summary = "회원의 약속 목록 조회 요청", description = "회원이 약속 목록을 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<AppointmentListResp>> retrieveAppointmentList(
+    public ResponseEntity<ListResponse<AppointmentWithHostResp>> retrieveAppointmentList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentListRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail());
+        List<AppointmentWithHostRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail());
 
         return ResponseEntity.ok(
-                ListResponse.of(respDtos.stream().map(appointmentVoMapper::to).toList())
+                ListResponse.of(
+                        respDtos.stream()
+                                .map(appointmentVoMapper::to).toList()
+                )
         );
     }
 
-    @GetMapping("/list/search")
+    @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
     public ResponseEntity<ListResponse<AppointmentSearchListResp>> retrieveAppointmentSearchList(
             @ModelAttribute @ParameterObject @Valid AppointmentSearchListReq appointmentSearchListReq,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentSearchListReqDto reqDto = appointmentVoMapper
-                .to(appointmentSearchListReq);
+        AppointmentSearchListReqDto reqDto = appointmentVoMapper.to(appointmentSearchListReq);
 
         List<AppointmentSearchListRespDto> respDtos = appointmentService
                 .retrieveAppointmentSearchList(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                        respDtos.stream()
+                                .map(appointmentVoMapper::to).toList()
                 )
         );
     }
