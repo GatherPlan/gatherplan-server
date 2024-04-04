@@ -58,9 +58,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean isUserParticipated(ParticipationStatusReqDto reqDto, String email) {
+    public boolean isUserParticipated(String appointmentCode, String email) {
         return customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.GUEST);
+                email, appointmentCode, UserRole.GUEST);
     }
 
     @Override
@@ -69,36 +69,35 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(
-            AppointmentSearchReqDto reqDto, String email) {
+    public List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(String keyword, String email) {
         return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmailAndKeyword(
-                email, reqDto.getKeyword());
+                email, keyword);
     }
 
     @Override
-    public AppointmentInfoRespDto retrieveAppointmentInfo(AppointmentInfoReqDto reqDto, String email) {
+    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email) {
         return customUserAppointmentMappingRepository
-                .findAppointmentInfo(email, reqDto.getAppointmentCode())
+                .findAppointmentInfo(email, appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
     }
 
     @Override
-    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(AppointmentParticipationInfoReqDto reqDto, String email) {
+    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
         return customUserAppointmentMappingRepository
-                .findAppointmentParticipationInfo(email, reqDto.getAppointmentCode())
+                .findAppointmentParticipationInfo(email, appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
     }
 
     @Override
     @Transactional
-    public void deleteAppointment(DeleteAppointmentReqDto reqDto, String email) {
+    public void deleteAppointment(String appointmentCode, String email) {
         if (!customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.HOST)) {
+                email, appointmentCode, UserRole.HOST)) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
         Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
 
         Long appointmentId = appointment.getId();

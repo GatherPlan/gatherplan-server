@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.UserException;
@@ -46,10 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void authenticateEmail(AuthenticateEmailReqDto reqDto) {
-
-        String email = reqDto.getEmail();
-
+    public void authenticateEmail(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
         });

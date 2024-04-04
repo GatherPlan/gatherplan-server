@@ -1,6 +1,5 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
@@ -34,8 +33,7 @@ public class UserController {
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Valid @RequestBody AuthenticateEmailReq authenticateEmailReq) {
 
-        AuthenticateEmailReqDto authenticateEmailReqDto = userVoMapper.to(authenticateEmailReq);
-        userService.authenticateEmail(authenticateEmailReqDto);
+        userService.authenticateEmail(authenticateEmailReq.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()

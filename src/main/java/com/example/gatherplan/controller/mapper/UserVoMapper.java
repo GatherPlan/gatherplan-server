@@ -1,8 +1,6 @@
 package com.example.gatherplan.controller.mapper;
 
-import com.example.gatherplan.appointment.dto.AuthenticateEmailReqDto;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
-import com.example.gatherplan.controller.vo.appointment.AuthenticateEmailReq;
 import com.example.gatherplan.controller.vo.appointment.CreateUserReq;
 import org.mapstruct.*;
 
@@ -15,6 +13,4 @@ import org.mapstruct.*;
 )
 public interface UserVoMapper {
     CreateUserReqDto to(CreateUserReq req);
-
-    AuthenticateEmailReqDto to(AuthenticateEmailReq req);
 }
