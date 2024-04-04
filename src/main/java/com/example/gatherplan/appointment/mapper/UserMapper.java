@@ -14,7 +14,6 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface UserMapper {
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "encodedPassword")
     User to(CreateUserReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType roleType);

@@ -22,16 +22,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentServiceImpl implements AppointmentService {
 
+    private final UserRepository userRepository;
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
-    private final UserRepository userRepository;
+    private final CustomTempUserRepository customTempUserRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
-    private final CustomTempUserRepository customTempUserRepository;
     private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
 
     @Override
