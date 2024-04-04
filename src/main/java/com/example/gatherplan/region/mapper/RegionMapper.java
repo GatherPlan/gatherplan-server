@@ -1,11 +1,11 @@
-package com.example.gatherplan.appointment.mapper;
+package com.example.gatherplan.region.mapper;
 
 import com.example.gatherplan.api.vo.DailyWeatherClientResp;
 import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
-import com.example.gatherplan.appointment.dto.DailyWeatherRespDto;
-import com.example.gatherplan.appointment.dto.KeywordPlaceRespDto;
-import com.example.gatherplan.appointment.dto.RegionDto;
-import com.example.gatherplan.appointment.repository.entity.Region;
+import com.example.gatherplan.region.dto.DailyWeatherRespDto;
+import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.region.dto.RegionDto;
+import com.example.gatherplan.region.repository.entity.Region;
 import org.mapstruct.*;
 
 @Mapper(

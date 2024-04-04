@@ -1,16 +1,17 @@
-package com.example.gatherplan.appointment.service.impl;
+package com.example.gatherplan.region.service.impl;
 
 import com.example.gatherplan.api.KakaoLocationClient;
 import com.example.gatherplan.api.WeatherNewsClient;
 import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
-import com.example.gatherplan.appointment.dto.*;
-import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.appointment.mapper.RegionMapper;
-import com.example.gatherplan.appointment.repository.CustomRegionRepository;
-import com.example.gatherplan.appointment.repository.RegionRepository;
-import com.example.gatherplan.appointment.repository.entity.Region;
-import com.example.gatherplan.appointment.service.RegionService;
+import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.region.dto.*;
+import com.example.gatherplan.region.exception.RegionException;
+import com.example.gatherplan.region.mapper.RegionMapper;
+import com.example.gatherplan.region.repository.CustomRegionRepository;
+import com.example.gatherplan.region.repository.RegionRepository;
+import com.example.gatherplan.region.repository.entity.Region;
+import com.example.gatherplan.region.service.RegionService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,15 +54,15 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto) {
-
         Region region = customRegionRepository.findRegionByAddressName(reqDto.getAddressName())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
+                .orElseThrow(() -> new RegionException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(regionMapper::to)
                 .toList();
     }
 
+    @Override
     @Transactional
     public void saveFromCSV(List<CSVRowDto> rows) {
         List<Region> entities = new ArrayList<>();

@@ -1,7 +1,7 @@
-package com.example.gatherplan.appointment.repository.impl;
+package com.example.gatherplan.region.repository.impl;
 
-import com.example.gatherplan.appointment.repository.CustomRegionRepository;
-import com.example.gatherplan.appointment.repository.entity.Region;
+import com.example.gatherplan.region.repository.CustomRegionRepository;
+import com.example.gatherplan.region.repository.entity.Region;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.example.gatherplan.appointment.repository.entity.QRegion.region;
+import static com.example.gatherplan.region.repository.entity.QRegion.region;
 
 @Repository
 public class CustomRegionRepositoryImpl implements CustomRegionRepository {
