@@ -1,11 +1,11 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentInfoDto;
-import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoDto;
-import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentInfoRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
@@ -65,9 +65,9 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
+    public List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
         return jpaQueryFactory
-                .select(Projections.constructor(AppointmentSearchListRespDto.class,
+                .select(Projections.constructor(AppointmentWithHostRespDto.class,
                         user.nickname,
                         appointment.appointmentCode,
                         appointment.appointmentName,
@@ -83,11 +83,15 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public Optional<AppointmentInfoDto> findAppointmentInfoDto(String email, String appointmentCode) {
+    public Optional<AppointmentInfoRespDto> findAppointmentInfo(String email, String appointmentCode) {
         return Optional.ofNullable(jpaQueryFactory
-                .select(Projections.constructor(AppointmentInfoDto.class,
+                .select(Projections.constructor(AppointmentInfoRespDto.class,
                         appointment.address,
-                        appointment.confirmedDateTime))
+                        appointment.confirmedDateTime,
+                        appointment.appointmentName,
+                        user.nickname,
+                        appointment.appointmentState,
+                        appointment.appointmentCode))
                 .from(userAppointmentMapping)
                 .join(appointment).on(
                         userAppointmentMapping.appointmentSeq.eq(appointment.id)
@@ -95,13 +99,19 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .join(user).on(
                         userAppointmentMapping.appointmentSeq.eq(user.id)
                                 .and(user.email.eq(email)))
-                .where(userAppointmentMapping.userRole.eq(UserRole.GUEST))
+                .where(userAppointmentMapping.userRole.eq(UserRole.HOST))
                 .fetchOne());
     }
 
     @Override
-    public List<AppointmentParticipationInfoDto.UserParticipationInfo> findAppointmentParticipationInfoList(
+    public Optional<AppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(
             String email, String appointmentCode) {
+
+        Appointment findAppointment = jpaQueryFactory
+                .selectFrom(appointment)
+                .where(appointment.appointmentCode.eq(appointmentCode))
+                .fetchFirst();
+
         List<Tuple> tuples = jpaQueryFactory
                 .select(user.nickname, userAppointmentMapping.selectedDateTimeList)
                 .from(userAppointmentMapping)
@@ -111,13 +121,14 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                         .and(appointment.appointmentCode.eq(appointmentCode)))
                 .fetch();
 
-        List<AppointmentParticipationInfoDto.UserParticipationInfo> userParticipationInfoList = new ArrayList<>();
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = new ArrayList<>();
+
         for (Tuple tuple : tuples) {
             String nickname = tuple.get(user.nickname);
             List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
 
-            AppointmentParticipationInfoDto.UserParticipationInfo userParticipationInfo =
-                    AppointmentParticipationInfoDto.UserParticipationInfo.builder()
+            AppointmentParticipationInfoRespDto.UserParticipationInfo userParticipationInfo =
+                    AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(nickname)
                             .selectedDateTime(selectedDateTimeList)
                             .build();
@@ -125,7 +136,25 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
             userParticipationInfoList.add(userParticipationInfo);
         }
 
-        return userParticipationInfoList;
+        return Optional.ofNullable(AppointmentParticipationInfoRespDto.builder()
+                .candidateDateList(findAppointment.getCandidateDateList())
+                .candidateTimeTypeList(findAppointment.getCandidateTimeTypeList())
+                .userParticipationInfo(userParticipationInfoList)
+                .build());
+    }
+
+    @Override
+    public void deleteAllByAppointmentId(Long appointmentId) {
+        List<Long> deleteIdList = jpaQueryFactory
+                .select(userAppointmentMapping.id)
+                .from(userAppointmentMapping)
+                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
+                .fetch();
+
+        jpaQueryFactory
+                .delete(userAppointmentMapping)
+                .where(userAppointmentMapping.id.in(deleteIdList))
+                .execute();
     }
 
 }

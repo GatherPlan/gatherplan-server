@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @Schema(description = "약속 목록 키워드 조회 요청 객체")
-public class AppointmentSearchListReq {
+public class AppointmentSearchReq {
 
     @Schema(description = "키워드(약속 이름)", example = "맨땅에 헤딩")
     private String keyword;

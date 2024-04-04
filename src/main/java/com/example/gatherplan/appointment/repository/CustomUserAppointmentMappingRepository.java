@@ -1,8 +1,7 @@
 package com.example.gatherplan.appointment.repository;
 
-import com.example.gatherplan.appointment.dto.AppointmentInfoDto;
-import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoDto;
-import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentInfoRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 
@@ -15,10 +14,12 @@ public interface CustomUserAppointmentMappingRepository {
 
     List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmail(String email);
 
-    List<AppointmentSearchListRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword);
+    List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword);
 
-    Optional<AppointmentInfoDto> findAppointmentInfoDto(String email, String appointmentCode);
+    Optional<AppointmentInfoRespDto> findAppointmentInfo(String email, String appointmentCode);
 
-    List<AppointmentParticipationInfoDto.UserParticipationInfo> findAppointmentParticipationInfoList(
+    Optional<AppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(
             String email, String appointmentCode);
+
+    void deleteAllByAppointmentId(Long id);
 }
