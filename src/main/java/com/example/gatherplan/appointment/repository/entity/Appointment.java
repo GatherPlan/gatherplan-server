@@ -61,9 +61,9 @@ public class Appointment extends BaseAuditableEntity {
     public void update(String appointmentName, List<TimeType> candidateTimeTypeList,
                        Address address, List<LocalDate> candidateDateList) {
         this.appointmentName = appointmentName;
-        this.candidateTimeTypeList = candidateTimeTypeList;
+        this.candidateTimeTypeList = List.copyOf(candidateTimeTypeList);
         this.address = address;
-        this.candidateDateList = candidateDateList;
+        this.candidateDateList = List.copyOf(candidateDateList);
     }
 
 }
