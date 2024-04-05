@@ -1,21 +1,26 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
-import com.example.gatherplan.controller.vo.appointment.*;
+import com.example.gatherplan.controller.vo.appointment.DailyWeatherResp;
+import com.example.gatherplan.controller.vo.appointment.KeywordPlaceReq;
+import com.example.gatherplan.controller.vo.appointment.KeywordPlaceResp;
+import com.example.gatherplan.controller.vo.appointment.RegionResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
-import com.example.gatherplan.region.dto.*;
+import com.example.gatherplan.region.dto.DailyWeatherRespDto;
+import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
+import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.region.dto.RegionDto;
 import com.example.gatherplan.region.service.RegionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/region")
 @Tag(name = "지역", description = "날씨, 상세주소, 행정구역과 관련된 기능을 제공합니다.")
+@Validated
 public class RegionController {
 
     private final RegionService regionService;
@@ -31,10 +37,9 @@ public class RegionController {
     @GetMapping("/search/district")
     @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
-            @ModelAttribute @ParameterObject @Valid RegionReq regionReq) {
+            @RequestParam @NotBlank(message = "키워드는 공백이 될 수 없습니다.") String keyword) {
 
-        RegionReqDto regionReqDto = regionVoMapper.to(regionReq);
-        List<RegionDto> regionDtos = regionService.searchRegion(regionReqDto);
+        List<RegionDto> regionDtos = regionService.searchRegion(keyword);
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -64,10 +69,9 @@ public class RegionController {
     @GetMapping("/search/weather")
     @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
-            @ModelAttribute @ParameterObject @Valid DailyWeatherReq dailyWeatherReq) throws JSONException {
+            @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") String addressName) throws JSONException {
 
-        DailyWeatherReqDto dailyWeatherReqDto = regionVoMapper.to(dailyWeatherReq);
-        List<DailyWeatherRespDto> dailyWeatherRespDtos = regionService.searchDailyWeather(dailyWeatherReqDto);
+        List<DailyWeatherRespDto> dailyWeatherRespDtos = regionService.searchDailyWeather(addressName);
 
         return ResponseEntity.ok(
                 ListResponse.of(

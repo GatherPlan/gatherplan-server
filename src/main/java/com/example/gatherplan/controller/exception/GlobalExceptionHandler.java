@@ -1,6 +1,8 @@
 package com.example.gatherplan.controller.exception;
 
-import com.example.gatherplan.common.exception.*;
+import com.example.gatherplan.common.exception.BusinessException;
+import com.example.gatherplan.common.exception.ErrorCode;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,8 +35,19 @@ public class GlobalExceptionHandler {
                 .body(ErrorResp.of(errorCode.getCode(), exceptionMessage));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<ErrorResp> handleConstraintViolationExceptionException(ConstraintViolationException exception) {
+        ErrorCode errorCode = ErrorCode.PARAMETER_VALIDATION_FAIL;
+
+        String exceptionMessage = exception.getMessage();
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ErrorResp.of(errorCode.getCode(), exceptionMessage));
+    }
+
     @ExceptionHandler({BusinessException.class})
-    protected ResponseEntity<ErrorResp> handleBusinessException(BusinessException exception){
+    protected ResponseEntity<ErrorResp> handleBusinessException(BusinessException exception) {
         ErrorCode errorCode = exception.getErrorCode();
 
         return ResponseEntity
