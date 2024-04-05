@@ -53,9 +53,9 @@ public class RegionController {
     @GetMapping("/search/place")
     @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
-            @ModelAttribute @ParameterObject @Valid KeywordPlaceReq keywordPlaceReq) {
+            @ModelAttribute @ParameterObject @Valid KeywordPlaceReq req) {
 
-        KeywordPlaceReqDto keywordPlaceReqDto = regionVoMapper.to(keywordPlaceReq);
+        KeywordPlaceReqDto keywordPlaceReqDto = regionVoMapper.to(req);
         List<KeywordPlaceRespDto> keywordPlaceRespDtos = regionService.searchKeywordPlace(keywordPlaceReqDto);
 
         return ResponseEntity.ok(

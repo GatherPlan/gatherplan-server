@@ -38,10 +38,10 @@ public class AppointmentController {
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateAppointmentResp> registerAppointment(
             @Validated(value = CreateAppointmentReqValidSeq.class)
-            @RequestBody CreateAppointmentReq createAppointmentReq,
+            @RequestBody CreateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        CreateAppointmentReqDto reqDto = appointmentVoMapper.to(createAppointmentReq);
+        CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
         String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(
@@ -143,10 +143,10 @@ public class AppointmentController {
     @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointment(
             @Validated(value = UpdateAppointmentReqValidSeq.class)
-            @RequestBody UpdateAppointmentReq updateAppointmentReq,
+            @RequestBody UpdateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(updateAppointmentReq);
+        UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
         appointmentService.updateAppointment(reqDto, userInfo.getEmail());
 
         return ResponseEntity.ok(

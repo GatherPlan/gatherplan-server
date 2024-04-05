@@ -1,7 +1,6 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
-import com.example.gatherplan.appointment.dto.DeleteTempAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -113,13 +112,13 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
     }
 
     @Override
-    public boolean existUserMappedToAppointment(DeleteTempAppointmentReqDto reqDto, UserRole userRole) {
+    public boolean existUserMappedToAppointment(String appointmentCode, String nickname, UserRole userRole) {
         TempUserAppointmentMapping result = jpaQueryFactory
                 .selectFrom(tempUserAppointmentMapping)
                 .join(tempUser).on(tempUser.id.eq(tempUserAppointmentMapping.tempUserSeq))
                 .join(appointment).on(tempUserAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .where(tempUser.nickname.eq(reqDto.getNickname())
-                        .and(appointment.appointmentCode.eq(reqDto.getAppointmentCode()))
+                .where(tempUser.nickname.eq(nickname)
+                        .and(appointment.appointmentCode.eq(appointmentCode))
                         .and(tempUserAppointmentMapping.userRole.eq(userRole)))
                 .fetchFirst();
 

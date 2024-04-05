@@ -32,9 +32,9 @@ public class UserController {
     @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Validated(value = CreateUserReqValidSeq.class)
-            @RequestBody EmailAuthReq emailAuthReq) {
+            @RequestBody EmailAuthReq req) {
 
-        userService.authenticateEmail(emailAuthReq.getEmail());
+        userService.authenticateEmail(req.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -45,9 +45,9 @@ public class UserController {
     @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> joinUser(
             @Validated(value = CreateUserReqValidSeq.class)
-            @RequestBody CreateUserReq createUserReq
+            @RequestBody CreateUserReq req
     ) {
-        CreateUserReqDto createUserReqDto = userVoMapper.to(createUserReq);
+        CreateUserReqDto createUserReqDto = userVoMapper.to(req);
         userService.joinUser(createUserReqDto);
 
         return ResponseEntity.ok(
