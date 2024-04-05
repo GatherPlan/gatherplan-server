@@ -11,4 +11,6 @@ public interface TempAppointmentService {
             TempAppointmentParticipationInfoReqDto reqDto);
 
     void deleteAppointment(DeleteTempAppointmentReqDto reqDto);
+
+    void updateAppointment(UpdateTempAppointmentReqDto reqDto);
 }

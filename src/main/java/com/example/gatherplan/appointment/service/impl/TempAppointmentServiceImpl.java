@@ -77,7 +77,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
-        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto, UserRole.HOST)) {
+        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto.getAppointmentCode(),
+                reqDto.getNickname(), UserRole.HOST)) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
@@ -91,6 +92,22 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         userAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         appointmentRepository.deleteById(appointmentId);
+    }
+
+    @Override
+    @Transactional
+    public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
+        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto.getAppointmentCode(),
+                reqDto.getNickname(), UserRole.HOST)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
+        }
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
+                reqDto.getAddress(), reqDto.getCandidateDateList());
     }
 
 

@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository;
 
-import com.example.gatherplan.appointment.dto.DeleteTempAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -13,5 +12,5 @@ public interface CustomTempUserAppointmentMappingRepository {
     Optional<TempAppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(
             String nickname, String password, String appointmentCode);
 
-    boolean existUserMappedToAppointment(DeleteTempAppointmentReqDto reqDto, UserRole userRole);
+    boolean existUserMappedToAppointment(String appointmentCode, String nickname, UserRole userRole);
 }
