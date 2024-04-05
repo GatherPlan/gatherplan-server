@@ -143,18 +143,4 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .build());
     }
 
-    @Override
-    public void deleteAllByAppointmentId(Long appointmentId) {
-        List<Long> deleteIdList = jpaQueryFactory
-                .select(userAppointmentMapping.id)
-                .from(userAppointmentMapping)
-                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
-                .fetch();
-
-        jpaQueryFactory
-                .delete(userAppointmentMapping)
-                .where(userAppointmentMapping.id.in(deleteIdList))
-                .execute();
-    }
-
 }

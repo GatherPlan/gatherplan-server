@@ -20,6 +20,4 @@ public interface CustomUserAppointmentMappingRepository {
 
     Optional<AppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(
             String email, String appointmentCode);
-
-    void deleteAllByAppointmentId(Long id);
 }

@@ -14,6 +14,6 @@ public class AppointmentInfoResp {
     @Schema(description = "약속 장소", example = "서울 성동구 용답동")
     private Address address;
 
-    @Schema(description = "약속 확정 시간", example = "{2024-03-12, 18:00, 19:00}")
+    @Schema(description = "약속 확정 시간", example = "\"2024-03-18,15:00,16:00\"")
     private ConfirmedDateTime confirmedDateTime;
 }
