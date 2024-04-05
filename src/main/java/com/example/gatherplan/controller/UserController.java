@@ -5,14 +5,17 @@ import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
 import com.example.gatherplan.controller.validation.CreateUserReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateUserReq;
+import com.example.gatherplan.controller.vo.appointment.EmailAuthReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -28,9 +31,10 @@ public class UserController {
     @PostMapping("/auth/email")
     @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
     public ResponseEntity<BooleanResp> authenticateEmail(
-            @RequestParam @NotBlank(message = "이메일은 공백이 될 수 없습니다.") String email) {
+            @Validated(value = CreateUserReqValidSeq.class)
+            @RequestBody EmailAuthReq emailAuthReq) {
 
-        userService.authenticateEmail(email);
+        userService.authenticateEmail(emailAuthReq.getEmail());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
