@@ -1,16 +1,19 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
+import com.example.gatherplan.appointment.dto.DeleteTempAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -107,5 +110,19 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
                 .userParticipationInfoList(userParticipationInfoList)
                 .tempUserParticipationInfoList(tempUserParticipationInfoList)
                 .build());
+    }
+
+    @Override
+    public boolean existUserMappedToAppointment(DeleteTempAppointmentReqDto reqDto, UserRole userRole) {
+        TempUserAppointmentMapping result = jpaQueryFactory
+                .selectFrom(tempUserAppointmentMapping)
+                .join(tempUser).on(tempUser.id.eq(tempUserAppointmentMapping.tempUserSeq))
+                .join(appointment).on(tempUserAppointmentMapping.appointmentSeq.eq(appointment.id))
+                .where(tempUser.nickname.eq(reqDto.getNickname())
+                        .and(appointment.appointmentCode.eq(reqDto.getAppointmentCode()))
+                        .and(tempUserAppointmentMapping.userRole.eq(userRole)))
+                .fetchFirst();
+
+        return ObjectUtils.isNotEmpty(result);
     }
 }

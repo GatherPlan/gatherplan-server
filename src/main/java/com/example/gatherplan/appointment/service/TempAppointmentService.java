@@ -9,4 +9,6 @@ public interface TempAppointmentService {
 
     TempAppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             TempAppointmentParticipationInfoReqDto reqDto);
+
+    void deleteAppointment(DeleteTempAppointmentReqDto reqDto);
 }
