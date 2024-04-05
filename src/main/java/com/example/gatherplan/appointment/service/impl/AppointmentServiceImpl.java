@@ -32,7 +32,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomTempUserRepository customTempUserRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
-    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
+    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -103,8 +103,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Long appointmentId = appointment.getId();
 
         customTempUserRepository.deleteAllByAppointmentId(appointmentId);
-        customTempUserAppointmentMappingRepository.deleteAllByAppointmentId(appointmentId);
-        customUserAppointmentMappingRepository.deleteAllByAppointmentId(appointmentId);
+        tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
+        userAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         appointmentRepository.deleteById(appointmentId);
     }
 
