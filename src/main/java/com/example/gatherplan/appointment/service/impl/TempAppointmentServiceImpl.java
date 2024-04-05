@@ -5,10 +5,7 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
-import com.example.gatherplan.appointment.repository.AppointmentRepository;
-import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.TempUserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.TempUserRepository;
+import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.TempUser;
 import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
@@ -28,6 +25,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     private final TempAppointmentMapper tempAppointmentMapper;
     private final AppointmentRepository appointmentRepository;
     private final TempUserRepository tempUserRepository;
+    private final CustomTempUserRepository customTempUserRepository;
+    private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
 
@@ -75,5 +74,24 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .findAppointmentParticipationInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
+
+    @Override
+    public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
+        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto, UserRole.HOST)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
+        }
+
+        Appointment appointment = appointmentRepository
+                .findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        Long appointmentId = appointment.getId();
+
+        customTempUserRepository.deleteAllByAppointmentId(appointmentId);
+        tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
+        userAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
+        appointmentRepository.deleteById(appointmentId);
+    }
+
 
 }
