@@ -38,7 +38,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_BY_EMAIL));
+                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER));
 
         String appointmentCode = UuidUtils.generateRandomString(12);
 
@@ -78,14 +78,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email) {
         return customUserAppointmentMappingRepository
                 .findAppointmentInfo(email, appointmentCode)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 
     @Override
     public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
         return customUserAppointmentMappingRepository
                 .findAppointmentParticipationInfo(email, appointmentCode)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 
     @Override
@@ -98,7 +98,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(appointmentCode)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         Long appointmentId = appointment.getId();
 
@@ -118,7 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentRepository
                 .findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT_BY_CODE));
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
