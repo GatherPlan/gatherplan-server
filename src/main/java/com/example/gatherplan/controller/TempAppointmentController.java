@@ -1,20 +1,22 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentInfoReqDto;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateTempAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentResp;
+import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoReq;
+import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +41,18 @@ public class TempAppointmentController {
                 CreateTempAppointmentResp.builder()
                         .appointmentCode(appointmentCode)
                         .build()
+        );
+    }
+
+    @GetMapping
+    @Operation(summary = "비회원의 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<TempAppointmentInfoResp> retrieveAppointmentInfo(
+            @ModelAttribute @ParameterObject @Valid TempAppointmentInfoReq tempAppointmentInfoReq) {
+
+        TempAppointmentInfoReqDto tempAppointmentInfoReqDto = tempAppointmentVoMapper.to(tempAppointmentInfoReq);
+
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper.to(tempAppointmentService.retrieveAppointmentInfo(tempAppointmentInfoReqDto))
         );
     }
 }

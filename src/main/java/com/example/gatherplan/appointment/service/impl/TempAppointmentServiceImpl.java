@@ -1,16 +1,21 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentInfoReqDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.TempUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.TempUserRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.TempUser;
 import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
+import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +31,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final TempUserRepository tempUserRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
+    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -55,4 +61,12 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         return appointmentCode;
     }
+
+    @Override
+    public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
+        return customTempUserAppointmentMappingRepository
+                .findAppointmentInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+    }
+
 }
