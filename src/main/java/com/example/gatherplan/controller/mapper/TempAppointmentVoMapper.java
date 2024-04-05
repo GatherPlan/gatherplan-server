@@ -1,11 +1,7 @@
 package com.example.gatherplan.controller.mapper;
 
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoReqDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoReq;
-import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoResp;
+import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.controller.vo.appointment.*;
 import org.mapstruct.*;
 
 @Mapper(
@@ -22,4 +18,7 @@ public interface TempAppointmentVoMapper {
 
     TempAppointmentInfoResp to(TempAppointmentInfoRespDto respDto);
 
+    TempAppointmentParticipationInfoReqDto to(TempAppointmentParticipationInfoReq req);
+
+    TempAppointmentParticipationInfoResp to(TempAppointmentParticipationInfoRespDto respDto);
 }

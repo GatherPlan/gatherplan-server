@@ -12,8 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AppointmentParticipationInfoRespDto {
-
+public class TempAppointmentParticipationInfoRespDto {
     private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfos;
     private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfos;
     private List<TimeType> candidateTimeTypeList;
@@ -23,11 +22,9 @@ public class AppointmentParticipationInfoRespDto {
     @Builder
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @Schema(description = "회원 참여 정보")
+    @Schema(description = "비회원 참여 정보")
     public static class UserParticipationInfo {
         private String nickname;
         private List<SelectedDateTime> selectedDateTime;
     }
-
-
 }
