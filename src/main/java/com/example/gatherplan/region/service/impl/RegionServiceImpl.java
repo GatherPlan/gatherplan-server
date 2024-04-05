@@ -5,7 +5,10 @@ import com.example.gatherplan.api.WeatherNewsClient;
 import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.region.dto.*;
+import com.example.gatherplan.region.dto.DailyWeatherRespDto;
+import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
+import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.region.dto.RegionDto;
 import com.example.gatherplan.region.exception.RegionException;
 import com.example.gatherplan.region.mapper.RegionMapper;
 import com.example.gatherplan.region.repository.CustomRegionRepository;
@@ -33,8 +36,8 @@ public class RegionServiceImpl implements RegionService {
     private RegionRepository regionRepository;
 
     @Override
-    public List<RegionDto> searchRegion(RegionReqDto reqDto) {
-        List<Region> regionList = regionRepository.findByAddressContaining(reqDto.getKeyword());
+    public List<RegionDto> searchRegion(String keyword) {
+        List<Region> regionList = regionRepository.findByAddressContaining(keyword);
 
         return regionList.stream()
                 .map(regionMapper::to)
@@ -53,8 +56,8 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public List<DailyWeatherRespDto> searchDailyWeather(DailyWeatherReqDto reqDto) {
-        Region region = customRegionRepository.findRegionByAddressName(reqDto.getAddressName())
+    public List<DailyWeatherRespDto> searchDailyWeather(String addressName) {
+        Region region = customRegionRepository.findRegionByAddressName(addressName)
                 .orElseThrow(() -> new RegionException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()

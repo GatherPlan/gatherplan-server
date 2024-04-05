@@ -1,7 +1,13 @@
 package com.example.gatherplan.controller.mapper;
 
-import com.example.gatherplan.controller.vo.appointment.*;
-import com.example.gatherplan.region.dto.*;
+import com.example.gatherplan.controller.vo.appointment.DailyWeatherResp;
+import com.example.gatherplan.controller.vo.appointment.KeywordPlaceReq;
+import com.example.gatherplan.controller.vo.appointment.KeywordPlaceResp;
+import com.example.gatherplan.controller.vo.appointment.RegionResp;
+import com.example.gatherplan.region.dto.DailyWeatherRespDto;
+import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
+import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.region.dto.RegionDto;
 import org.mapstruct.*;
 
 @Mapper(
@@ -12,11 +18,8 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface RegionVoMapper {
-    RegionReqDto to(RegionReq req);
 
     RegionResp to(RegionDto regionDto);
-
-    DailyWeatherReqDto to(DailyWeatherReq req);
 
     DailyWeatherResp to(DailyWeatherRespDto respDto);
 
