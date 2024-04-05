@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TempAppointmentParticipationInfoRespDto {
-    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfos;
-    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfos;
+    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList;
+    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList;
     private List<TimeType> candidateTimeTypeList;
     private List<LocalDate> candidateDateList;
 

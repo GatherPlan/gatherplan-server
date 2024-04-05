@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppointmentParticipationInfoRespDto {
 
-    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfos;
-    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfos;
+    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList;
+    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList;
     private List<TimeType> candidateTimeTypeList;
     private List<LocalDate> candidateDateList;
 

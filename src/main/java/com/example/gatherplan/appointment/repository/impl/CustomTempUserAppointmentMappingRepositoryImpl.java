@@ -104,8 +104,8 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
         return Optional.ofNullable(TempAppointmentParticipationInfoRespDto.builder()
                 .candidateDateList(findAppointment.getCandidateDateList())
                 .candidateTimeTypeList(findAppointment.getCandidateTimeTypeList())
-                .userParticipationInfos(userParticipationInfoList)
-                .tempUserParticipationInfos(tempUserParticipationInfoList)
+                .userParticipationInfoList(userParticipationInfoList)
+                .tempUserParticipationInfoList(tempUserParticipationInfoList)
                 .build());
     }
 }
