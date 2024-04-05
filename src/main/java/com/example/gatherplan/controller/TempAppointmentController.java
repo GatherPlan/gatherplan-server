@@ -2,13 +2,11 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentInfoReqDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoReqDto;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
 import com.example.gatherplan.controller.validation.CreateTempAppointmentReqValidSeq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentReq;
-import com.example.gatherplan.controller.vo.appointment.CreateTempAppointmentResp;
-import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoReq;
-import com.example.gatherplan.controller.vo.appointment.TempAppointmentInfoResp;
+import com.example.gatherplan.controller.vo.appointment.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,8 +32,8 @@ public class TempAppointmentController {
             @Validated(value = CreateTempAppointmentReqValidSeq.class)
             @RequestBody CreateTempAppointmentReq createTempAppointmentReq) {
 
-        CreateTempAppointmentReqDto createTempAppointmentReqDto = tempAppointmentVoMapper.to(createTempAppointmentReq);
-        String appointmentCode = tempAppointmentService.registerTempAppointment(createTempAppointmentReqDto);
+        CreateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(createTempAppointmentReq);
+        String appointmentCode = tempAppointmentService.registerTempAppointment(reqDto);
 
         return ResponseEntity.ok(
                 CreateTempAppointmentResp.builder()
@@ -49,10 +47,25 @@ public class TempAppointmentController {
     public ResponseEntity<TempAppointmentInfoResp> retrieveAppointmentInfo(
             @ModelAttribute @ParameterObject @Valid TempAppointmentInfoReq tempAppointmentInfoReq) {
 
-        TempAppointmentInfoReqDto tempAppointmentInfoReqDto = tempAppointmentVoMapper.to(tempAppointmentInfoReq);
+        TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(tempAppointmentInfoReq);
 
         return ResponseEntity.ok(
-                tempAppointmentVoMapper.to(tempAppointmentService.retrieveAppointmentInfo(tempAppointmentInfoReqDto))
+                tempAppointmentVoMapper.to(tempAppointmentService.retrieveAppointmentInfo(reqDto))
         );
     }
+
+    @GetMapping("/participation")
+    @Operation(summary = "비회원의 약속 참여 정보 조회 요청", description = "비회원이 약속 참여 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<TempAppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
+            @ModelAttribute @ParameterObject @Valid TempAppointmentParticipationInfoReq tempAppointmentParticipationInfoReq) {
+
+        TempAppointmentParticipationInfoReqDto reqDto = tempAppointmentVoMapper.to(tempAppointmentParticipationInfoReq);
+
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper
+                        .to(tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto))
+        );
+    }
+
+
 }

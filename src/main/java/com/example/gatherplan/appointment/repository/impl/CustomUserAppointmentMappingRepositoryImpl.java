@@ -3,6 +3,7 @@ package com.example.gatherplan.appointment.repository.impl;
 import com.example.gatherplan.appointment.dto.AppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
+import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
@@ -124,22 +126,38 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
         List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = new ArrayList<>();
 
         for (Tuple tuple : tuples) {
-            String nickname = tuple.get(user.nickname);
+            String findNickName = tuple.get(user.nickname);
             List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
 
             AppointmentParticipationInfoRespDto.UserParticipationInfo userParticipationInfo =
                     AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
-                            .nickname(nickname)
+                            .nickname(findNickName)
                             .selectedDateTime(selectedDateTimeList)
                             .build();
 
             userParticipationInfoList.add(userParticipationInfo);
         }
 
+        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList = new ArrayList<>();
+
+        for (Tuple tuple : tuples) {
+            String findNickName = tuple.get(tempUser.nickname);
+            List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
+
+            TempAppointmentParticipationInfoRespDto.UserParticipationInfo userParticipationInfo =
+                    TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                            .nickname(findNickName)
+                            .selectedDateTime(selectedDateTimeList)
+                            .build();
+
+            tempUserParticipationInfoList.add(userParticipationInfo);
+        }
+
         return Optional.ofNullable(AppointmentParticipationInfoRespDto.builder()
                 .candidateDateList(findAppointment.getCandidateDateList())
                 .candidateTimeTypeList(findAppointment.getCandidateTimeTypeList())
-                .userParticipationInfo(userParticipationInfoList)
+                .userParticipationInfos(userParticipationInfoList)
+                .tempUserParticipationInfos(tempUserParticipationInfoList)
                 .build());
     }
 

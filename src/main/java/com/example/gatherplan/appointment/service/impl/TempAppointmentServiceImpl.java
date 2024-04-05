@@ -1,8 +1,6 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoReqDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
@@ -66,6 +64,15 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
         return customTempUserAppointmentMappingRepository
                 .findAppointmentInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+    }
+
+    @Override
+    public TempAppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
+            TempAppointmentParticipationInfoReqDto reqDto) {
+
+        return customTempUserAppointmentMappingRepository
+                .findAppointmentParticipationInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 

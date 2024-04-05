@@ -32,6 +32,6 @@ public class TempUserAppointmentMapping extends BaseAuditableEntity {
     private UserRole userRole;
 
     @ElementCollection
-    private List<LocalDateTime> selectedDateTime;
+    private List<LocalDateTime> selectedDateTimeList;
 
 }
