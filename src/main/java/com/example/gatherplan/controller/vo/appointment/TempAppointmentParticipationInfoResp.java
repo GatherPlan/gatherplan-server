@@ -15,10 +15,10 @@ import java.util.List;
 public class TempAppointmentParticipationInfoResp {
 
     @Schema(description = "약속 참여 정보 (회원)", example = "맨땅에 헤딩")
-    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfo;
+    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList;
 
     @Schema(description = "약속 참여 정보 (비회원)", example = "맨땅에 헤딩")
-    private List<AppointmentParticipationInfoResp.UserParticipationInfo> userParticipationInfo;
+    private List<AppointmentParticipationInfoResp.UserParticipationInfo> userParticipationInfoList;
 
     @Schema(description = "약속 후보 시간" +
             "<br> MORNING : 오전, AFTERNOON : 오후, EVENING : 저녁", example = "[\"MORNING\", \"EVENING\"]")
