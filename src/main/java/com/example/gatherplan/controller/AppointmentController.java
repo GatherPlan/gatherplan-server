@@ -41,9 +41,12 @@ public class AppointmentController {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
         String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
-        CreateAppointmentResp resp = appointmentVoMapper.to(appointmentCode);
-
-        return ResponseEntity.ok(resp);
+        
+        return ResponseEntity.ok(
+                CreateAppointmentResp.builder()
+                        .appointmentCode(appointmentCode)
+                        .build()
+        );
     }
 
     @GetMapping("/participation-status")
