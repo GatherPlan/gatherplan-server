@@ -27,7 +27,7 @@ public class TempAppointmentController {
     private final TempAppointmentService tempAppointmentService;
 
     @PostMapping
-    @Operation(summary = "임시 회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
             @Validated(value = CreateTempAppointmentReqValidSeq.class)
             @RequestBody CreateTempAppointmentReq req) {
