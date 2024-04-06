@@ -29,12 +29,11 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
+    private final CustomAppointmentRepository customAppointmentRepository;
 
     @Override
     @Transactional
     public String registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
-
-
         String appointmentCode = UuidUtils.generateRandomString(12);
 
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
@@ -61,31 +60,32 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
-        
-
-        return customTempUserAppointmentMappingRepository
-                .findAppointmentInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        String hostName = customTempUserAppointmentMappingRepository.findHostName(appointment.getId());
+
+        return tempAppointmentMapper.to(appointment, hostName);
     }
 
     @Override
     public TempAppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             TempAppointmentParticipationInfoReqDto reqDto) {
 
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
         return customTempUserAppointmentMappingRepository
-                .findAppointmentParticipationInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
+                .findAppointmentParticipationInfo(appointment)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 
     @Override
     public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
-        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto.getAppointmentCode(),
-                reqDto.getNickname(), UserRole.HOST)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getNickname(), reqDto.getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         Long appointmentId = appointment.getId();
@@ -99,13 +99,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
-        if (!customTempUserAppointmentMappingRepository.existUserMappedToAppointment(reqDto.getAppointmentCode(),
-                reqDto.getNickname(), UserRole.HOST)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getNickname(), reqDto.getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
