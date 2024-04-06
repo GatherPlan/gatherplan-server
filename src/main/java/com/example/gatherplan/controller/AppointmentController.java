@@ -1,8 +1,6 @@
 package com.example.gatherplan.controller;
 
-import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
-import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.UpdateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
@@ -43,12 +41,9 @@ public class AppointmentController {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
         String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
+        CreateAppointmentResp resp = appointmentVoMapper.to(appointmentCode);
 
-        return ResponseEntity.ok(
-                CreateAppointmentResp.builder()
-                        .appointmentCode(appointmentCode)
-                        .build()
-        );
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/participation-status")
@@ -58,11 +53,10 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
+        boolean resp = appointmentService.isUserParticipated(appointmentCode, userInfo.getEmail());
+
         return ResponseEntity.ok(
-                BooleanResp.of(
-                        appointmentService.isUserParticipated(
-                                appointmentCode, userInfo.getEmail())
-                )
+                BooleanResp.of(resp)
         );
     }
 
@@ -72,12 +66,10 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentWithHostRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail());
+        List<AppointmentWithHostResp> resp = respDtos.stream().map(appointmentVoMapper::to).toList();
 
         return ResponseEntity.ok(
-                ListResponse.of(
-                        respDtos.stream()
-                                .map(appointmentVoMapper::to).toList()
-                )
+                ListResponse.of(resp)
         );
     }
 
@@ -90,12 +82,10 @@ public class AppointmentController {
 
         List<AppointmentWithHostRespDto> respDtos = appointmentService
                 .retrieveAppointmentSearchList(keyword, userInfo.getEmail());
+        List<AppointmentWithHostResp> resp = respDtos.stream().map(appointmentVoMapper::to).toList();
 
         return ResponseEntity.ok(
-                ListResponse.of(
-                        respDtos.stream()
-                                .map(appointmentVoMapper::to).toList()
-                )
+                ListResponse.of(resp)
         );
     }
 
@@ -106,10 +96,10 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        return ResponseEntity.ok(
-                appointmentVoMapper.to(appointmentService.retrieveAppointmentInfo(
-                        appointmentCode, userInfo.getEmail()))
-        );
+        AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode, userInfo.getEmail());
+        AppointmentInfoResp resp = appointmentVoMapper.to(respDto);
+
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/participation")
@@ -119,10 +109,11 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        return ResponseEntity.ok(
-                appointmentVoMapper.to(appointmentService
-                        .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getEmail()))
-        );
+        AppointmentParticipationInfoRespDto respDto = appointmentService
+                .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getEmail());
+        AppointmentParticipationInfoResp resp = appointmentVoMapper.to(respDto);
+
+        return ResponseEntity.ok(resp);
     }
 
     @DeleteMapping

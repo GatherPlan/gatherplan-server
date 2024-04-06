@@ -21,4 +21,6 @@ public interface AppointmentVoMapper {
     AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
 
     UpdateAppointmentReqDto to(UpdateAppointmentReq req);
+
+    CreateAppointmentResp to(String appointmentCode);
 }
