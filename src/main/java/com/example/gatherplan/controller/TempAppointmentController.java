@@ -48,10 +48,10 @@ public class TempAppointmentController {
             @ModelAttribute @ParameterObject @Valid TempAppointmentInfoReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
+        TempAppointmentInfoResp resp = tempAppointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(
-                tempAppointmentVoMapper.to(tempAppointmentService.retrieveAppointmentInfo(reqDto))
-        );
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/participation")
@@ -60,11 +60,10 @@ public class TempAppointmentController {
             @ModelAttribute @ParameterObject @Valid TempAppointmentParticipationInfoReq req) {
 
         TempAppointmentParticipationInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentParticipationInfoRespDto respDto = tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto);
+        TempAppointmentParticipationInfoResp resp = tempAppointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(
-                tempAppointmentVoMapper
-                        .to(tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto))
-        );
+        return ResponseEntity.ok(resp);
     }
 
     @DeleteMapping
