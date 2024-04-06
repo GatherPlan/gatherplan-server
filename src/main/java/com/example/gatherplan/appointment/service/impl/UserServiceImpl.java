@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .ifPresent(emailAuth -> emailAuthRepository.deleteByEmail(emailAuth.getEmail()));
 
         String authCode = Integer.toString(random.nextInt(888888) + 111111);
-        LocalDateTime expiredTime = now().plusMinutes(3);
+        LocalDateTime expiredTime = now().plusMinutes(5);
 
         EmailAuth emailAuth = EmailAuth.builder()
                 .authCode(authCode)
