@@ -34,6 +34,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
 
+    private final CustomAppointmentRepository customAppointmentRepository;
+
     @Override
     @Transactional
     public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
@@ -76,28 +78,31 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email) {
-        return customUserAppointmentMappingRepository
-                .findAppointmentInfo(email, appointmentCode)
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
+                        email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        String hostName = customUserAppointmentMappingRepository.findHostName(appointment.getId());
+
+        return appointmentMapper.to(appointment, hostName);
     }
 
     @Override
     public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
+                        email, UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
         return customUserAppointmentMappingRepository
-                .findAppointmentParticipationInfo(email, appointmentCode)
+                .findAppointmentParticipationInfo(appointment)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 
     @Override
     @Transactional
     public void deleteAppointment(String appointmentCode, String email) {
-        if (!customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, appointmentCode, UserRole.HOST)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(appointmentCode)
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
+                        email, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         Long appointmentId = appointment.getId();
@@ -111,13 +116,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, String email) {
-        if (!customUserAppointmentMappingRepository.existUserMappedToAppointment(
-                email, reqDto.getAppointmentCode(), UserRole.HOST)) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
-
-        Appointment appointment = appointmentRepository
-                .findByAppointmentCode(reqDto.getAppointmentCode())
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
+                        email, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
