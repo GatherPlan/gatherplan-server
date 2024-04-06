@@ -1,25 +1,20 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
 import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
@@ -34,74 +29,19 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
     }
 
     @Override
-    public Optional<TempAppointmentInfoRespDto> findAppointmentInfo(String nickname, String password, String appointmentCode) {
-        return Optional.ofNullable(jpaQueryFactory
-                .select(Projections.constructor(TempAppointmentInfoRespDto.class,
-                        appointment.appointmentName,
-                        tempUser.nickname,
-                        appointment.appointmentState,
-                        appointment.appointmentCode,
-                        appointment.address,
-                        appointment.confirmedDateTime))
-                .from(tempUserAppointmentMapping)
-                .join(appointment).on(
-                        tempUserAppointmentMapping.appointmentSeq.eq(appointment.id)
-                                .and(appointment.appointmentCode.eq(appointmentCode)))
-                .join(tempUser).on(
-                        tempUserAppointmentMapping.appointmentSeq.eq(tempUser.id)
-                                .and(tempUser.nickname.eq(nickname).and(tempUser.password.eq(password))))
-                .where(tempUserAppointmentMapping.userRole.eq(UserRole.HOST))
-                .fetchOne());
-    }
-
-
-    @Override
-    public Optional<TempAppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(
-            String nickname, String password, String appointmentCode) {
-
-        Appointment findAppointment = jpaQueryFactory
-                .selectFrom(appointment)
-                .where(appointment.appointmentCode.eq(appointmentCode))
-                .fetchFirst();
-
+    public Optional<TempAppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(Appointment findAppointment) {
         List<Tuple> tuples = jpaQueryFactory
                 .select(tempUser.nickname, tempUserAppointmentMapping.selectedDateTimeList)
                 .from(tempUserAppointmentMapping)
                 .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
-                .join(appointment).on(tempUserAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .where(tempUser.nickname.eq(nickname)
-                        .and(appointment.appointmentCode.eq(appointmentCode)))
+                .where(tempUserAppointmentMapping.appointmentSeq.eq(findAppointment.getId()))
                 .fetch();
 
-        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList = new ArrayList<>();
+        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList =
+                getTempUserParticipationInfoList(tuples);
 
-        for (Tuple tuple : tuples) {
-            String findNickName = tuple.get(tempUser.nickname);
-            List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
-
-            TempAppointmentParticipationInfoRespDto.UserParticipationInfo userParticipationInfo =
-                    TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
-                            .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
-                            .build();
-
-            tempUserParticipationInfoList.add(userParticipationInfo);
-        }
-
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList = new ArrayList<>();
-
-        for (Tuple tuple : tuples) {
-            String findNickName = tuple.get(user.nickname);
-            List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
-
-            AppointmentParticipationInfoRespDto.UserParticipationInfo userParticipationInfo =
-                    AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
-                            .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
-                            .build();
-
-            userParticipationInfoList.add(userParticipationInfo);
-        }
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList =
+                getUserParticipationInfoList(tuples);
 
         return Optional.ofNullable(TempAppointmentParticipationInfoRespDto.builder()
                 .candidateDateList(findAppointment.getCandidateDateList())
@@ -112,16 +52,59 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
     }
 
     @Override
-    public boolean existUserMappedToAppointment(String appointmentCode, String nickname, UserRole userRole) {
-        TempUserAppointmentMapping result = jpaQueryFactory
-                .selectFrom(tempUserAppointmentMapping)
-                .join(tempUser).on(tempUser.id.eq(tempUserAppointmentMapping.tempUserSeq))
-                .join(appointment).on(tempUserAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .where(tempUser.nickname.eq(nickname)
-                        .and(appointment.appointmentCode.eq(appointmentCode))
-                        .and(tempUserAppointmentMapping.userRole.eq(userRole)))
-                .fetchFirst();
+    public String findHostName(Long appointmentId) {
+        String hostNameFromTempUser = jpaQueryFactory
+                .select(tempUser.nickname)
+                .from(tempUserAppointmentMapping)
+                .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
+                .where(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId)
+                        .and(tempUserAppointmentMapping.userRole.eq(UserRole.HOST)))
+                .fetchOne();
 
-        return ObjectUtils.isNotEmpty(result);
+        if (hostNameFromTempUser != null) {
+            return hostNameFromTempUser;
+        }
+
+        return jpaQueryFactory
+                .select(user.nickname)
+                .from(userAppointmentMapping)
+                .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
+                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId)
+                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
+                .fetchOne();
+    }
+
+    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> getUserParticipationInfoList(List<Tuple> tuples) {
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> result = new ArrayList<>();
+
+        for (Tuple tuple : tuples) {
+            String findNickName = tuple.get(user.nickname);
+            List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
+
+            AppointmentParticipationInfoRespDto.UserParticipationInfo info =
+                    AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                            .nickname(findNickName)
+                            .selectedDateTime(selectedDateTimeList)
+                            .build();
+            result.add(info);
+        }
+        return result;
+    }
+
+    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> getTempUserParticipationInfoList(List<Tuple> tuples) {
+        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> result = new ArrayList<>();
+
+        for (Tuple tuple : tuples) {
+            String findNickName = tuple.get(user.nickname);
+            List<SelectedDateTime> selectedDateTimeList = tuple.get(tempUserAppointmentMapping.selectedDateTimeList);
+
+            TempAppointmentParticipationInfoRespDto.UserParticipationInfo info =
+                    TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                            .nickname(findNickName)
+                            .selectedDateTime(selectedDateTimeList)
+                            .build();
+            result.add(info);
+        }
+        return result;
     }
 }
