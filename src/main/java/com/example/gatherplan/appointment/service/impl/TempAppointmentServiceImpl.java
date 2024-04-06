@@ -61,6 +61,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
+        
+
         return customTempUserAppointmentMappingRepository
                 .findAppointmentInfo(reqDto.getNickname(), reqDto.getPassword(), reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
