@@ -12,6 +12,8 @@ import java.util.Optional;
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
 import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
+import static com.example.gatherplan.appointment.repository.entity.QUser.user;
+import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
 @Repository
 public class CustomAppointmentRepositoryImpl implements CustomAppointmentRepository {
@@ -32,6 +34,18 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                         .and(tempUser.nickname.eq(nickname))
                         .and(tempUser.password.eq(password))
                         .and(tempUserAppointmentMapping.userRole.eq(userRole)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode, String email, UserRole userRole) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
+                .where(appointment.appointmentCode.eq(appointmentCode)
+                        .and(user.email.eq(email))
+                        .and(userAppointmentMapping.userRole.eq(userRole)))
                 .fetchOne());
     }
 }
