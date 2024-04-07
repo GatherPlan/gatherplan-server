@@ -4,8 +4,8 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TempAppointmentParticipationInfoReqDto {
     private String nickname;
 
