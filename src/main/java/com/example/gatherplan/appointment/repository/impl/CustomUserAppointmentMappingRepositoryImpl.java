@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
-import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
 import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
@@ -50,18 +49,6 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
 
     @Override
     public String findHostName(Long appointmentId) {
-        String hostNameFromTempUser = jpaQueryFactory
-                .select(tempUser.nickname)
-                .from(tempUserAppointmentMapping)
-                .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
-                .where(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId)
-                        .and(tempUserAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetchOne();
-
-        if (hostNameFromTempUser != null) {
-            return hostNameFromTempUser;
-        }
-
         return jpaQueryFactory
                 .select(user.nickname)
                 .from(userAppointmentMapping)
