@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment;
+package com.example.gatherplan.controller.vo.region;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;

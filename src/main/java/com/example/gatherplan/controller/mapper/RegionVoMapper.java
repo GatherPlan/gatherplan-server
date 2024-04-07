@@ -1,9 +1,9 @@
 package com.example.gatherplan.controller.mapper;
 
-import com.example.gatherplan.controller.vo.appointment.DailyWeatherResp;
-import com.example.gatherplan.controller.vo.appointment.KeywordPlaceReq;
-import com.example.gatherplan.controller.vo.appointment.KeywordPlaceResp;
-import com.example.gatherplan.controller.vo.appointment.RegionResp;
+import com.example.gatherplan.controller.vo.region.DailyWeatherResp;
+import com.example.gatherplan.controller.vo.region.KeywordPlaceReq;
+import com.example.gatherplan.controller.vo.region.KeywordPlaceResp;
+import com.example.gatherplan.controller.vo.region.RegionResp;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
 import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
 import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
