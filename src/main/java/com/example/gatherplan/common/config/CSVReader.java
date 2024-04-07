@@ -2,7 +2,6 @@ package com.example.gatherplan.common.config;
 
 import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.region.service.RegionService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,7 @@ public class CSVReader {
     @Value("${csv.file.path}")
     private String csvFilePath;
 
-    @PostConstruct
+    //    @PostConstruct
     public void readAndSaveCSV() throws IOException {
         List<CSVRowDto> rows = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(csvFilePath), "CP949"))) {

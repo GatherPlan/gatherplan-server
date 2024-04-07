@@ -55,7 +55,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers("/api/v1/region/**").permitAll()
                         .requestMatchers("/api/v1/temporary/**").permitAll()
-                        .requestMatchers("/api/v1/appointments", "/api/v1/appointments/**").hasRole(RoleType.USER.name())
+                        .requestMatchers("/api/v1/appointments/detail/**").permitAll()
+                        .requestMatchers("/api/v1/appointments/**").hasRole(RoleType.USER.name())
                         .anyRequest().authenticated());
 
         httpSecurity

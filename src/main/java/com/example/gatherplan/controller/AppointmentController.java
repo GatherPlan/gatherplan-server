@@ -150,5 +150,17 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/detail/{appointmentCode}")
+    @Operation(summary = "약속 단건 조회", description = "약속 코드를 통해 하나의 약속을 조회합니다.")
+    public ResponseEntity<AppointmentResp> retrieveAppointment(
+            @Schema(description = "약속 코드", example = "abcdefghj124")
+            @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.")
+            @PathVariable String appointmentCode
+    ) {
+        AppointmentRespDto respDto = appointmentService.retrieveAppointment(appointmentCode);
 
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
+    }
 }
