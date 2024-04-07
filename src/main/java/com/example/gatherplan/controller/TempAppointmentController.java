@@ -46,6 +46,7 @@ public class TempAppointmentController {
             @ModelAttribute @ParameterObject @Valid TempAppointmentInfoReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
+
         TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
 
         return ResponseEntity.ok(
