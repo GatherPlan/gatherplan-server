@@ -10,8 +10,8 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TempAppointmentParticipationInfoRespDto {
     private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList;
     private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList;

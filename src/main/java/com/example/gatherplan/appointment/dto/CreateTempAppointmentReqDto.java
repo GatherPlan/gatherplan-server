@@ -9,8 +9,8 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateTempAppointmentReqDto {
     private String appointmentName;
 
