@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "이메일 인증 요청 객체")
 public class EmailAuthReq {
+
     @Schema(description = "이메일", example = "email@example.com")
     @NotBlank(message = "이메일은 공백이 될 수 없습니다.", groups = NotBlankEmail.class)
     @Email(message = "이메일 형식이 맞지 않습니다.", groups = PatternCheckEmail.class)

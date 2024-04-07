@@ -50,7 +50,7 @@ public class AppointmentController {
     @GetMapping("/participation-status")
     @Operation(summary = "회원의 약속 참여 상태 확인 요청", description = "회원의 약속 참여 상태를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> retrieveParticipationStatus(
-            @Schema(description = "약속 코드", example = "abcd efgh j124")
+            @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
@@ -95,7 +95,7 @@ public class AppointmentController {
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
-            @Schema(description = "약속 코드", example = "abcd efgh j124")
+            @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
@@ -109,7 +109,7 @@ public class AppointmentController {
     @GetMapping("/participation")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
-            @Schema(description = "약속 코드", example = "abcd efgh j124")
+            @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
@@ -124,7 +124,7 @@ public class AppointmentController {
     @DeleteMapping
     @Operation(summary = "회원의 약속 삭제 요청", description = "회원이 약속을 삭제할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> deleteAppointment(
-            @Schema(description = "약속 코드", example = "abcd efgh j124")
+            @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 

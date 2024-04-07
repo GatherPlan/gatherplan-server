@@ -1,7 +1,6 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -11,8 +10,7 @@ import lombok.*;
 @Schema(description = "약속 만들기 응답 객체")
 public class CreateAppointmentResp {
 
-    @NotNull
-    @Schema(description = "약속 코드", example = "abcdvvcs11a3")
+    @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
     public static CreateAppointmentResp of(String appointmentCode) {

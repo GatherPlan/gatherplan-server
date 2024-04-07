@@ -25,12 +25,12 @@ public class CreateUserReq {
     @Size(min = 6, max = 6, message = "인증번호는 6자입니다.", groups = SizeCheckAuthcode.class)
     private String authCode;
 
-    @Schema(description = "이름", example = "홍길동")
+    @Schema(description = "회원 닉네임", example = "홍길동")
     @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
     @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
     private String nickname;
 
-    @Schema(description = "비밀번호", example = "abcd1234")
+    @Schema(description = "회원 비밀번호", example = "abcd1234")
     @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
     @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.", groups = SizeCheckPassword.class)
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "비밀번호는 영문자, 숫자를 적어도 하나씩 포함해야 합니다.",
