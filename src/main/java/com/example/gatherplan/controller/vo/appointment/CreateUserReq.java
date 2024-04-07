@@ -9,9 +9,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "회원가입 요청 객체")
 public class CreateUserReq {
 

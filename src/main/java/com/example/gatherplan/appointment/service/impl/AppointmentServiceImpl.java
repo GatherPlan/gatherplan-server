@@ -73,7 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(String keyword, String email) {
+    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email) {
         return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmailAndKeyword(
                 email, keyword);
     }

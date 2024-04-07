@@ -2,12 +2,12 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder
-@Schema(description = "약속 목록 키워드 조회 응답 객체")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppointmentWithHostByKeywordResp {
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;

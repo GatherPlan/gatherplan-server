@@ -14,8 +14,8 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 변경하기 요청 객체")
 public class UpdateAppointmentReq {
 

@@ -14,9 +14,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "임시 회원 약속 만들기 요청 객체")
 public class CreateTempAppointmentReq {
 

@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.controller.validation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -14,8 +15,8 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "비회원의 약속 변경하기 요청 객체")
 public class UpdateTempAppointmentReq {
     @Schema(description = "약속 코드", example = "abcd 1234 efgh 5678")
@@ -38,15 +39,25 @@ public class UpdateTempAppointmentReq {
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
 
-    @Schema(description = "이름", example = "홍길동")
-    @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
-    @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
-    private String nickname;
+    @Schema(description = "약속 후보 날짜", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
+    @Valid
+    private UpdateTempAppointmentReq.TempUserInfo tempUserInfo;
 
-    @Schema(description = "비밀번호", example = "abcd1234")
-    @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
-    @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.", groups = SizeCheckPassword.class)
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "비밀번호는 영문자, 숫자를 적어도 하나씩 포함해야 합니다.",
-            groups = PatternCheckPassword.class)
-    private String password;
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @Schema(description = "임시 회원 정보")
+    public static class TempUserInfo {
+        @Schema(description = "임시 회원 이름", example = "홍길동")
+        @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
+        @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
+        private String nickname;
+
+        @Schema(description = "임시 회원 비밀번호", example = "abc1234")
+        @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
+        @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.", groups = SizeCheckPassword.class)
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "비밀번호는 영문자, 숫자를 적어도 하나씩 포함해야 합니다.",
+                groups = PatternCheckPassword.class)
+        private String password;
+    }
 }
