@@ -2,10 +2,8 @@ package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
@@ -17,10 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
-import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
@@ -95,26 +91,15 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public Optional<AppointmentParticipationInfoRespDto> findAppointmentParticipationInfo(Appointment findAppointment) {
+    public List<AppointmentParticipationInfoRespDto.UserParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
                 .select(user.nickname, userAppointmentMapping.selectedDateTimeList)
                 .from(userAppointmentMapping)
                 .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
-                .where(userAppointmentMapping.appointmentSeq.eq(findAppointment.getId()))
+                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
                 .fetch();
 
-        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList =
-                getTempUserParticipationInfoList(tuples);
-
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList =
-                getUserParticipationInfoList(tuples);
-
-        return Optional.ofNullable(AppointmentParticipationInfoRespDto.builder()
-                .candidateDateList(findAppointment.getCandidateDateList())
-                .candidateTimeTypeList(findAppointment.getCandidateTimeTypeList())
-                .userParticipationInfoList(userParticipationInfoList)
-                .tempUserParticipationInfoList(tempUserParticipationInfoList)
-                .build());
+        return getUserParticipationInfoList(tuples);
     }
 
 
@@ -127,23 +112,6 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
 
             AppointmentParticipationInfoRespDto.UserParticipationInfo info =
                     AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
-                            .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
-                            .build();
-            result.add(info);
-        }
-        return result;
-    }
-
-    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> getTempUserParticipationInfoList(List<Tuple> tuples) {
-        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> result = new ArrayList<>();
-
-        for (Tuple tuple : tuples) {
-            String findNickName = tuple.get(user.nickname);
-            List<SelectedDateTime> selectedDateTimeList = tuple.get(tempUserAppointmentMapping.selectedDateTimeList);
-
-            TempAppointmentParticipationInfoRespDto.UserParticipationInfo info =
-                    TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findNickName)
                             .selectedDateTime(selectedDateTimeList)
                             .build();

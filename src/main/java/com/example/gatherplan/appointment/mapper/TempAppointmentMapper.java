@@ -1,10 +1,14 @@
 package com.example.gatherplan.appointment.mapper;
 
+import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -19,4 +23,8 @@ public interface TempAppointmentMapper {
     Appointment to(CreateTempAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);
 
     TempAppointmentInfoRespDto to(Appointment appointment, String hostName);
+
+    TempAppointmentParticipationInfoRespDto to(Appointment appointment,
+                                               List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList,
+                                               List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList);
 }

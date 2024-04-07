@@ -96,9 +96,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        return customUserAppointmentMappingRepository
-                .findAppointmentParticipationInfo(appointment)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfo =
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
+
+        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfo =
+                customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
+
+        return appointmentMapper.to(appointment, userParticipationInfo, tempUserParticipationInfo);
     }
 
     @Override
