@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class AppointmentWithHostRespDto {
+public class AppointmentWithHostByKeywordRespDto {
     private String hostName;
     private String appointmentCode;
     private String appointmentName;

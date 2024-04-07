@@ -8,9 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "이메일 인증 요청 객체")
 public class EmailAuthReq {
     @Schema(description = "이메일", example = "email@example.com")

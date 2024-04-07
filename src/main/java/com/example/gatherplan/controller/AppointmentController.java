@@ -77,12 +77,12 @@ public class AppointmentController {
 
     @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<AppointmentWithHostResp>> retrieveAppointmentSearchList(
+    public ResponseEntity<ListResponse<AppointmentWithHostByKeywordResp>> retrieveAppointmentSearchList(
             @Schema(description = "약속 이름 검색 키워드", example = "세 얼간이")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String keyword,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentWithHostRespDto> respDtos = appointmentService
+        List<AppointmentWithHostByKeywordRespDto> respDtos = appointmentService
                 .retrieveAppointmentSearchList(keyword, userInfo.getEmail());
 
         return ResponseEntity.ok(

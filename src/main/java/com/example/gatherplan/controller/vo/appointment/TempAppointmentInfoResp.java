@@ -4,11 +4,12 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "비회원의 약속 목록 조회 응답 객체")
 public class TempAppointmentInfoResp {
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
@@ -22,7 +23,7 @@ public class TempAppointmentInfoResp {
 
     @Schema(description = "약속 코드", example = "abcd 1234 efgh 5678")
     private String appointmentCode;
-    
+
     @Schema(description = "약속 장소", example = "서울 성동구 용답동")
     private Address address;
 

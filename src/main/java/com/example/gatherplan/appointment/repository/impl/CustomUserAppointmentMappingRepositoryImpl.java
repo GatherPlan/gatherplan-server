@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
@@ -72,9 +73,9 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
+    public List<AppointmentWithHostByKeywordRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
         return jpaQueryFactory
-                .select(Projections.constructor(AppointmentWithHostRespDto.class,
+                .select(Projections.constructor(AppointmentWithHostByKeywordRespDto.class,
                         user.nickname,
                         appointment.appointmentCode,
                         appointment.appointmentName,

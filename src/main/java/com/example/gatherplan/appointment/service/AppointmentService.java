@@ -12,7 +12,7 @@ public interface AppointmentService {
 
     List<AppointmentWithHostRespDto> retrieveAppointmentList(String email);
 
-    List<AppointmentWithHostRespDto> retrieveAppointmentSearchList(String keyword, String email);
+    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email);
 
     AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email);
 
