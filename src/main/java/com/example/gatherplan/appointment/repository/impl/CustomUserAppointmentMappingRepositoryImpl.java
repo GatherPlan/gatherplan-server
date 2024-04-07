@@ -1,14 +1,11 @@
 package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
-import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordRespDto;
-import com.example.gatherplan.appointment.dto.AppointmentWithHostRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.lang3.ObjectUtils;
@@ -52,42 +49,6 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .where(userAppointmentMapping.appointmentSeq.eq(appointmentId)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetchOne();
-    }
-
-    @Override
-    public List<AppointmentWithHostRespDto> findAllAppointmentsWithHostByEmail(String email) {
-        return jpaQueryFactory
-                .select(Projections.constructor(AppointmentWithHostRespDto.class,
-                        user.nickname,
-                        appointment.appointmentCode,
-                        appointment.appointmentName,
-                        appointment.appointmentState))
-                .from(userAppointmentMapping)
-                .join(appointment).on(
-                        userAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .join(user).on(
-                        userAppointmentMapping.userSeq.eq(user.id)
-                                .and(user.email.eq(email)))
-                .where(userAppointmentMapping.userRole.eq(UserRole.HOST))
-                .fetch();
-    }
-
-    @Override
-    public List<AppointmentWithHostByKeywordRespDto> findAllAppointmentsWithHostByEmailAndKeyword(String email, String keyword) {
-        return jpaQueryFactory
-                .select(Projections.constructor(AppointmentWithHostByKeywordRespDto.class,
-                        user.nickname,
-                        appointment.appointmentCode,
-                        appointment.appointmentName,
-                        appointment.appointmentState))
-                .from(userAppointmentMapping)
-                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .join(user).on(
-                        userAppointmentMapping.userSeq.eq(user.id)
-                                .and(user.email.eq(email)))
-                .where(appointment.appointmentName.contains(keyword)
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetch();
     }
 
     @Override
