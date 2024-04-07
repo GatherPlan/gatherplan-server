@@ -43,9 +43,7 @@ public class RegionController {
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        regionDtos.stream()
-                                .map(regionVoMapper::to)
-                                .toList()
+                        regionDtos.stream().map(regionVoMapper::to).toList()
                 )
         );
     }
@@ -60,9 +58,7 @@ public class RegionController {
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        keywordPlaceRespDtos.stream()
-                                .map(regionVoMapper::to)
-                                .toList())
+                        keywordPlaceRespDtos.stream().map(regionVoMapper::to).toList())
         );
     }
 
@@ -75,9 +71,7 @@ public class RegionController {
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        dailyWeatherRespDtos.stream()
-                                .map(regionVoMapper::to)
-                                .toList())
+                        dailyWeatherRespDtos.stream().map(regionVoMapper::to).toList())
         );
     }
 }
