@@ -65,7 +65,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
@@ -79,7 +79,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
             TempAppointmentParticipationInfoReqDto reqDto) {
 
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfo =
@@ -92,9 +92,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
+    @Transactional
     public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getNickname(), reqDto.getPassword(), UserRole.HOST)
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         Long appointmentId = appointment.getId();
@@ -109,7 +110,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Transactional
     public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getNickname(), reqDto.getPassword(), UserRole.HOST)
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),

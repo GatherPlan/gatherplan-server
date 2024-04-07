@@ -17,6 +17,16 @@ public class UpdateTempAppointmentReqDto {
     private List<TimeType> candidateTimeTypeList;
     private Address address;
     private List<LocalDate> candidateDateList;
-    private String nickname;
-    private String password;
+
+    private UpdateTempAppointmentReqDto.TempUserInfo tempUserInfo;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class TempUserInfo {
+        private String nickname;
+
+        private String password;
+    }
 }
