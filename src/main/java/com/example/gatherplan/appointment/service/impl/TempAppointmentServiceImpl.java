@@ -115,6 +115,4 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
     }
-
-
 }
