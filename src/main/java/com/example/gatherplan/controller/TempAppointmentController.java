@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/temporary/appointments")
-@Tag(name = "약속", description = "임시 회원의 약속 관련된 기능을 제공합니다.")
+@Tag(name = "약속", description = "비회원의 약속 관련된 기능을 제공합니다.")
 @Validated
 public class TempAppointmentController {
 
@@ -27,7 +27,7 @@ public class TempAppointmentController {
     private final TempAppointmentService tempAppointmentService;
 
     @PostMapping
-    @Operation(summary = "비회원의 약속 만들기 요청", description = "임시 회원이 새로운 약속을 생성할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
             @Validated(value = CreateTempAppointmentReqValidSeq.class)
             @RequestBody CreateTempAppointmentReq req) {
@@ -46,7 +46,6 @@ public class TempAppointmentController {
             @ModelAttribute @ParameterObject @Valid TempAppointmentInfoReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
-
         TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
 
         return ResponseEntity.ok(

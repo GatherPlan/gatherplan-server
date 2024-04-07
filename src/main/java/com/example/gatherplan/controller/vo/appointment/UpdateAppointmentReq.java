@@ -19,7 +19,7 @@ import java.util.List;
 @Schema(description = "약속 변경하기 요청 객체")
 public class UpdateAppointmentReq {
 
-    @Schema(description = "약속 코드", example = "abcd 1234 efgh 5678")
+    @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
