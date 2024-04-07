@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
@@ -48,4 +49,26 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                         .and(userAppointmentMapping.userRole.eq(userRole)))
                 .fetchOne());
     }
+
+    @Override
+    public List<Appointment> findAllByUserInfo(String email, UserRole userRole) {
+        return jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
+                .where(user.email.eq(email).and(userAppointmentMapping.userRole.eq(userRole)))
+                .fetch();
+    }
+
+    @Override
+    public List<Appointment> findAllByUserInfoAndKeyword(String email, UserRole userRole, String keyword) {
+        return jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
+                .where(user.email.eq(email).and(userAppointmentMapping.userRole.eq(userRole))
+                        .and(appointment.appointmentName.contains(keyword)))
+                .fetch();
+    }
+
 }

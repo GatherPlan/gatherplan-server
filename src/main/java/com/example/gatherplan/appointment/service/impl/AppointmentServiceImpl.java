@@ -69,13 +69,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentWithHostRespDto> retrieveAppointmentList(String email) {
-        return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmail(email);
+        List<Appointment> appointmentList = customAppointmentRepository.findAllByUserInfo(email, UserRole.GUEST);
+
+        return appointmentList.stream()
+                .map(appointment -> {
+                    String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                            .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+                    return appointmentMapper.toAppointmentWithHostRespDto(appointment, hostName);
+                })
+                .toList();
     }
 
     @Override
     public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email) {
-        return customUserAppointmentMappingRepository.findAllAppointmentsWithHostByEmailAndKeyword(
-                email, keyword);
+        List<Appointment> appointmentList =
+                customAppointmentRepository.findAllByUserInfoAndKeyword(email, UserRole.GUEST, keyword);
+
+        return appointmentList.stream()
+                .map(appointment -> {
+                    String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                            .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+                    return appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostName);
+                })
+                .toList();
     }
 
     @Override
@@ -87,7 +103,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
 
-        return appointmentMapper.to(appointment, hostName);
+        return appointmentMapper.toAppointmentInfoRespDto(appointment, hostName);
     }
 
     @Override
