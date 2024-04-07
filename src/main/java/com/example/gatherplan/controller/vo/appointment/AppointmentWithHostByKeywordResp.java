@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "약속 목록 키워드 조회 응답 객체")
 public class AppointmentWithHostByKeywordResp {
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;
