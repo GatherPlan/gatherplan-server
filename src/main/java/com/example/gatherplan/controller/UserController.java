@@ -45,8 +45,8 @@ public class UserController {
     @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> joinUser(
             @Validated(value = CreateUserReqValidSeq.class)
-            @RequestBody CreateUserReq req
-    ) {
+            @RequestBody CreateUserReq req) {
+
         CreateUserReqDto createUserReqDto = userVoMapper.to(req);
         userService.joinUser(createUserReqDto);
 
