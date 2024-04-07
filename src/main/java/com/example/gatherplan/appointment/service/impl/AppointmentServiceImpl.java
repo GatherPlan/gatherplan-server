@@ -150,4 +150,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                 reqDto.getAddress(), reqDto.getCandidateDateList());
     }
 
+    @Override
+    public AppointmentRespDto retrieveAppointment(String appointmentCode) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+
+        return appointmentMapper.toAppointmentRespDto(appointment, hostName);
+    }
 }

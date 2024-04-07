@@ -21,4 +21,6 @@ public interface AppointmentService {
     void deleteAppointment(String appointmentCode, String email);
 
     void updateAppointment(UpdateAppointmentReqDto reqDto, String email);
+
+    AppointmentRespDto retrieveAppointment(String appointmentCode);
 }

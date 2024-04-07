@@ -1,6 +1,10 @@
 package com.example.gatherplan.appointment.mapper;
 
-import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.dto.AppointmentInfoRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentRespDto;
+import com.example.gatherplan.appointment.dto.CreateAppointmentReqDto;
+import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import org.mapstruct.*;
@@ -28,5 +32,7 @@ public interface AppointmentMapper {
     AppointmentWithHostRespDto toAppointmentWithHostRespDto(Appointment appointment, String hostName);
 
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName);
+
+    AppointmentRespDto toAppointmentRespDto(Appointment appointment, String hostName);
 
 }
