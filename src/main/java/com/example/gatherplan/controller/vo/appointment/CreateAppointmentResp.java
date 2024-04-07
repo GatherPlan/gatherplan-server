@@ -13,4 +13,10 @@ public class CreateAppointmentResp {
     @NotNull
     @Schema(description = "약속 코드", example = "abcdvvcs11a3")
     private String appointmentCode;
+
+    public static CreateAppointmentResp of(String appointmentCode) {
+        return CreateAppointmentResp.builder()
+                .appointmentCode(appointmentCode)
+                .build();
+    }
 }

@@ -41,11 +41,9 @@ public class AppointmentController {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
         String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
-        
+
         return ResponseEntity.ok(
-                CreateAppointmentResp.builder()
-                        .appointmentCode(appointmentCode)
-                        .build()
+                CreateAppointmentResp.of(appointmentCode)
         );
     }
 
@@ -69,10 +67,11 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentWithHostRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail());
-        List<AppointmentWithHostResp> resp = respDtos.stream().map(appointmentVoMapper::to).toList();
 
         return ResponseEntity.ok(
-                ListResponse.of(resp)
+                ListResponse.of(
+                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                )
         );
     }
 
@@ -85,10 +84,11 @@ public class AppointmentController {
 
         List<AppointmentWithHostRespDto> respDtos = appointmentService
                 .retrieveAppointmentSearchList(keyword, userInfo.getEmail());
-        List<AppointmentWithHostResp> resp = respDtos.stream().map(appointmentVoMapper::to).toList();
 
         return ResponseEntity.ok(
-                ListResponse.of(resp)
+                ListResponse.of(
+                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                )
         );
     }
 
@@ -100,9 +100,10 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode, userInfo.getEmail());
-        AppointmentInfoResp resp = appointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
     }
 
     @GetMapping("/participation")
@@ -114,9 +115,10 @@ public class AppointmentController {
 
         AppointmentParticipationInfoRespDto respDto = appointmentService
                 .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getEmail());
-        AppointmentParticipationInfoResp resp = appointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
     }
 
     @DeleteMapping

@@ -36,9 +36,7 @@ public class TempAppointmentController {
         String appointmentCode = tempAppointmentService.registerTempAppointment(reqDto);
 
         return ResponseEntity.ok(
-                CreateTempAppointmentResp.builder()
-                        .appointmentCode(appointmentCode)
-                        .build()
+                CreateTempAppointmentResp.of(appointmentCode)
         );
     }
 
@@ -49,9 +47,10 @@ public class TempAppointmentController {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
         TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
-        TempAppointmentInfoResp resp = tempAppointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper.to(respDto)
+        );
     }
 
     @GetMapping("/participation")
@@ -61,9 +60,10 @@ public class TempAppointmentController {
 
         TempAppointmentParticipationInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
         TempAppointmentParticipationInfoRespDto respDto = tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto);
-        TempAppointmentParticipationInfoResp resp = tempAppointmentVoMapper.to(respDto);
 
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper.to(respDto)
+        );
     }
 
     @DeleteMapping
