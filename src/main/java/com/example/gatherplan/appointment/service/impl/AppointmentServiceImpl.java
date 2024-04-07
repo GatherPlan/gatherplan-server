@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
 
     private final CustomAppointmentRepository customAppointmentRepository;
+    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -82,7 +84,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = customUserAppointmentMappingRepository.findHostName(appointment.getId());
+        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
 
         return appointmentMapper.to(appointment, hostName);
     }

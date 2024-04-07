@@ -54,10 +54,10 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean resp = appointmentService.isUserParticipated(appointmentCode, userInfo.getEmail());
+        boolean isParticipated = appointmentService.isUserParticipated(appointmentCode, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                BooleanResp.of(resp)
+                BooleanResp.of(isParticipated)
         );
     }
 

@@ -53,24 +53,12 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
 
     @Override
     public String findHostName(Long appointmentId) {
-        String hostNameFromTempUser = jpaQueryFactory
+        return jpaQueryFactory
                 .select(tempUser.nickname)
                 .from(tempUserAppointmentMapping)
                 .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
                 .where(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId)
                         .and(tempUserAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetchOne();
-
-        if (hostNameFromTempUser != null) {
-            return hostNameFromTempUser;
-        }
-
-        return jpaQueryFactory
-                .select(user.nickname)
-                .from(userAppointmentMapping)
-                .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
-                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId)
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetchOne();
     }
 

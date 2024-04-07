@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,6 +32,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
     private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
+    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -64,7 +67,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = customTempUserAppointmentMappingRepository.findHostName(appointment.getId());
+        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
 
         return tempAppointmentMapper.to(appointment, hostName);
     }
@@ -77,8 +81,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getNickname(), reqDto.getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        return customTempUserAppointmentMappingRepository
-                .findAppointmentParticipationInfo(appointment)
+        return customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
     }
 
