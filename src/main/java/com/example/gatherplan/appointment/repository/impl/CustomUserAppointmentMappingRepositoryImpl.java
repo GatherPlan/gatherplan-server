@@ -13,7 +13,6 @@ import jakarta.persistence.EntityManager;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
@@ -99,24 +98,15 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
                 .fetch();
 
-        return getUserParticipationInfoList(tuples);
-    }
+        return tuples.stream()
+                .map(tuple -> {
+                    String findNickName = tuple.get(user.nickname);
+                    List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
 
-
-    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> getUserParticipationInfoList(List<Tuple> tuples) {
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> result = new ArrayList<>();
-
-        for (Tuple tuple : tuples) {
-            String findNickName = tuple.get(user.nickname);
-            List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
-
-            AppointmentParticipationInfoRespDto.UserParticipationInfo info =
-                    AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                    return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findNickName)
                             .selectedDateTime(selectedDateTimeList)
                             .build();
-            result.add(info);
-        }
-        return result;
+                }).toList();
     }
 }
