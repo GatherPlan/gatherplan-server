@@ -11,6 +11,7 @@ import com.example.gatherplan.appointment.repository.entity.TempUser;
 import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.TempUserInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
-        CreateTempAppointmentReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
+        TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
         TempUser tempUser = TempUser.builder()
                 .nickname(tempUserInfo.getNickname())
                 .password(tempUserInfo.getPassword())
