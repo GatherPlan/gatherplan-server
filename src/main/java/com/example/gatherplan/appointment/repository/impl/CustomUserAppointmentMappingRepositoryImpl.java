@@ -6,7 +6,7 @@ import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
-import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
+import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

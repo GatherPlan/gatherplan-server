@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.repository.entity.embedded;
+package com.example.gatherplan.common.unit;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
@@ -11,8 +11,8 @@ import java.time.LocalTime;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class SelectedDateTime {
-    private LocalTime selectedStartTime;
-    private LocalTime selectedEndTime;
-    private LocalDate selectedDate;
+public class ConfirmedDateTime {
+    private LocalTime confirmedStartTime;
+    private LocalTime confirmedEndTime;
+    private LocalDate confirmedDate;
 }

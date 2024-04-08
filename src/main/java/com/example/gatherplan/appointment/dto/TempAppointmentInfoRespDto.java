@@ -1,9 +1,13 @@
 package com.example.gatherplan.appointment.dto;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.Address;
-import lombok.*;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
 
 @Getter
 @Builder

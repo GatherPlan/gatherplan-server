@@ -1,8 +1,8 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.UserRole;
-import com.example.gatherplan.appointment.repository.entity.embedded.SelectedDateTime;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
+import com.example.gatherplan.common.unit.SelectedDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
