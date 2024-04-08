@@ -40,7 +40,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getEmail());
+        String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 CreateAppointmentResp.of(appointmentCode)

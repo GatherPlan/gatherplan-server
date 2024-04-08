@@ -4,11 +4,9 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -43,10 +41,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public String registerAppointment(CreateAppointmentReqDto reqDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER));
-
+    public String registerAppointment(CreateAppointmentReqDto reqDto, Long userId) {
         String appointmentCode = UuidUtils.generateRandomString(12);
 
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
@@ -55,7 +50,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
-                .userSeq(user.getId())
+                .userSeq(userId)
                 .userRole(UserRole.HOST)
                 .build();
 

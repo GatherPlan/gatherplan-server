@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    String registerAppointment(CreateAppointmentReqDto reqDto, String email);
+    String registerAppointment(CreateAppointmentReqDto reqDto, Long userId);
 
     boolean isUserParticipated(String appointmentCode, String email);
 
