@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private final UserRepository userRepository;
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
     private final CustomTempUserRepository customTempUserRepository;
