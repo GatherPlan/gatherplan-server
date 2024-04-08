@@ -23,4 +23,6 @@ public interface AppointmentService {
     void updateAppointment(UpdateAppointmentReqDto reqDto, String email);
 
     AppointmentRespDto retrieveAppointment(String appointmentCode);
+
+    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, String email);
 }

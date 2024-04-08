@@ -1,10 +1,14 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.Address;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -19,7 +23,7 @@ public class TempAppointmentInfoResp {
     @Schema(description = "호스트 이름", example = "박정빈")
     private String hostName;
 
-    @Schema(description = "약속 상태", example = "\"UNCONFIRMED\"")
+    @Schema(description = "약속 상태", example = "UNCONFIRMED")
     private AppointmentState appointmentState;
 
     @Schema(description = "약속 코드", example = "985a61f6f636")

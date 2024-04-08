@@ -2,9 +2,9 @@ package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.TimeType;
-import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import com.example.gatherplan.common.unit.Address;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;

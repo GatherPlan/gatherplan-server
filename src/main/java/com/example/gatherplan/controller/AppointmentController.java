@@ -12,6 +12,7 @@ import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/appointments")
-@Tag(name = "약속", description = "약속 관련된 기능을 제공합니다.")
+@Tag(name = "약속 with 회원", description = "회원의 약속 관련된 기능을 제공합니다.")
 @Validated
 public class AppointmentController {
 
@@ -163,4 +164,19 @@ public class AppointmentController {
                 appointmentVoMapper.to(respDto)
         );
     }
+
+    @PostMapping("/participation")
+    @Operation(summary = "회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
+    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
+            @RequestBody @Valid CreateAppointmentParticipationReq req,
+            @AuthenticationPrincipal UserInfo userInfo
+    ) {
+        CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 }

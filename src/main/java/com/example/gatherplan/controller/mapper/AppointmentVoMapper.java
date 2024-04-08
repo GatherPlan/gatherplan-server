@@ -24,5 +24,7 @@ public interface AppointmentVoMapper {
 
     AppointmentResp to(AppointmentRespDto respDto);
 
+    CreateAppointmentParticipationReqDto to(CreateAppointmentParticipationReq req);
+
     AppointmentWithHostByKeywordResp to(AppointmentWithHostByKeywordRespDto respDto);
 }

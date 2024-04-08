@@ -1,8 +1,8 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.repository.entity.embedded.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.Address;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
