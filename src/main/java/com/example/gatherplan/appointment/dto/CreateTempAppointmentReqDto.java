@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.dto;
 
 import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
+import com.example.gatherplan.common.unit.TempUserInfo;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -22,12 +23,4 @@ public class CreateTempAppointmentReqDto {
 
     private TempUserInfo tempUserInfo;
 
-    @Getter
-    @Builder
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class TempUserInfo {
-        private String nickname;
-        private String password;
-    }
 }
