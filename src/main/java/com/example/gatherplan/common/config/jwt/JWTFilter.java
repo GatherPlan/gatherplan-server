@@ -1,5 +1,6 @@
 package com.example.gatherplan.common.config.jwt;
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,9 +43,13 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         RoleType roleType = RoleType.byRole(jwtUtil.getRole(token));
+        UserAuthType userAuthType = UserAuthType.byUserAuthType(jwtUtil.getUserAuthType(token));
 
         User user = User.builder()
+                .id(jwtUtil.getId(token))
+                .nickname(jwtUtil.getNickName(token))
                 .email(jwtUtil.getEmail(token))
+                .userAuthType(userAuthType)
                 .roleType(roleType)
                 .build();
 
