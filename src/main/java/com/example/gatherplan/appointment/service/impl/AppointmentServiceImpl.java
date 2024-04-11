@@ -2,7 +2,6 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
@@ -12,15 +11,14 @@ import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
+import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -173,20 +171,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
-        List<TimeType> candidateTimeTypeList = appointment.getCandidateTimeTypeList();
-        List<SelectedDateTime> selectedDateTimeList = reqDto.getSelectedDateTimeList();
-
-        selectedDateTimeList.stream()
-                .filter(selectedDateTime ->
-                        candidateDateList.stream()
-                                .noneMatch(candidateDate -> candidateDate.isEqual(selectedDateTime.getSelectedDate()))
-                                || candidateTimeTypeList.stream()
-                                .noneMatch(timeType ->
-                                        !timeType.getStartTime().isAfter(selectedDateTime.getSelectedStartTime()) &&
-                                                !timeType.getEndTime().isBefore(selectedDateTime.getSelectedEndTime())
-                                ))
-                .findFirst()
+        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
                     throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
                             String.format("후보 날짜 및 시간에 벗어난 입력 값 입니다. %s", result));
@@ -205,7 +190,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentSeq(appointment.getId())
                 .userSeq(user.getId())
                 .userRole(UserRole.GUEST)
-                .selectedDateTimeList(List.copyOf(selectedDateTimeList))
+                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
 
         userAppointmentMappingRepository.save(userAppointmentMapping);

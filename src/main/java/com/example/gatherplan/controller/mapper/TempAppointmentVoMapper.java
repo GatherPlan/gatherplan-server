@@ -25,4 +25,6 @@ public interface TempAppointmentVoMapper {
     DeleteTempAppointmentReqDto to(DeleteTempAppointmentReq req);
 
     UpdateTempAppointmentReqDto to(UpdateTempAppointmentReq req);
+
+    CreateTempAppointmentParticipationReqDto to(CreateTempAppointmentParticipationReq req);
 }

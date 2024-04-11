@@ -67,6 +67,19 @@ public class TempAppointmentController {
         );
     }
 
+    @PostMapping("/participation")
+    @Operation(summary = "비회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
+    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
+            @RequestBody @Valid CreateTempAppointmentParticipationReq req
+    ) {
+        CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.registerAppointmentParticipation(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
     @DeleteMapping
     @Operation(summary = "비회원의 약속 삭제 요청", description = "비회원이 약속을 삭제할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> deleteAppointment(
