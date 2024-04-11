@@ -19,6 +19,7 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 3000, "회원을 찾을 수 없습니다."),
     USER_NOT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 유저는 호스트가 아닙니다."),
+    TEMP_USER_CONFLICT(HttpStatus.CONFLICT, 3004, "이미 존재하는 임시회원입니다."),
 
     APPOINTMENT_NOT_PARTICIPATE(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
     APPOINTMENT_ALREADY_PARTICIPATE(HttpStatus.BAD_REQUEST, 4001, "이미 참여한 약속입니다."),

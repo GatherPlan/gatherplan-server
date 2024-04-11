@@ -10,6 +10,7 @@ import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.TempUser;
 import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
+import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.TempUserInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
@@ -119,5 +120,35 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
                 reqDto.getAddress(), reqDto.getCandidateDateList());
+    }
+
+    @Override
+    public void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
+                .ifPresent(result -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜 및 시간에 벗어난 입력 값 입니다. %s", result));
+                });
+
+        CreateTempAppointmentParticipationReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
+
+        TempUser tempUser = TempUser.builder()
+                .nickname(tempUserInfo.getNickname())
+                .password(tempUserInfo.getPassword())
+                .build();
+
+        Long tempUserId = tempUserRepository.save(tempUser).getId();
+
+        TempUserAppointmentMapping tempUserAppointmentMapping = TempUserAppointmentMapping.builder()
+                .appointmentSeq(appointment.getId())
+                .tempUserSeq(tempUserId)
+                .userRole(UserRole.GUEST)
+                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
+                .build();
+
+        tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
     }
 }
