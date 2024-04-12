@@ -95,11 +95,12 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
 
-        Long appointmentId = appointment.getId();
+        Long appointmentId = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        tempUserInfo.getNickname(), tempUserInfo.getPassword(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT))
+                .getId();
 
         customTempUserRepository.deleteAllByAppointmentId(appointmentId);
         tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
@@ -110,8 +111,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
+        TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
+
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+                        tempUserInfo.getNickname(), tempUserInfo.getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
