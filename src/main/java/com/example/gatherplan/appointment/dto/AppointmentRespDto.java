@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class AppointmentRespDto {
     private String appointmentName;
     private Address address;
