@@ -112,7 +112,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
 
-        return appointmentMapper.toAppointmentInfoRespDto(appointment, hostName);
+        return appointmentMapper.to(appointment, hostName);
     }
 
     @Override
