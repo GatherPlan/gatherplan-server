@@ -71,7 +71,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
 
                     return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
+                            .selectedDateTimeList(selectedDateTimeList)
                             .build();
                 }).toList();
     }

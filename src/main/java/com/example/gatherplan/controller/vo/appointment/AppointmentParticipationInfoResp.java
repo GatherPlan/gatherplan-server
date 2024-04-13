@@ -43,7 +43,7 @@ public class AppointmentParticipationInfoResp {
 
         @Schema(description = "회원이 선택한 약속 참여 시간", example = "[{\"selectedDate\": \"2024-03-18\"," +
                 " \"selectedStartTime\": \"09:00\", \"selectedEndTime\": \"10:00\"}]")
-        private List<SelectedDateTime> selectedDateTime;
+        private List<SelectedDateTime> selectedDateTimeList;
     }
 
 }

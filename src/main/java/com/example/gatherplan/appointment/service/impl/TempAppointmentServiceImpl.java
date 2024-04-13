@@ -5,6 +5,7 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
+import com.example.gatherplan.appointment.mapper.TempUserMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.TempUser;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class TempAppointmentServiceImpl implements TempAppointmentService {
 
+    private final TempUserMapper tempUserMapper;
     private final TempAppointmentMapper tempAppointmentMapper;
     private final AppointmentRepository appointmentRepository;
     private final TempUserRepository tempUserRepository;
@@ -133,12 +135,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                             String.format("후보 날짜 및 시간에 벗어난 입력 값 입니다. %s", result));
                 });
 
-        CreateTempAppointmentParticipationReqDto.TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
-
-        TempUser tempUser = TempUser.builder()
-                .nickname(tempUserInfo.getNickname())
-                .password(tempUserInfo.getPassword())
-                .build();
+        TempUser tempUser = tempUserMapper.to(reqDto.getTempUserInfo());
 
         Long tempUserId = tempUserRepository.save(tempUser).getId();
 

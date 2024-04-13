@@ -3,11 +3,11 @@ package com.example.gatherplan.controller;
 import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
 import com.example.gatherplan.appointment.service.TempUserService;
 import com.example.gatherplan.controller.mapper.TempUserVoMapper;
+import com.example.gatherplan.controller.validation.CreateTempAppointmentReqValidSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempUserReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,13 +30,14 @@ public class TempUserController {
     @PostMapping("/join:validate")
     @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validJoinUser(
-            @RequestBody @Valid CreateTempUserReq req
+            @Validated(value = CreateTempAppointmentReqValidSeq.class)
+            @RequestBody CreateTempUserReq req
     ) {
         CreateTempUserReqDto reqDto = tempUserVoMapper.to(req);
-        tempUserService.validJoinTempUser(reqDto);
+        boolean isValid = tempUserService.validJoinTempUser(reqDto);
 
         return ResponseEntity.ok(
-                BooleanResp.success()
+                BooleanResp.of(isValid)
         );
     }
 }

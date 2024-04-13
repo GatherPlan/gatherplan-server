@@ -23,6 +23,6 @@ public class TempAppointmentParticipationInfoRespDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class UserParticipationInfo {
         private String nickname;
-        private List<SelectedDateTime> selectedDateTime;
+        private List<SelectedDateTime> selectedDateTimeList;
     }
 }

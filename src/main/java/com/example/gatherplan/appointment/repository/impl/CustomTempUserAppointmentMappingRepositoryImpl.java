@@ -44,7 +44,7 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
 
                     return TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
                             .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
+                            .selectedDateTimeList(selectedDateTimeList)
                             .build();
                 }).toList();
     }

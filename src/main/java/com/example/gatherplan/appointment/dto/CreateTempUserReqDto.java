@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.dto;
 
+import com.example.gatherplan.common.unit.TempUserInfo;
 import lombok.*;
 
 @Getter
@@ -7,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateTempUserReqDto {
-    private String nickname;
-    private String password;
+    private TempUserInfo tempUserInfo;
     private String appointmentCode;
 }
