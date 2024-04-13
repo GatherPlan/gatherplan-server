@@ -1,6 +1,6 @@
-package com.example.gatherplan.api;
+package com.example.gatherplan.external;
 
-import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
+import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

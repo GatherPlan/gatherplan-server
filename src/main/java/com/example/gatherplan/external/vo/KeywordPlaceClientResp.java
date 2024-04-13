@@ -1,4 +1,4 @@
-package com.example.gatherplan.api.vo;
+package com.example.gatherplan.external.vo;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

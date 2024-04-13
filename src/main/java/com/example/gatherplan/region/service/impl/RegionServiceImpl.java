@@ -1,10 +1,10 @@
 package com.example.gatherplan.region.service.impl;
 
-import com.example.gatherplan.api.KakaoLocationClient;
-import com.example.gatherplan.api.WeatherNewsClient;
-import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.external.KakaoLocationClient;
+import com.example.gatherplan.external.WeatherNewsClient;
+import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
 import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
 import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
