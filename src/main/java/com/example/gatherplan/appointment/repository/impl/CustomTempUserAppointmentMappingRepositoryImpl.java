@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
@@ -73,16 +72,4 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
                 .fetch());
     }
 
-    @Override
-    public List<AppointmentWithHostByKeywordDto> findAllAppointmentWithHostByKeyword(List<Long> appointmentIdList) {
-        return new ArrayList<>(jpaQueryFactory
-                .select(Projections.constructor(AppointmentWithHostByKeywordDto.class,
-                        tempUser.nickname,
-                        tempUserAppointmentMapping.appointmentSeq))
-                .from(tempUserAppointmentMapping)
-                .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
-                .where(tempUserAppointmentMapping.appointmentSeq.in(appointmentIdList)
-                        .and(tempUserAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetch());
-    }
 }
