@@ -13,19 +13,9 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppointmentParticipationInfoRespDto {
 
-    private List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList;
-    private List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList;
+    private List<ParticipationInfo> tempUserParticipationInfoList;
+    private List<ParticipationInfo> userParticipationInfoList;
     private List<TimeType> candidateTimeTypeList;
     private List<LocalDate> candidateDateList;
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class UserParticipationInfo {
-        private String nickname;
-        private List<SelectedDateTime> selectedDateTimeList;
-    }
-
 
 }

@@ -2,12 +2,13 @@ package com.example.gatherplan.appointment.repository;
 
 import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 
 import java.util.List;
 
 public interface CustomTempUserAppointmentMappingRepository {
-    List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> findAppointmentParticipationInfo(Long appointmentId);
+
+    List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId);
 
     String findHostName(Long appointmentId);
 

@@ -11,6 +11,7 @@ import com.example.gatherplan.appointment.repository.entity.UserAppointmentMappi
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,10 +119,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfo =
+        List<ParticipationInfo> userParticipationInfo =
                 customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
 
-        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfo =
+        List<ParticipationInfo> tempUserParticipationInfo =
                 customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
 
         return appointmentMapper.to(appointment, userParticipationInfo, tempUserParticipationInfo);

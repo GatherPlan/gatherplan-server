@@ -13,6 +13,7 @@ import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentM
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.TempUserInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -86,10 +87,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfo =
+        List<ParticipationInfo> userParticipationInfo =
                 customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
 
-        List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfo =
+        List<ParticipationInfo> tempUserParticipationInfo =
                 customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
 
         return tempAppointmentMapper.to(appointment, userParticipationInfo, tempUserParticipationInfo);
