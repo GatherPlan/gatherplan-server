@@ -1,8 +1,10 @@
 package com.example.gatherplan.common.unit;
 
-import com.example.gatherplan.controller.validation.*;
+import com.example.gatherplan.controller.validation.NotBlankNickName;
+import com.example.gatherplan.controller.validation.NotBlankPassword;
+import com.example.gatherplan.controller.validation.SizeCheckNickName;
+import com.example.gatherplan.controller.validation.SizeCheckPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +25,5 @@ public class TempUserInfo {
     @Comment("비회원 비밀번호")
     @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
     @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.", groups = SizeCheckPassword.class)
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$", message = "비밀번호는 영문자, 숫자를 적어도 하나씩 포함해야 합니다.",
-            groups = PatternCheckPassword.class)
     private String password;
 }
