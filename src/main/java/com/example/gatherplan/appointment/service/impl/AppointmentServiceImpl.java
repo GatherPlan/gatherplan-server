@@ -4,11 +4,9 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
@@ -167,7 +165,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, String email) {
+    public void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
@@ -177,18 +175,16 @@ public class AppointmentServiceImpl implements AppointmentService {
                             String.format("후보 날짜 및 시간에 벗어난 입력 값 입니다. %s", result));
                 });
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         userAppointmentMappingRepository.findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
-                appointment.getId(), user.getId(), UserRole.GUEST
+                appointment.getId(), userId, UserRole.GUEST
         ).ifPresent(result -> {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         });
 
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointment.getId())
-                .userSeq(user.getId())
+                .userSeq(userId)
                 .userRole(UserRole.GUEST)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();

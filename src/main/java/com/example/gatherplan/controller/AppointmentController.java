@@ -172,7 +172,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo
     ) {
         CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getEmail());
+        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
