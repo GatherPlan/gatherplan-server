@@ -15,6 +15,7 @@ import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentWithHostRespDto> retrieveAppointmentList(String email) {
+    public List<AppointmentWithHostRespDto> retrieveAppointmentList(String email, String nickname) {
         List<Appointment> appointmentList = customAppointmentRepository.findAllByUserInfo(email, UserRole.GUEST);
         List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
 
@@ -79,12 +80,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentList.stream()
                 .map(appointment ->
                         appointmentMapper.toAppointmentWithHostRespDto(appointment, hostNameMap.get(appointment.getId()),
-                                customUserAppointmentMappingRepository.findIsHost(email, appointment.getId()).isPresent()))
+                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
                 .toList();
     }
 
     @Override
-    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email) {
+    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
+                                                                                   String nickname) {
         List<Appointment> appointmentList =
                 customAppointmentRepository.findAllByUserInfoAndKeyword(email, UserRole.GUEST, keyword);
         List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
@@ -97,7 +99,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentList.stream()
                 .map(appointment ->
                         appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
-                                customUserAppointmentMappingRepository.findIsHost(email, appointment.getId()).isPresent()))
+                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
                 .toList();
     }
 

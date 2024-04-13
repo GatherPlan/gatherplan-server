@@ -2,7 +2,6 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -22,6 +21,8 @@ public class AppointmentWithHostResp {
     private AppointmentState appointmentState;
 
     @Schema(description = "약속 코드", example = "985a61f6f636")
-    @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.")
     private String appointmentCode;
+
+    @Schema(description = "호스트 여부", example = "true")
+    private boolean isHost;
 }
