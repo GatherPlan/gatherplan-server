@@ -70,7 +70,8 @@ public class TempAppointmentController {
     @PostMapping("/participation")
     @Operation(summary = "비회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
     public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @RequestBody @Valid CreateTempAppointmentParticipationReq req
+            @Valid
+            @RequestBody CreateTempAppointmentParticipationReq req
     ) {
         CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
         tempAppointmentService.registerAppointmentParticipation(reqDto);

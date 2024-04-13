@@ -4,6 +4,7 @@ import com.example.gatherplan.common.unit.SelectedDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.List;
@@ -15,11 +16,11 @@ import java.util.List;
 @Schema(description = "회원의 약속 참여하기 요청")
 public class CreateAppointmentParticipationReq {
 
-    @NotBlank
+    @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
     @Schema(description = "약속 코드", example = "abcd1234efgh")
     private String appointmentCode;
 
-    @Valid
+    @NotEmpty(message = "날짜 및 시간 정보는 비어 있을 수 없습니다.")
     @Schema(description = "선택 날짜 및 시간 정보 리스트",
             example = "[{\"selectedDate\": \"2024-04-10\"," +
                     "\"selectedStartTime\": \"15:00\"," +
@@ -27,5 +28,5 @@ public class CreateAppointmentParticipationReq {
                     "{\"selectedDate\": \"2024-04-10\"," +
                     "\"selectedStartTime\": \"19:00\"," +
                     "\"selectedEndTime\": \"21:00\"}]")
-    private List<SelectedDateTime> selectedDateTimeList;
+    private List<@Valid SelectedDateTime> selectedDateTimeList;
 }

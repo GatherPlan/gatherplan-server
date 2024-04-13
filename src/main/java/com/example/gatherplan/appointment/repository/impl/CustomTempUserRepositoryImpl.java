@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomTempUserRepository;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -37,11 +36,10 @@ public class CustomTempUserRepositoryImpl implements CustomTempUserRepository {
     @Override
     public List<String> findAllTempUserNameByAppointmentId(Long appointmentId) {
         return jpaQueryFactory
-                .select(tempUser.nickname)
+                .selectDistinct(tempUser.nickname)
                 .from(tempUser)
                 .join(tempUserAppointmentMapping).on(tempUser.id.eq(tempUserAppointmentMapping.tempUserSeq)
-                        .and(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId))
-                        .and(tempUserAppointmentMapping.userRole.eq(UserRole.GUEST)))
+                        .and(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId)))
                 .fetch();
     }
 
