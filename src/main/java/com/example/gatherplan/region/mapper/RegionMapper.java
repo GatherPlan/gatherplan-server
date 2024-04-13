@@ -1,7 +1,7 @@
 package com.example.gatherplan.region.mapper;
 
-import com.example.gatherplan.api.vo.DailyWeatherClientResp;
-import com.example.gatherplan.api.vo.KeywordPlaceClientResp;
+import com.example.gatherplan.external.vo.DailyWeatherClientResp;
+import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
 import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
 import com.example.gatherplan.region.dto.RegionDto;
