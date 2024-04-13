@@ -84,9 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void joinUser(CreateUserReqDto reqDto) {
-        String email = reqDto.getEmail();
-
-        EmailAuth emailAuth = emailAuthRepository.findByEmail(email)
+        EmailAuth emailAuth = emailAuthRepository.findByEmail(reqDto.getEmail())
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 인증번호입니다."));
 
         if (now().isAfter(emailAuth.getExpiredAt())) {
