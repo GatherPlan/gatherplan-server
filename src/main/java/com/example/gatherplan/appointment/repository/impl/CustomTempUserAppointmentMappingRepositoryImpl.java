@@ -2,9 +2,9 @@ package com.example.gatherplan.appointment.repository.impl;
 
 import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomTempUserAppointmentMappingRepository;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -28,7 +28,7 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
     }
 
     @Override
-    public List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
+    public List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
                 .select(tempUser.nickname, tempUserAppointmentMapping.selectedDateTimeList)
                 .from(tempUserAppointmentMapping)
@@ -42,7 +42,7 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
                     List<SelectedDateTime> selectedDateTimeList =
                             tuple.get(tempUserAppointmentMapping.selectedDateTimeList);
 
-                    return TempAppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                    return ParticipationInfo.builder()
                             .nickname(findNickName)
                             .selectedDateTimeList(selectedDateTimeList)
                             .build();

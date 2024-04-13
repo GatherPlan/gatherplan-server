@@ -1,10 +1,10 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -56,7 +56,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public List<AppointmentParticipationInfoRespDto.UserParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
+    public List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
                 .select(user.nickname, userAppointmentMapping.selectedDateTimeList)
                 .from(userAppointmentMapping)
@@ -69,7 +69,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                     String findNickName = tuple.get(user.nickname);
                     List<SelectedDateTime> selectedDateTimeList = tuple.get(userAppointmentMapping.selectedDateTimeList);
 
-                    return AppointmentParticipationInfoRespDto.UserParticipationInfo.builder()
+                    return ParticipationInfo.builder()
                             .nickname(findNickName)
                             .selectedDateTimeList(selectedDateTimeList)
                             .build();
