@@ -67,7 +67,8 @@ public class AppointmentController {
     public ResponseEntity<ListResponse<AppointmentWithHostResp>> retrieveAppointmentList(
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentWithHostRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail());
+        List<AppointmentWithHostRespDto> respDtos = appointmentService.retrieveAppointmentList(userInfo.getEmail(),
+                userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -84,7 +85,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentWithHostByKeywordRespDto> respDtos = appointmentService
-                .retrieveAppointmentSearchList(keyword, userInfo.getEmail());
+                .retrieveAppointmentSearchList(keyword, userInfo.getEmail(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(

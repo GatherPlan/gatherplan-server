@@ -10,9 +10,10 @@ public interface AppointmentService {
 
     boolean isUserParticipated(String appointmentCode, String email);
 
-    List<AppointmentWithHostRespDto> retrieveAppointmentList(String email);
+    List<AppointmentWithHostRespDto> retrieveAppointmentList(String email, String nickname);
 
-    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email);
+    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
+                                                                            String nickname);
 
     AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email);
 
