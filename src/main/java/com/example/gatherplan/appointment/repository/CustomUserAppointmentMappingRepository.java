@@ -4,8 +4,10 @@ import com.example.gatherplan.appointment.dto.AppointmentParticipationInfoRespDt
 import com.example.gatherplan.appointment.dto.AppointmentWithHostByKeywordDto;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomUserAppointmentMappingRepository {
 
@@ -18,4 +20,6 @@ public interface CustomUserAppointmentMappingRepository {
     List<AppointmentWithHostDto> findAllAppointmentWithHost(List<Long> appointmentIdList);
 
     List<AppointmentWithHostByKeywordDto> findAllAppointmentWithHostByKeyword(List<Long> appointmentIdList);
+
+    Optional<UserAppointmentMapping> findIsHost(String email, Long appointmentId);
 }

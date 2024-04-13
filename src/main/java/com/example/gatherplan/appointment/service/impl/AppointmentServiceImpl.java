@@ -77,7 +77,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentList.stream()
                 .map(appointment ->
-                        appointmentMapper.toAppointmentWithHostRespDto(appointment, hostNameMap.get(appointment.getId())))
+                        appointmentMapper.toAppointmentWithHostRespDto(appointment, hostNameMap.get(appointment.getId()),
+                                customUserAppointmentMappingRepository.findIsHost(email, appointment.getId()).isPresent()))
                 .toList();
     }
 
@@ -94,7 +95,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentList.stream()
                 .map(appointment ->
-                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId())))
+                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
+                                customUserAppointmentMappingRepository.findIsHost(email, appointment.getId()).isPresent()))
                 .toList();
     }
 
