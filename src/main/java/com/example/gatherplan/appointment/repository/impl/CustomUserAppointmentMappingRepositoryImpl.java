@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
@@ -100,5 +101,15 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .where(userAppointmentMapping.appointmentSeq.in(appointmentIdList)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetch());
+    }
+
+    @Override
+    public Optional<UserAppointmentMapping> findIsHost(String email, Long appointmentId) {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(userAppointmentMapping)
+                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
+                .where(user.email.eq(email).and(userAppointmentMapping.appointmentSeq.eq(appointmentId))
+                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
+                .fetchFirst());
     }
 }

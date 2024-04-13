@@ -25,9 +25,10 @@ public interface AppointmentMapper {
             , List<AppointmentParticipationInfoRespDto.UserParticipationInfo> userParticipationInfoList,
                                            List<TempAppointmentParticipationInfoRespDto.UserParticipationInfo> tempUserParticipationInfoList);
 
-    AppointmentWithHostRespDto toAppointmentWithHostRespDto(Appointment appointment, String hostName);
+    AppointmentWithHostRespDto toAppointmentWithHostRespDto(Appointment appointment, String hostName, boolean isHost);
 
-    AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName);
+    AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
+                                                                              boolean isHost);
 
     AppointmentRespDto toAppointmentRespDto(Appointment appointment, String hostName);
 

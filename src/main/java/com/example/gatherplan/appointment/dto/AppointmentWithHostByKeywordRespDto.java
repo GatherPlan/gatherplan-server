@@ -12,4 +12,5 @@ public class AppointmentWithHostByKeywordRespDto {
     private String appointmentCode;
     private String appointmentName;
     private AppointmentState appointmentState;
+    private boolean isHost;
 }
