@@ -1,8 +1,7 @@
 package com.example.gatherplan.controller.vo.appointment;
 
-import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.TimeType;
-import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

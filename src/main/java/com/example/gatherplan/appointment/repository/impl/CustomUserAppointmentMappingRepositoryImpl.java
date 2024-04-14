@@ -70,7 +70,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
 
                     return ParticipationInfo.builder()
                             .nickname(findNickName)
-                            .selectedDateTimeList(selectedDateTimeList)
+                            .selectedDateTime(selectedDateTimeList)
                             .build();
                 }).toList();
     }

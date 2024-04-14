@@ -1,7 +1,7 @@
 package com.example.gatherplan.appointment.dto;
 
 import com.example.gatherplan.appointment.enums.TimeType;
-import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import lombok.*;
 
 import java.time.LocalDate;
