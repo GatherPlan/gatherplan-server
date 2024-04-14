@@ -26,8 +26,6 @@ public interface AppointmentMapper {
                                            List<ParticipationInfo> userParticipationInfoList,
                                            List<ParticipationInfo> tempUserParticipationInfoList);
 
-    AppointmentWithHostRespDto toAppointmentWithHostRespDto(Appointment appointment, String hostName, boolean isHost);
-
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
                                                                               boolean isHost);
 
