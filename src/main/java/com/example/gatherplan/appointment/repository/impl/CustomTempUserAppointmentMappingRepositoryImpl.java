@@ -13,10 +13,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
 import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
-import static com.example.gatherplan.appointment.repository.entity.QUser.user;
+
 
 @Repository
 public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTempUserAppointmentMappingRepository {
@@ -35,17 +38,21 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
                 .where(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId))
                 .fetch();
 
-        return tuples.stream()
-                .map(tuple -> {
-                    String findNickName = tuple.get(user.nickname);
-                    List<SelectedDateTime> selectedDateTimeList =
-                            tuple.get(tempUserAppointmentMapping.selectedDateTimeList);
+        Map<String, List<SelectedDateTime>> participationMap = tuples.stream()
+                .filter(tuple -> tuple.get(0, String.class) != null)
+                .collect(Collectors.groupingBy(
+                        tuple -> Optional.ofNullable(tuple.get(0, String.class)).orElse("Unknown"),
+                        Collectors.mapping(
+                                tuple -> tuple.get(1, SelectedDateTime.class),
+                                Collectors.toList()
+                        )
+                ));
 
-                    return ParticipationInfo.builder()
-                            .nickname(findNickName)
-                            .selectedDateTime(selectedDateTimeList)
-                            .build();
-                }).toList();
+        return participationMap.entrySet().stream()
+                .map(entry -> ParticipationInfo.builder()
+                        .nickname(entry.getKey())
+                        .selectedDateTimeList(entry.getValue())
+                        .build()).toList();
     }
 
     @Override

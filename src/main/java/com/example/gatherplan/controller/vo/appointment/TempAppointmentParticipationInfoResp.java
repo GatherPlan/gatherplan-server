@@ -15,13 +15,9 @@ import java.util.List;
 @Schema(description = "약속 참여 정보 조회 응답 객체")
 public class TempAppointmentParticipationInfoResp {
 
-    @Schema(description = "약속 참여 정보 (비회원)", example = "[{\"nickname\": \"박정빈\"," +
+    @Schema(description = "약속 참여 정보", example = "[{\"nickname\": \"박승일\"," +
             " \"selectedDateTime\": [{\"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\"}]}]")
-    private List<ParticipationInfo> tempUserParticipationInfoList;
-
-    @Schema(description = "약속 참여 정보 (회원)", example = "[{\"nickname\": \"박승일\"," +
-            " \"selectedDateTime\": [{\"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\"}]}]")
-    private List<ParticipationInfo> userParticipationInfoList;
+    private List<ParticipationInfo> participationInfoList;
 
     @Schema(description = "약속 후보 시간" +
             "<br> MORNING : 오전, AFTERNOON : 오후, EVENING : 저녁", example = "[\"MORNING\", \"EVENING\"]")

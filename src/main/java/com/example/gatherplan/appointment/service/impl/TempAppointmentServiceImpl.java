@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,13 +88,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> userParticipationInfo =
-                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
+        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
+        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
 
-        List<ParticipationInfo> tempUserParticipationInfo =
-                customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
-
-        return tempAppointmentMapper.to(appointment, userParticipationInfo, tempUserParticipationInfo);
+        return tempAppointmentMapper.to(appointment, participationInfo);
     }
 
     @Override

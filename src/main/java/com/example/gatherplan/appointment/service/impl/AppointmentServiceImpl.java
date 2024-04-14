@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -101,16 +102,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
-                        email, UserRole.HOST)
+                        email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> userParticipationInfo =
-                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
+        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
+        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
 
-        List<ParticipationInfo> tempUserParticipationInfo =
-                customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId());
-
-        return appointmentMapper.to(appointment, userParticipationInfo, tempUserParticipationInfo);
+        return appointmentMapper.to(appointment, participationInfo);
     }
 
     @Override

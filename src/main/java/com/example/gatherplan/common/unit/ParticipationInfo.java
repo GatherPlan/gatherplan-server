@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ParticipationInfo {
     private String nickname;
-    private List<SelectedDateTime> selectedDateTime;
+    private List<SelectedDateTime> selectedDateTimeList;
 }
