@@ -68,23 +68,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentWithHostRespDto> retrieveAppointmentList(String email, String nickname) {
-        List<Appointment> appointmentList = customAppointmentRepository.findAllByUserInfo(email, UserRole.GUEST);
-        List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
-
-        Map<Long, String> hostNameMap = Stream.concat(
-                        customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream(),
-                        customTempUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream())
-                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
-
-        return appointmentList.stream()
-                .map(appointment ->
-                        appointmentMapper.toAppointmentWithHostRespDto(appointment, hostNameMap.get(appointment.getId()),
-                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
-                .toList();
-    }
-
-    @Override
     public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
                                                                                    String nickname) {
         List<Appointment> appointmentList =
