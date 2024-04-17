@@ -66,4 +66,8 @@ public class Appointment extends BaseAuditableEntity {
         this.candidateDateList = List.copyOf(candidateDateList);
     }
 
+    public void confirmed(ConfirmedDateTime confirmedDateTime) {
+        this.confirmedDateTime = confirmedDateTime;
+    }
+
 }

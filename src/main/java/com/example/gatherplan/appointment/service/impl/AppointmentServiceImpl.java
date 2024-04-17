@@ -196,4 +196,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(ParticipationInfo::getNickname)
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
+                email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        appointment.confirmed(reqDto.getConfirmedDateTime());
+    }
 }

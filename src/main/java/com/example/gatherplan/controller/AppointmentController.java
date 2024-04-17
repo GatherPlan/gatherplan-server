@@ -180,4 +180,18 @@ public class AppointmentController {
         );
     }
 
+    @PostMapping("/fix")
+    @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
+    public ResponseEntity<BooleanResp> confirmedAppointment(
+            @RequestBody @Valid ConfirmedAppointmentReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        ConfirmedAppointmentReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.confirmedAppointment(reqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 }
