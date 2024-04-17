@@ -27,4 +27,6 @@ public interface AppointmentService {
     void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
     List<String> retrieveEligibleParticipantsList(ConfirmedAppointmentParticipantsReqDto reqDto, String email);
+
+    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
 }

@@ -30,4 +30,6 @@ public interface AppointmentVoMapper {
     ConfirmedAppointmentParticipantsReqDto to(ConfirmedAppointmentParticipantsReq req);
 
     ConfirmedAppointmentParticipantsResp to(ConfirmedAppointmentParticipantsRespDto respDto);
+
+    ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
 }
