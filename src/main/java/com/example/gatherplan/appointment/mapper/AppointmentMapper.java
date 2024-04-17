@@ -28,5 +28,5 @@ public interface AppointmentMapper {
                                                                               boolean isHost);
 
     AppointmentRespDto toAppointmentRespDto(Appointment appointment, String hostName);
-
+    
 }

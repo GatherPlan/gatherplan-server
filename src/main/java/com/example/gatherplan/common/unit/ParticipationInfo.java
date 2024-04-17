@@ -1,5 +1,6 @@
 package com.example.gatherplan.common.unit;
 
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.util.List;
@@ -10,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ParticipationInfo {
     private String nickname;
-    private List<SelectedDateTime> selectedDateTimeList;
+    private List<@Valid SelectedDateTime> selectedDateTimeList;
 }

@@ -165,4 +165,19 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/fix")
+    @Operation(summary = "약속 확정 시간에 참여 가능한 사용자 조회", description = "선택된 약속 확정 시간에 참여할 수 있는 사용자 목록을 조회합니다.")
+    public ResponseEntity<ConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
+            @RequestBody @Valid ConfirmedAppointmentParticipantsReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        ConfirmedAppointmentParticipantsReqDto reqDto = appointmentVoMapper.to(req);
+        List<String> nicknameList =
+                appointmentService.retrieveEligibleParticipantsList(reqDto, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                ConfirmedAppointmentParticipantsResp.of(nicknameList)
+        );
+    }
+
 }
