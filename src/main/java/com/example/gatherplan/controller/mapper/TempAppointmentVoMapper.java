@@ -29,4 +29,6 @@ public interface TempAppointmentVoMapper {
     CreateTempAppointmentParticipationReqDto to(CreateTempAppointmentParticipationReq req);
 
     TempConfirmedAppointmentParticipantsReqDto to(TempConfirmedAppointmentParticipantsReq req);
+
+    TempConfirmedAppointmentReqDto to(TempConfirmedAppointmentReq req);
 }

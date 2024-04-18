@@ -126,4 +126,17 @@ public class TempAppointmentController {
         );
     }
 
+    @PostMapping("/fix")
+    @Operation(summary = "비회원의 약속 확정 요청", description = "비회원이 약속 확정 시간을 정할때 사용됩니다.")
+    public ResponseEntity<BooleanResp> confirmedAppointment(
+            @RequestBody @Valid TempConfirmedAppointmentReq req) {
+
+        TempConfirmedAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.confirmedAppointment(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 }
