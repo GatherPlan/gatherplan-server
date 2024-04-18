@@ -3,7 +3,7 @@ package com.example.gatherplan.controller;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
-import com.example.gatherplan.controller.validation.CreateUserReqValidSeq;
+import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateUserReq;
 import com.example.gatherplan.controller.vo.appointment.EmailAuthReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/auth/email")
     @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
     public ResponseEntity<BooleanResp> authenticateEmail(
-            @Validated(value = CreateUserReqValidSeq.class)
+            @Validated(value = RequestValidationSeq.class)
             @RequestBody EmailAuthReq req) {
 
         userService.authenticateEmail(req.getEmail());
@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping("/join")
     @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> joinUser(
-            @Validated(value = CreateUserReqValidSeq.class)
+            @Validated(value = RequestValidationSeq.class)
             @RequestBody CreateUserReq req) {
 
         CreateUserReqDto createUserReqDto = userVoMapper.to(req);

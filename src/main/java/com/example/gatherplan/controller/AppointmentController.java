@@ -4,8 +4,7 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
-import com.example.gatherplan.controller.validation.CreateAppointmentReqValidSeq;
-import com.example.gatherplan.controller.validation.UpdateAppointmentReqValidSeq;
+import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
@@ -37,7 +36,7 @@ public class AppointmentController {
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateAppointmentResp> registerAppointment(
-            @Validated(value = CreateAppointmentReqValidSeq.class)
+            @Validated(value = RequestValidationSeq.class)
             @RequestBody CreateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
@@ -126,7 +125,7 @@ public class AppointmentController {
     @PutMapping
     @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointment(
-            @Validated(value = UpdateAppointmentReqValidSeq.class)
+            @Validated(value = RequestValidationSeq.class)
             @RequestBody UpdateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
@@ -169,8 +168,7 @@ public class AppointmentController {
     @GetMapping("/fix")
     @Operation(summary = "약속 확정 시간에 참여 가능한 사용자 조회", description = "선택된 약속 확정 시간에 참여할 수 있는 사용자 목록을 조회합니다.")
     public ResponseEntity<ConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
-            @ModelAttribute @ParameterObject
-            @Validated ConfirmedAppointmentParticipantsReq req,
+            @ModelAttribute @ParameterObject @Valid ConfirmedAppointmentParticipantsReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentParticipantsReqDto reqDto = appointmentVoMapper.to(req);
