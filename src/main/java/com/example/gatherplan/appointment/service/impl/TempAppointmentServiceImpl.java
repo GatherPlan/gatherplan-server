@@ -13,6 +13,7 @@ import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentM
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.TempUserInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
@@ -146,5 +147,26 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .build();
 
         tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
+    }
+
+    @Override
+    public List<String> retrieveEligibleParticipantsList(TempConfirmedAppointmentParticipantsReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
+        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
+
+        ConfirmedDateTime confirmedDateTime = reqDto.getConfirmedDateTime();
+
+        return participationInfo.stream()
+                .filter(participant -> participant.getSelectedDateTimeList().stream().anyMatch(selectedDateTime ->
+                        selectedDateTime.getSelectedDate().equals(confirmedDateTime.getConfirmedDate()) &&
+                                !selectedDateTime.getSelectedStartTime().isAfter(confirmedDateTime.getConfirmedStartTime()) &&
+                                !selectedDateTime.getSelectedEndTime().isBefore(confirmedDateTime.getConfirmedEndTime())
+                ))
+                .map(ParticipationInfo::getNickname)
+                .toList();
     }
 }

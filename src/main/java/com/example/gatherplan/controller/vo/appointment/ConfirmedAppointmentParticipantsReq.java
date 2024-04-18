@@ -13,7 +13,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 확정 시간에 참여 가능한 사용자 조회 요청 객체")
+@Schema(description = "회원의 약속 확정 시간에 참여 가능한 사용자 조회 요청 객체")
 public class ConfirmedAppointmentParticipantsReq {
 
     @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
