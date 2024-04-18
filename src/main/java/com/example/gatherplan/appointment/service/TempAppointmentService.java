@@ -19,4 +19,6 @@ public interface TempAppointmentService {
     void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
 
     List<String> retrieveEligibleParticipantsList(TempConfirmedAppointmentParticipantsReqDto reqDto);
+
+    void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto);
 }

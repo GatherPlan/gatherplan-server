@@ -169,4 +169,20 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .map(ParticipationInfo::getNickname)
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())
+                .ifPresent(result -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", result));
+                });
+
+        appointment.confirmed(reqDto.getConfirmedDateTime());
+    }
 }
