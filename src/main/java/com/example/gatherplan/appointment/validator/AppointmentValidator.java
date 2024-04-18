@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.validator;
 
 import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import lombok.experimental.UtilityClass;
 
@@ -29,4 +30,26 @@ public class AppointmentValidator {
                                 ))
                 .findFirst();
     }
+
+    public Optional<ConfirmedDateTime> retrieveInvalidConfirmedDateTime(
+            Appointment appointment, ConfirmedDateTime confirmedDateTime) {
+
+        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
+        List<TimeType> candidateTimeTypeList = appointment.getCandidateTimeTypeList();
+
+        boolean isDateInvalid = candidateDateList.stream()
+                .noneMatch(candidateDate -> candidateDate.isEqual(confirmedDateTime.getConfirmedDate()));
+
+        boolean isTimeInvalid = candidateTimeTypeList.stream()
+                .noneMatch(timeType ->
+                        !timeType.getStartTime().isAfter(confirmedDateTime.getConfirmedStartTime()) &&
+                                !timeType.getEndTime().isBefore(confirmedDateTime.getConfirmedEndTime()));
+
+        if (isDateInvalid || isTimeInvalid) {
+            return Optional.of(confirmedDateTime);
+        }
+
+        return Optional.empty();
+    }
+
 }

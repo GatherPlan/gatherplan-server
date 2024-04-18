@@ -205,6 +205,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
                 email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
+        AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())
+                .ifPresent(result -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", result));
+                });
+
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
 }
