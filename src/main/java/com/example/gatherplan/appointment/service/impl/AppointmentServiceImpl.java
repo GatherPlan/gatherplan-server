@@ -181,17 +181,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<String> retrieveEligibleParticipantsList(ConfirmedAppointmentParticipantsReqDto reqDto, String email) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
-                email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+                        email, UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        log.info(appointment.getAppointmentCode());
+        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
+        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
 
         ConfirmedDateTime confirmedDateTime = reqDto.getConfirmedDateTime();
 
-        return reqDto.getParticipationInfoList().stream()
+        return participationInfo.stream()
                 .filter(participant -> participant.getSelectedDateTimeList().stream().anyMatch(selectedDateTime ->
                         selectedDateTime.getSelectedDate().equals(confirmedDateTime.getConfirmedDate()) &&
-                                !selectedDateTime.getSelectedStartTime().isBefore(confirmedDateTime.getConfirmedStartTime()) &&
-                                !selectedDateTime.getSelectedEndTime().isAfter(confirmedDateTime.getConfirmedEndTime())
+                                !selectedDateTime.getSelectedStartTime().isAfter(confirmedDateTime.getConfirmedStartTime()) &&
+                                !selectedDateTime.getSelectedEndTime().isBefore(confirmedDateTime.getConfirmedEndTime())
                 ))
                 .map(ParticipationInfo::getNickname)
                 .toList();

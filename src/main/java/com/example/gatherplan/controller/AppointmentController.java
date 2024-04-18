@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -168,7 +169,8 @@ public class AppointmentController {
     @GetMapping("/fix")
     @Operation(summary = "약속 확정 시간에 참여 가능한 사용자 조회", description = "선택된 약속 확정 시간에 참여할 수 있는 사용자 목록을 조회합니다.")
     public ResponseEntity<ConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
-            @RequestBody @Valid ConfirmedAppointmentParticipantsReq req,
+            @ModelAttribute @ParameterObject
+            @Validated ConfirmedAppointmentParticipantsReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentParticipantsReqDto reqDto = appointmentVoMapper.to(req);
