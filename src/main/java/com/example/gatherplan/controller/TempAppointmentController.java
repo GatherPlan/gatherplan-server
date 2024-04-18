@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/temporary/appointments")
@@ -106,6 +108,21 @@ public class TempAppointmentController {
 
         return ResponseEntity.ok(
                 BooleanResp.success()
+        );
+    }
+
+    @GetMapping("/fix")
+    @Operation(summary = "비회원의 약속 확정 시간에 참여 가능한 사용자 조회", description = "비회원이 선택된 약속 확정 시간에 참여할 " +
+            "수 있는 사용자 목록을 조회합니다.")
+    public ResponseEntity<TempConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
+            @ModelAttribute @ParameterObject @Valid TempConfirmedAppointmentParticipantsReq req) {
+
+        TempConfirmedAppointmentParticipantsReqDto reqDto = tempAppointmentVoMapper.to(req);
+        List<String> nicknameList =
+                tempAppointmentService.retrieveEligibleParticipantsList(reqDto);
+
+        return ResponseEntity.ok(
+                TempConfirmedAppointmentParticipantsResp.of(nicknameList)
         );
     }
 

@@ -2,6 +2,8 @@ package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
 
+import java.util.List;
+
 public interface TempAppointmentService {
     String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
@@ -15,4 +17,6 @@ public interface TempAppointmentService {
     void updateAppointment(UpdateTempAppointmentReqDto reqDto);
 
     void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
+
+    List<String> retrieveEligibleParticipantsList(TempConfirmedAppointmentParticipantsReqDto reqDto);
 }
