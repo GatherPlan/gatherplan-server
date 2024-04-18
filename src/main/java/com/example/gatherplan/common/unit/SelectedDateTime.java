@@ -10,8 +10,8 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Embeddable
 @Schema(description = "사용자 선택 날짜 및 시간 정보")
