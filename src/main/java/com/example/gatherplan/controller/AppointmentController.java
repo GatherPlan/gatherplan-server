@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/appointments")
 @Tag(name = "약속 with 회원", description = "회원의 약속 관련된 기능을 제공합니다.")
-@Validated
+@Validated(value = RequestValidationSeq.class)
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -36,8 +36,7 @@ public class AppointmentController {
     @PostMapping
     @Operation(summary = "회원의 약속 만들기 요청", description = "회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateAppointmentResp> registerAppointment(
-            @Validated(value = RequestValidationSeq.class)
-            @RequestBody CreateAppointmentReq req,
+            @Valid @RequestBody CreateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
@@ -125,8 +124,7 @@ public class AppointmentController {
     @PutMapping
     @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointment(
-            @Validated(value = RequestValidationSeq.class)
-            @RequestBody UpdateAppointmentReq req,
+            @Valid @RequestBody UpdateAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
@@ -154,7 +152,7 @@ public class AppointmentController {
     @PostMapping("/participation")
     @Operation(summary = "회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
     public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @RequestBody @Valid CreateAppointmentParticipationReq req,
+            @Valid @RequestBody CreateAppointmentParticipationReq req,
             @AuthenticationPrincipal UserInfo userInfo
     ) {
         CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
@@ -168,7 +166,7 @@ public class AppointmentController {
     @GetMapping("/fix")
     @Operation(summary = "약속 확정 시간에 참여 가능한 사용자 조회", description = "선택된 약속 확정 시간에 참여할 수 있는 사용자 목록을 조회합니다.")
     public ResponseEntity<ConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
-            @ModelAttribute @ParameterObject @Valid ConfirmedAppointmentParticipantsReq req,
+            @Valid @ModelAttribute @ParameterObject ConfirmedAppointmentParticipantsReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentParticipantsReqDto reqDto = appointmentVoMapper.to(req);
@@ -183,7 +181,7 @@ public class AppointmentController {
     @PostMapping("/fix")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
-            @RequestBody @Valid ConfirmedAppointmentReq req,
+            @Valid @RequestBody ConfirmedAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentReqDto reqDto = appointmentVoMapper.to(req);
