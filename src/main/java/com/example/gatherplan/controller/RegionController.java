@@ -1,6 +1,7 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
+import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.region.DailyWeatherResp;
 import com.example.gatherplan.controller.vo.region.KeywordPlaceReq;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/region")
 @Tag(name = "지역", description = "날씨, 상세주소, 행정구역과 관련된 기능을 제공합니다.")
-@Validated
+@Validated(value = RequestValidationSeq.class)
 public class RegionController {
 
     private final RegionService regionService;
@@ -51,7 +52,7 @@ public class RegionController {
     @GetMapping("/search/place")
     @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다.")
     public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
-            @ModelAttribute @ParameterObject @Valid KeywordPlaceReq req) {
+            @Valid @ModelAttribute @ParameterObject KeywordPlaceReq req) {
 
         KeywordPlaceReqDto keywordPlaceReqDto = regionVoMapper.to(req);
         List<KeywordPlaceRespDto> keywordPlaceRespDtos = regionService.searchKeywordPlace(keywordPlaceReqDto);
