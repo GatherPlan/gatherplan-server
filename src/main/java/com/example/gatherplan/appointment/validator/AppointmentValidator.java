@@ -31,25 +31,18 @@ public class AppointmentValidator {
                 .findFirst();
     }
 
-    public Optional<ConfirmedDateTime> retrieveInvalidConfirmedDateTime(
+    public boolean retrieveInvalidConfirmedDateTime(
             Appointment appointment, ConfirmedDateTime confirmedDateTime) {
 
-        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
-        List<TimeType> candidateTimeTypeList = appointment.getCandidateTimeTypeList();
-
-        boolean isDateInvalid = candidateDateList.stream()
+        boolean isDateInvalid = appointment.getCandidateDateList().stream()
                 .noneMatch(candidateDate -> candidateDate.isEqual(confirmedDateTime.getConfirmedDate()));
 
-        boolean isTimeInvalid = candidateTimeTypeList.stream()
+        boolean isTimeInvalid = appointment.getCandidateTimeTypeList().stream()
                 .noneMatch(timeType ->
                         !timeType.getStartTime().isAfter(confirmedDateTime.getConfirmedStartTime()) &&
                                 !timeType.getEndTime().isBefore(confirmedDateTime.getConfirmedEndTime()));
 
-        if (isDateInvalid || isTimeInvalid) {
-            return Optional.of(confirmedDateTime);
-        }
-
-        return Optional.empty();
+        return isDateInvalid || isTimeInvalid;
     }
 
 }
