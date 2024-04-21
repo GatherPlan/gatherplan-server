@@ -92,7 +92,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/participation")
+    @GetMapping("/participants")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
             @Schema(description = "약속 코드", example = "985a61f6f636")
@@ -163,7 +163,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/fix")
+    @GetMapping("/participants/available")
     @Operation(summary = "약속 확정 시간에 참여 가능한 사용자 조회", description = "선택된 약속 확정 시간에 참여할 수 있는 사용자 목록을 조회합니다.")
     public ResponseEntity<ConfirmedAppointmentParticipantsResp> retrieveEligibleParticipantsList(
             @Valid @ModelAttribute @ParameterObject ConfirmedAppointmentParticipantsReq req,
@@ -178,7 +178,7 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/fix")
+    @PostMapping(":confirm")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
             @Valid @RequestBody ConfirmedAppointmentReq req,

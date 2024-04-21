@@ -184,16 +184,15 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
-        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
-
         ConfirmedDateTime confirmedDateTime = reqDto.getConfirmedDateTime();
 
-        return participationInfo.stream()
-                .filter(participant -> participant.getSelectedDateTimeList().stream().anyMatch(selectedDateTime ->
-                        selectedDateTime.getSelectedDate().equals(confirmedDateTime.getConfirmedDate()) &&
-                                !selectedDateTime.getSelectedStartTime().isAfter(confirmedDateTime.getConfirmedStartTime()) &&
-                                !selectedDateTime.getSelectedEndTime().isBefore(confirmedDateTime.getConfirmedEndTime())
+        return Stream.concat(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream(),
+                        customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream())
+                .filter(participant -> participant.getSelectedDateTimeList().stream().anyMatch(
+                        selectedDateTime ->
+                                selectedDateTime.getSelectedDate().equals(confirmedDateTime.getConfirmedDate())
+                                        && !selectedDateTime.getSelectedStartTime().isAfter(confirmedDateTime.getConfirmedStartTime())
+                                        && !selectedDateTime.getSelectedEndTime().isBefore(confirmedDateTime.getConfirmedEndTime())
                 ))
                 .map(ParticipationInfo::getNickname)
                 .toList();
@@ -205,11 +204,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
                 email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())
-                .ifPresent(result -> {
-                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                            String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", result));
-                });
+        if (AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())) {
+            throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                    String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", reqDto.getConfirmedDateTime()));
+        }
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
