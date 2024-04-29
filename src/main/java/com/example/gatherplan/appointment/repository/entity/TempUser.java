@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.repository.entity;
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,4 +25,9 @@ public class TempUser extends BaseAuditableEntity {
     @Comment("비밀번호")
     @Column(nullable = false)
     private String password;
+
+    @Comment("사용자 유형")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserAuthType userAuthType;
 }

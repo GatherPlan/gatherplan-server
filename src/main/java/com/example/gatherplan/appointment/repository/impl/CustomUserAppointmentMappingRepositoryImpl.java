@@ -62,7 +62,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     @Override
     public List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
-                .select(user.nickname, userAppointmentMapping.selectedDateTimeList)
+                .select(user.id, user.nickname, user.userAuthType, userAppointmentMapping.selectedDateTimeList)
                 .from(userAppointmentMapping)
                 .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
                 .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))

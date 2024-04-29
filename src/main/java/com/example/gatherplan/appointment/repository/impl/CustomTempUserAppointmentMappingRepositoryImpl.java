@@ -32,7 +32,7 @@ public class CustomTempUserAppointmentMappingRepositoryImpl implements CustomTem
     @Override
     public List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
-                .select(tempUser.nickname, tempUserAppointmentMapping.selectedDateTimeList)
+                .select(tempUser.id, tempUser.nickname, tempUser.userAuthType, tempUserAppointmentMapping.selectedDateTimeList)
                 .from(tempUserAppointmentMapping)
                 .join(tempUser).on(tempUserAppointmentMapping.tempUserSeq.eq(tempUser.id))
                 .where(tempUserAppointmentMapping.appointmentSeq.eq(appointmentId))
