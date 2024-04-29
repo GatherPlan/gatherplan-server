@@ -26,10 +26,6 @@ public interface AppointmentVoMapper {
 
     @Mapping(target = "isHost", source = "host")
     AppointmentWithHostByKeywordResp to(AppointmentWithHostByKeywordRespDto respDto);
-
-    ConfirmedAppointmentParticipantsReqDto to(ConfirmedAppointmentParticipantsReq req);
-
-    ConfirmedAppointmentParticipantsResp to(ConfirmedAppointmentParticipantsRespDto respDto);
-
+    
     ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
 }

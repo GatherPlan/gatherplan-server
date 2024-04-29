@@ -11,7 +11,6 @@ import com.example.gatherplan.appointment.repository.entity.UserAppointmentMappi
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -176,26 +175,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
-    }
-
-    @Override
-    public List<String> retrieveEligibleParticipantsList(ConfirmedAppointmentParticipantsReqDto reqDto, String email) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
-                        email, UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        ConfirmedDateTime confirmedDateTime = reqDto.getConfirmedDateTime();
-
-        return Stream.concat(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream(),
-                        customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream())
-                .filter(participant -> participant.getSelectedDateTimeList().stream().anyMatch(
-                        selectedDateTime ->
-                                selectedDateTime.getSelectedDate().equals(confirmedDateTime.getConfirmedDate())
-                                        && !selectedDateTime.getSelectedStartTime().isAfter(confirmedDateTime.getConfirmedStartTime())
-                                        && !selectedDateTime.getSelectedEndTime().isBefore(confirmedDateTime.getConfirmedEndTime())
-                ))
-                .map(ParticipationInfo::getNickname)
-                .toList();
     }
 
     @Override
