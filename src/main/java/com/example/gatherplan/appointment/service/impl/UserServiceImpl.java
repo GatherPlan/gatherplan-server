@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
 
-        userRepository.findByNickname(reqDto.getNickname()).ifPresent(user -> {
+        userRepository.findByName(reqDto.getName()).ifPresent(user -> {
             throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
         });
 

@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.dto;
 
-import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import lombok.*;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppointmentParticipationInfoRespDto {
     private List<ParticipationInfo> participationInfoList;
-    private List<TimeType> candidateTimeTypeList;
     private List<LocalDate> candidateDateList;
 
 }

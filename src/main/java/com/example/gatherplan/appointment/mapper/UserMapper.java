@@ -16,5 +16,6 @@ import org.mapstruct.*;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "encodedPassword")
+    @Mapping(target = "name", source = "reqDto.name")
     User to(CreateUserReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType roleType);
 }

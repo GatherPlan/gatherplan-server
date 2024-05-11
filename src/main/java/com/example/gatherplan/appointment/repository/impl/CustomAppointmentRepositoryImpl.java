@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
-import static com.example.gatherplan.appointment.repository.entity.QTempUser.tempUser;
-import static com.example.gatherplan.appointment.repository.entity.QTempUserAppointmentMapping.tempUserAppointmentMapping;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
@@ -30,12 +28,11 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
             , String nickname, String password, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
-                .join(tempUserAppointmentMapping).on(appointment.id.eq(tempUserAppointmentMapping.appointmentSeq))
-                .join(tempUser).on(tempUser.id.eq(tempUserAppointmentMapping.tempUserSeq))
+                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
                 .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(tempUser.nickname.eq(nickname))
-                        .and(tempUser.password.eq(password))
-                        .and(tempUserAppointmentMapping.userRole.eq(userRole)))
+                        .and(userAppointmentMapping.nickname.eq(nickname))
+                        .and(userAppointmentMapping.tempPassword.eq(password))
+                        .and(userAppointmentMapping.userRole.eq(userRole)))
                 .fetchOne());
     }
 

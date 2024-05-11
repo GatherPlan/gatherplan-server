@@ -1,6 +1,5 @@
 package com.example.gatherplan.controller.vo.appointment;
 
-import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -22,9 +21,9 @@ public class AppointmentResp {
     private Address address;
     @Schema(description = "호스트 이름", example = "박정빈")
     private String hostName;
-    @Schema(description = "약속 후보 시간" +
-            "<br> MORNING : 오전, AFTERNOON : 오후, EVENING : 저녁", example = "[\"MORNING\", \"EVENING\"]")
-    private List<TimeType> candidateTimeTypeList;
+    
+    private String notice;
+
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
 }

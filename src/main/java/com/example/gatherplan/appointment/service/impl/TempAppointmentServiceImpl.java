@@ -2,15 +2,17 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.enums.TimeType;
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
+import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
-import com.example.gatherplan.appointment.mapper.TempUserMapper;
-import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.TempUser;
-import com.example.gatherplan.appointment.repository.entity.TempUserAppointmentMapping;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -23,25 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TempAppointmentServiceImpl implements TempAppointmentService {
 
-    private final TempUserMapper tempUserMapper;
     private final TempAppointmentMapper tempAppointmentMapper;
     private final AppointmentRepository appointmentRepository;
-    private final TempUserRepository tempUserRepository;
-    private final CustomTempUserRepository customTempUserRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
-    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
@@ -53,33 +48,29 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
 
         TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
-        TempUser tempUser = TempUser.builder()
-                .nickname(tempUserInfo.getNickname())
-                .password(tempUserInfo.getPassword())
-                .build();
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
-        Long tempUserId = tempUserRepository.save(tempUser).getId();
 
-        TempUserAppointmentMapping tempUserAppointmentMapping = TempUserAppointmentMapping.builder()
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
-                .tempUserSeq(tempUserId)
                 .userRole(UserRole.HOST)
+                .nickname(tempUserInfo.getNickname())
+                .tempPassword(tempUserInfo.getPassword())
+                .userAuthType(UserAuthType.TEMPORARY)
                 .build();
 
-        tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
+        userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
     }
 
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode()).orElseThrow(()
+                -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
-                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+        String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         return tempAppointmentMapper.to(appointment, hostName);
     }
@@ -92,12 +83,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> participationInfo =
-                Stream.concat(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream(),
-                                customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream())
-                        .toList();
+        List<ParticipationInfo> participationInfoList =
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
 
-        return tempAppointmentMapper.to(appointment, participationInfo);
+        return tempAppointmentMapper.to(appointment, participationInfoList);
     }
 
     @Override
@@ -110,8 +99,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT))
                 .getId();
 
-        customTempUserRepository.deleteAllByAppointmentId(appointmentId);
-        tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         userAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         appointmentRepository.deleteById(appointmentId);
     }
@@ -125,8 +112,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         tempUserInfo.getNickname(), tempUserInfo.getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
-                reqDto.getAddress(), reqDto.getCandidateDateList());
+        appointment.update(reqDto.getAppointmentName(),
+                reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
     }
 
     @Override
@@ -140,18 +127,18 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                             String.format("후보 날짜 및 시간에 벗어난 입력 값 입니다. %s", result));
                 });
 
-        TempUser tempUser = tempUserMapper.to(reqDto.getTempUserInfo());
+        TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
 
-        Long tempUserId = tempUserRepository.save(tempUser).getId();
-
-        TempUserAppointmentMapping tempUserAppointmentMapping = TempUserAppointmentMapping.builder()
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointment.getId())
-                .tempUserSeq(tempUserId)
                 .userRole(UserRole.GUEST)
+                .nickname(tempUserInfo.getNickname())
+                .tempPassword(tempUserInfo.getPassword())
+                .userAuthType(UserAuthType.TEMPORARY)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
 
-        tempUserAppointmentMappingRepository.save(tempUserAppointmentMapping);
+        userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
     @Override
@@ -160,11 +147,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        if (AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())) {
-            throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                    String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", reqDto.getConfirmedDateTime()));
-        }
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
@@ -176,9 +158,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<ParticipationInfo> participationInfoList =
-                Stream.concat(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream(),
-                                customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream())
-                        .toList();
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
 
         return combinationedAppointmentCandidateInfoList(participationInfoList);
     }
@@ -189,9 +169,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .map(ParticipationInfo::getNickname).toList();
 
         List<Set<String>> combinations = MathUtils.combinations(participants);
-
-        LocalTime startTime = TimeType.MORNING.getStartTime();
-        LocalTime endTime = TimeType.EVENING.getEndTime();
 
         List<List<Object>> list = combinations.stream().map(
                 combination -> {

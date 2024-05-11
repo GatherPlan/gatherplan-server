@@ -51,9 +51,8 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     @Override
     public String findHostName(Long appointmentId) {
         return jpaQueryFactory
-                .select(user.nickname)
+                .select(userAppointmentMapping.nickname)
                 .from(userAppointmentMapping)
-                .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
                 .where(userAppointmentMapping.appointmentSeq.eq(appointmentId)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetchOne();
@@ -62,7 +61,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     @Override
     public List<ParticipationInfo> findAppointmentParticipationInfo(Long appointmentId) {
         List<Tuple> tuples = jpaQueryFactory
-                .select(user.id, user.nickname, user.userAuthType, userAppointmentMapping.selectedDateTimeList)
+                .select(user.id, user.name, user.userAuthType, userAppointmentMapping.selectedDateTimeList)
                 .from(userAppointmentMapping)
                 .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
                 .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
@@ -89,7 +88,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     public List<AppointmentWithHostDto> findAllAppointmentWithHost(List<Long> appointmentIdList) {
         return new ArrayList<>(jpaQueryFactory
                 .select(Projections.constructor(AppointmentWithHostDto.class,
-                        user.nickname,
+                        user.name,
                         userAppointmentMapping.appointmentSeq))
                 .from(userAppointmentMapping)
                 .join(user).on(userAppointmentMapping.userSeq.eq(user.id))

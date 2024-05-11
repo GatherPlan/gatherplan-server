@@ -21,7 +21,7 @@ public class User extends BaseAuditableEntity {
 
     @Comment("사용자 이름")
     @Column(nullable = false)
-    private String nickname;
+    private String name;
 
     @Comment("이메일")
     @Column(nullable = false)
