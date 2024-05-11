@@ -1,7 +1,9 @@
 package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
+import com.example.gatherplan.appointment.dto.TempUserLoginReqDto;
 import com.example.gatherplan.controller.vo.appointment.CreateTempUserReq;
+import com.example.gatherplan.controller.vo.appointment.TempUserLoginReq;
 import org.mapstruct.*;
 
 @Mapper(
@@ -14,5 +16,7 @@ import org.mapstruct.*;
 public interface TempUserVoMapper {
 
     CreateTempUserReqDto to(CreateTempUserReq req);
+
+    TempUserLoginReqDto to(TempUserLoginReq req);
 
 }

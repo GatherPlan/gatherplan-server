@@ -3,11 +3,7 @@ package com.example.gatherplan.appointment.dto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+import lombok.*;
 
 @Getter
 @Builder
@@ -26,4 +22,6 @@ public class TempAppointmentInfoRespDto {
     private Address address;
 
     private ConfirmedDateTime confirmedDateTime;
+
+    private String notice;
 }

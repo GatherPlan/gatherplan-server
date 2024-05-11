@@ -1,10 +1,12 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
+import com.example.gatherplan.appointment.dto.TempUserLoginReqDto;
 import com.example.gatherplan.appointment.service.TempUserService;
 import com.example.gatherplan.controller.mapper.TempUserVoMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateTempUserReq;
+import com.example.gatherplan.controller.vo.appointment.TempUserLoginReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,18 @@ public class TempUserController {
 
     private final TempUserVoMapper tempUserVoMapper;
     private final TempUserService tempUserService;
+
+    @PostMapping("/login")
+    @Operation(summary = "비회원 호스트의 로그인", description = "비회원 호스트의 로그인 정보를 확인합니다.")
+    public ResponseEntity<BooleanResp> login(@RequestBody @Valid TempUserLoginReq req) {
+
+        TempUserLoginReqDto reqDto = tempUserVoMapper.to(req);
+        tempUserService.login(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
 
     @PostMapping("/join:validate")
     @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")

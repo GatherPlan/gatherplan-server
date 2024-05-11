@@ -41,7 +41,7 @@ public class UserInfo implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getNickname();
+        return user.getName();
     }
 
     @Override

@@ -4,8 +4,12 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
+import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
-import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
@@ -19,12 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -34,13 +36,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
     private final AppointmentRepository appointmentRepository;
-    private final CustomTempUserRepository customTempUserRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
-    private final TempUserAppointmentMappingRepository tempUserAppointmentMappingRepository;
+
 
     private final CustomAppointmentRepository customAppointmentRepository;
-    private final CustomTempUserAppointmentMappingRepository customTempUserAppointmentMappingRepository;
+
 
     @Override
     @Transactional
@@ -69,15 +70,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
-                                                                                   String nickname) {
-        List<Appointment> appointmentList =
-                customAppointmentRepository.findAllByUserInfoAndKeyword(email, UserRole.GUEST, keyword);
+    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email, String nickname) {
+        List<Appointment> appointmentList = customAppointmentRepository.findAllByUserInfoAndKeyword(
+                email, UserRole.GUEST, keyword);
+
         List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
 
-        Map<Long, String> hostNameMap = Stream.concat(
-                        customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream(),
-                        customTempUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream())
+        Map<Long, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream()
                 .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
 
         return appointmentList.stream()
@@ -93,8 +92,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
-                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+        String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         return appointmentMapper.to(appointment, hostName);
     }
@@ -105,10 +104,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> participationInfo = new ArrayList<>(customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
-        participationInfo.addAll(customTempUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()));
-
-        return appointmentMapper.to(appointment, participationInfo);
+        List<ParticipationInfo> participationInfoList =
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
+        return appointmentMapper.to(appointment, participationInfoList);
     }
 
     @Override
@@ -120,8 +118,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long appointmentId = appointment.getId();
 
-        customTempUserRepository.deleteAllByAppointmentId(appointmentId);
-        tempUserAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         userAppointmentMappingRepository.deleteAllByAppointmentSeq(appointmentId);
         appointmentRepository.deleteById(appointmentId);
     }
@@ -133,8 +129,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        appointment.update(reqDto.getAppointmentName(), reqDto.getCandidateTimeTypeList(),
-                reqDto.getAddress(), reqDto.getCandidateDateList());
+        appointment.update(reqDto.getAppointmentName(), reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
     }
 
     @Override
@@ -142,8 +137,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = Optional.ofNullable(customTempUserAppointmentMappingRepository.findHostName(appointment.getId()))
-                .orElseGet(() -> customUserAppointmentMappingRepository.findHostName(appointment.getId()));
+        String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         return appointmentMapper.toAppointmentRespDto(appointment, hostName);
     }
@@ -182,11 +177,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(),
                 email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        if (AppointmentValidator.retrieveInvalidConfirmedDateTime(appointment, reqDto.getConfirmedDateTime())) {
-            throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                    String.format("후보 날짜 및 시간에 벗어난 값 입니다. %s", reqDto.getConfirmedDateTime()));
-        }
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }

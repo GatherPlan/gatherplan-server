@@ -1,7 +1,6 @@
 package com.example.gatherplan.appointment.repository.entity;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
-import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
@@ -52,17 +51,12 @@ public class Appointment extends BaseAuditableEntity {
     @Comment("약속 후보 날짜들")
     private List<LocalDate> candidateDateList = new ArrayList<>();
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    @Comment("약속 후보 시간들 (시작시간~종료시간)")
-    private List<TimeType> candidateTimeTypeList = new ArrayList<>();
+    private String notice;
 
-    public void update(String appointmentName, List<TimeType> candidateTimeTypeList,
-                       Address address, List<LocalDate> candidateDateList) {
+    public void update(String appointmentName, Address address, List<LocalDate> candidateDateList, String notice) {
         this.appointmentName = appointmentName;
-        this.candidateTimeTypeList = List.copyOf(candidateTimeTypeList);
         this.address = address;
+        this.notice = notice;
         this.candidateDateList = List.copyOf(candidateDateList);
     }
 

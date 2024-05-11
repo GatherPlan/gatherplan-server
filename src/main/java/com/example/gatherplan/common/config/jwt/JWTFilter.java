@@ -47,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         User user = User.builder()
                 .id(jwtUtil.getId(token))
-                .nickname(jwtUtil.getNickName(token))
+                .name(jwtUtil.getNickName(token))
                 .email(jwtUtil.getEmail(token))
                 .userAuthType(userAuthType)
                 .roleType(roleType)

@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.dto;
 
-import com.example.gatherplan.appointment.enums.TimeType;
 import com.example.gatherplan.common.unit.Address;
 import lombok.*;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class UpdateAppointmentReqDto {
     private String appointmentCode;
     private String appointmentName;
-    private List<TimeType> candidateTimeTypeList;
+    private String notice;
     private Address address;
     private List<LocalDate> candidateDateList;
 }

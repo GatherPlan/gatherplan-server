@@ -22,7 +22,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     @Override
     public List<String> findAllUserNameByAppointmentId(Long appointmentId) {
         return jpaQueryFactory
-                .selectDistinct(user.nickname)
+                .selectDistinct(user.name)
                 .from(user)
                 .join(userAppointmentMapping).on(user.id.eq(userAppointmentMapping.userSeq)
                         .and(userAppointmentMapping.appointmentSeq.eq(appointmentId)))

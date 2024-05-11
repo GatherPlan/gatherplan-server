@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.repository.entity;
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import com.example.gatherplan.common.unit.SelectedDateTime;
@@ -35,4 +36,9 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     @ElementCollection
     private List<SelectedDateTime> selectedDateTimeList;
 
+    private String nickname;
+
+    private String tempPassword;
+
+    private UserAuthType userAuthType;
 }
