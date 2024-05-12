@@ -31,4 +31,14 @@ public interface TempAppointmentVoMapper {
     TempConfirmedAppointmentParticipantsReqDto to(TempConfirmedAppointmentParticipantsReq req);
 
     TempConfirmedAppointmentReqDto to(TempConfirmedAppointmentReq req);
+
+    TempUserLoginReqDto to(TempUserLoginReq req);
+
+    CreateTempUserReqDto to(CreateTempUserReq req);
+
+    TempAppointmentParticipationStatusReqDto to(TempAppointmentParticipationStatusReq req);
+
+    TempAppointmentInfoDetailReqDto to(TempAppointmentInfoDetailReq req);
+
+    TempAppointmentInfoDetailResp to(TempAppointmentInfoDetailRespDto respDto);
 }

@@ -8,8 +8,11 @@ import java.util.Optional;
 
 public interface CustomAppointmentRepository {
 
-    Optional<Appointment> findByAppointmentCodeAndTempUserInfo(String appointmentCode
+    Optional<Appointment> findByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode
             , String nickname, String password, UserRole userRole);
+
+    Optional<Appointment> findByAppointmentCodeAndTempUserInfo(String appointmentCode
+            , String nickname, String password);
 
     Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode
             , String email, UserRole userRole);
