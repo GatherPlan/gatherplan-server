@@ -15,6 +15,8 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     void deleteAllByAppointmentSeq(Long appointmentId);
 
+    void deleteByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(Long appointmentId, String nickname, String tempPassword, UserRole userRole);
+
     Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
             Long appointmentId, Long userId, UserRole userRole);
 

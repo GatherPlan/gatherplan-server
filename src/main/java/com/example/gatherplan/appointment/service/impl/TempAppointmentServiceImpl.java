@@ -159,6 +159,18 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     @Transactional
+    public void deleteAppointmentParticipation(DeleteTempAppointmentParticipationReqDto reqDto) {
+        Long appointmentId = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT))
+                .getId();
+
+        userAppointmentMappingRepository.deleteByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
+                appointmentId, reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
+    }
+
+    @Override
+    @Transactional
     public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)

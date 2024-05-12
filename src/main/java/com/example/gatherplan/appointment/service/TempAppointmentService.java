@@ -25,4 +25,6 @@ public interface TempAppointmentService {
     void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto);
 
     TempAppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(TempAppointmentInfoDetailReqDto reqDto);
+
+    void deleteAppointmentParticipation(DeleteTempAppointmentParticipationReqDto reqDto);
 }
