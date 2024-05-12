@@ -40,4 +40,8 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     private String tempPassword;
 
     private UserAuthType userAuthType;
+
+    public void update(List<SelectedDateTime> selectedDateTimeList) {
+        this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
+    }
 }
