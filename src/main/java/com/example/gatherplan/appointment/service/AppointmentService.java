@@ -2,6 +2,8 @@ package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
 
+import java.util.List;
+
 public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId);
@@ -16,8 +18,8 @@ public interface AppointmentService {
 
     void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
-
-    //List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId);
+    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
+                                                                            String nickname);
 
     AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
 

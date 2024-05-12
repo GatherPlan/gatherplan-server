@@ -122,7 +122,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentWithHostByKeywordRespDto> respDtos = appointmentService
-                .retrieveAppointmentSearchList(keyword, userInfo.getId());
+                .retrieveAppointmentSearchList(keyword, userInfo.getEmail(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
