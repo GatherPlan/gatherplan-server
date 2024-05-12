@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -132,22 +134,22 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
 
-//    @Override
-//    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId) {
-////        List<Appointment> appointmentGeuestList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
-////        List<Appointment> appointmentHostList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.HOST, keyword);
-////
-////        List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
-////
-////        Map<Long, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream()
-////                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
-////
-////        return appointmentList.stream()
-////                .map(appointment ->
-////                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
-////                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
-////                .toList();
-//    }
+    @Override
+    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
+                                                                                   String nickname) {
+        List<Appointment> appointmentList =
+                customAppointmentRepository.findAllByUserInfoAndKeyword(email, UserRole.GUEST, keyword);
+        List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
+
+        Map<Long, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream()
+                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
+
+        return appointmentList.stream()
+                .map(appointment ->
+                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
+                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
+                .toList();
+    }
 
     @Override
     public AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email) {
