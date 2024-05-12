@@ -7,6 +7,14 @@ public interface TempAppointmentService {
 
     TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto);
 
+    boolean validJoinTempUser(CreateTempUserReqDto reqDto);
+
+    boolean login(TempUserLoginReqDto reqDto);
+
+    boolean retrieveParticipationStatus(TempAppointmentParticipationStatusReqDto reqDto);
+
+    void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
+
     TempAppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(
             TempAppointmentParticipationInfoReqDto reqDto);
 
@@ -14,7 +22,7 @@ public interface TempAppointmentService {
 
     void updateAppointment(UpdateTempAppointmentReqDto reqDto);
 
-    void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
-
     void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto);
+
+    TempAppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(TempAppointmentInfoDetailReqDto reqDto);
 }

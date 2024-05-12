@@ -26,7 +26,7 @@ public class TempAppointmentController {
     private final TempAppointmentService tempAppointmentService;
 
     @PostMapping
-    @Operation(summary = "비회원의 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다.")
+    @Operation(summary = "비회원 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
             @Valid @RequestBody CreateTempAppointmentReq req) {
 
@@ -39,12 +39,76 @@ public class TempAppointmentController {
     }
 
     @GetMapping
-    @Operation(summary = "비회원의 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
+    @Operation(summary = "비회원 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<TempAppointmentInfoResp> retrieveAppointmentInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
         TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
+
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper.to(respDto)
+        );
+    }
+
+    @PostMapping("/join:validate")
+    @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
+    public ResponseEntity<BooleanResp> validJoinUser(
+            @Valid @RequestBody CreateTempUserReq req) {
+
+        CreateTempUserReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.validJoinTempUser(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "비회원 호스트의 로그인", description = "비회원 호스트의 로그인 정보를 확인합니다.")
+    public ResponseEntity<BooleanResp> login(@RequestBody @Valid TempUserLoginReq req) {
+
+        TempUserLoginReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.login(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @GetMapping("/participation-status")
+    @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> retrieveParticipationStatus(
+            @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationStatusReq req) {
+
+        TempAppointmentParticipationStatusReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.retrieveParticipationStatus(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @PostMapping("/participation")
+    @Operation(summary = "비회원 약속 참여 등록", description = "비회원의 약속 참여 정보를 등록합니다.")
+    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
+            @Valid @RequestBody CreateTempAppointmentParticipationReq req
+    ) {
+        CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.registerAppointmentParticipation(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @GetMapping("/detail")
+    @Operation(summary = "비회원 약속 상세 정보 조회", description = "비회원이 약속 상세 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfoDetail(
+            @Valid @ModelAttribute @ParameterObject TempAppointmentInfoDetailReq req) {
+
+        TempAppointmentInfoDetailReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentInfoDetailRespDto respDto = tempAppointmentService.retrieveAppointmentInfoDetail(reqDto);
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
@@ -61,19 +125,6 @@ public class TempAppointmentController {
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
-        );
-    }
-
-    @PostMapping("/participation")
-    @Operation(summary = "비회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
-    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @Valid @RequestBody CreateTempAppointmentParticipationReq req
-    ) {
-        CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentService.registerAppointmentParticipation(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
         );
     }
 
@@ -115,5 +166,4 @@ public class TempAppointmentController {
                 BooleanResp.success()
         );
     }
-
 }

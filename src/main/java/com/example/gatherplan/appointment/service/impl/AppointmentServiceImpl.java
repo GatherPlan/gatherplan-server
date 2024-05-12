@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
@@ -56,6 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentSeq(appointmentId)
                 .userSeq(userId)
                 .userRole(UserRole.HOST)
+                .userAuthType(UserAuthType.LOCAL)
                 .build();
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
