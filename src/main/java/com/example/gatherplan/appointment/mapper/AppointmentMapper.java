@@ -22,7 +22,7 @@ public interface AppointmentMapper {
 
     AppointmentInfoRespDto to(Appointment appointment, String hostName);
 
-    AppointmentInfoDetailRespDto too(Appointment appointment, String hostName);
+    AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName);
 
     AppointmentParticipationInfoRespDto to(Appointment appointment, List<ParticipationInfo> participationInfoList);
 

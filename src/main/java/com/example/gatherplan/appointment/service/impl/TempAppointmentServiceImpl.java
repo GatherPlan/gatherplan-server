@@ -131,7 +131,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
-        return tempAppointmentMapper.too(appointment, hostName);
+        return tempAppointmentMapper.toTempAppointmentInfoDetailRespDto(appointment, hostName);
     }
 
     @Override

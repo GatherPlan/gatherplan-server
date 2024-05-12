@@ -131,22 +131,22 @@ public class AppointmentServiceImpl implements AppointmentService {
         userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
+
 //    @Override
 //    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId) {
-//        List<Appointment> appointmentGeuestList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
-//
-//        List<Appointment> appointmentHostList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.HOST, keyword);
-//
-//        List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
-//
-//        Map<Long, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream()
-//                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
-//
-//        return appointmentList.stream()
-//                .map(appointment ->
-//                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
-//                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
-//                .toList();
+////        List<Appointment> appointmentGeuestList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
+////        List<Appointment> appointmentHostList = customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.HOST, keyword);
+////
+////        List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
+////
+////        Map<Long, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentIdList).stream()
+////                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentId, AppointmentWithHostDto::getHostName));
+////
+////        return appointmentList.stream()
+////                .map(appointment ->
+////                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
+////                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
+////                .toList();
 //    }
 
     @Override
@@ -158,7 +158,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
-        return appointmentMapper.too(appointment, hostName);
+        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName);
     }
 
     @Override
