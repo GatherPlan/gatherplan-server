@@ -32,4 +32,6 @@ public interface AppointmentService {
     AppointmentRespDto retrieveAppointment(String appointmentCode);
 
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
+
+    List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, String email);
 }

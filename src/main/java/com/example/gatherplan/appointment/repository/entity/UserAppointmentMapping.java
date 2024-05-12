@@ -25,7 +25,6 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     @Comment("Appointment Seq(PK)")
     private Long appointmentSeq;
 
-    @Column(nullable = false)
     @Comment("User Seq(PK)")
     private Long userSeq;
 
