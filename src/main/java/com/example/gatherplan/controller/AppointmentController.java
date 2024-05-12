@@ -131,7 +131,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping
+    @GetMapping("/detail")
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfoDetail(
             @Schema(description = "약속 코드", example = "985a61f6f636")
