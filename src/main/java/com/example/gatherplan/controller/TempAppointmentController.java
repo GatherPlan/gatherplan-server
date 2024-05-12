@@ -141,6 +141,19 @@ public class TempAppointmentController {
         );
     }
 
+    @DeleteMapping("/participation")
+    @Operation(summary = "비회원 약속 참여 삭제 요청", description = "비회원이 약속 참여를 삭제할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> deleteAppointmentParticipation(
+            @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentParticipationReq req) {
+
+        DeleteTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.deleteAppointmentParticipation(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
     @PutMapping
     @Operation(summary = "비회원의 약속 변경 요청", description = "비회원이 약속을 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointment(
