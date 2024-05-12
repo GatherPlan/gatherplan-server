@@ -3,7 +3,7 @@ package com.example.gatherplan.appointment.mapper;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.common.unit.ParticipationInfo;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public interface AppointmentMapper {
 
     AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName);
 
-    AppointmentParticipationInfoRespDto to(Appointment appointment, List<ParticipationInfo> participationInfoList);
+    AppointmentParticipationInfoRespDto to(Appointment appointment, List<UserAppointmentMapping> participationInfoList);
 
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
                                                                               boolean isHost);

@@ -6,7 +6,7 @@ import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
 import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.common.unit.ParticipationInfo;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -27,5 +27,5 @@ public interface TempAppointmentMapper {
 
     TempAppointmentInfoDetailRespDto toTempAppointmentInfoDetailRespDto(Appointment appointment, String hostName);
 
-    TempAppointmentParticipationInfoRespDto to(Appointment appointment, List<ParticipationInfo> participationInfoList);
+    TempAppointmentParticipationInfoRespDto to(Appointment appointment, List<UserAppointmentMapping> participationInfoList);
 }

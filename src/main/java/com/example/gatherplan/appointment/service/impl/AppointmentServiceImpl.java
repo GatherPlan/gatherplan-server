@@ -14,17 +14,19 @@ import com.example.gatherplan.appointment.repository.entity.UserAppointmentMappi
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.common.unit.ParticipationInfo;
+import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.utils.MathUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -169,8 +171,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<ParticipationInfo> participationInfoList =
-                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
+        List<UserAppointmentMapping> participationInfoList =
+                userAppointmentMappingRepository.findAllByAppointmentSeq(appointment.getId());
         return appointmentMapper.to(appointment, participationInfoList);
     }
 
@@ -215,5 +217,105 @@ public class AppointmentServiceImpl implements AppointmentService {
                 email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
+    }
+
+    @Override
+    public List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, String email) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
+                email, UserRole.HOST).orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
+
+        List<UserAppointmentMapping> participationInfoList =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
+
+        List<String> participants = participationInfoList.stream()
+                .map(UserAppointmentMapping::getNickname).toList();
+
+        List<Set<String>> combinations = MathUtils.combinations(participants);
+
+        List<AppointmentCandidateDateInfoRespDto> candidateDateInfoRespDtos = new ArrayList<>();
+
+        combinations.forEach(
+                combination -> {
+                    List<AppointmentCandidateDateInfoRespDto.UserParticipationInfo> userParticipationInfoList =
+                            participationInfoList.stream()
+                                    .map(participationInfo ->
+                                            AppointmentCandidateDateInfoRespDto.UserParticipationInfo.builder()
+                                                    .nickname(participationInfo.getNickname())
+                                                    .userRole(participationInfo.getUserRole())
+                                                    .userAuthType(participationInfo.getUserAuthType())
+                                                    .participant(combination.contains(participationInfo.getNickname()))
+                                                    .build())
+                                    .toList();
+
+                    List<UserAppointmentMapping> filteredParticipationInfoList = participationInfoList.stream()
+                            .filter(participationInfo -> combination.contains(participationInfo.getNickname()))
+                            .toList();
+
+                    List<List<SelectedDateTime>> filteredSelectedDatesList = filteredParticipationInfoList.stream()
+                            .map(UserAppointmentMapping::getSelectedDateTimeList)
+                            .toList();
+
+                    candidateDateList.forEach(
+                            candidateDate -> {
+                                List<Integer> timeList = new ArrayList<>();
+                                for (int nowHour = 0; nowHour < 24; nowHour++) {
+
+                                    int includedCount = 0;
+                                    for (List<SelectedDateTime> selectedDateTimes : filteredSelectedDatesList) {
+                                        for (SelectedDateTime selectedDateTime : selectedDateTimes) {
+                                            LocalDate date = selectedDateTime.getSelectedDate();
+                                            int startHour = selectedDateTime.getSelectedStartTime().getHour();
+                                            int endHour = selectedDateTime.getSelectedEndTime().getHour();
+
+                                            if (candidateDate.equals(date) && (startHour <= nowHour && nowHour <= endHour)) {
+                                                includedCount++;
+                                            }
+                                        }
+                                    }
+
+                                    if (includedCount == filteredParticipationInfoList.size()) {
+                                        timeList.add(nowHour);
+                                    }
+                                }
+
+                                if (ObjectUtils.isNotEmpty(timeList)) {
+
+                                    int start = timeList.get(0);
+                                    int end = start;
+
+                                    for (int i = 1; i < timeList.size(); i++) {
+                                        if (timeList.get(i) == end + 1) {
+                                            end = timeList.get(i);
+                                        } else {
+                                            AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                                    .candidateDate(candidateDate)
+                                                    .startTime(LocalTime.of(start, 0))
+                                                    .endTime(LocalTime.of(end, 0))
+                                                    .userParticipationInfoList(userParticipationInfoList)
+                                                    .build();
+
+                                            candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                            start = end = timeList.get(i);
+                                        }
+                                    }
+
+                                    AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                            .candidateDate(candidateDate)
+                                            .startTime(LocalTime.of(start, 0))
+                                            .endTime(LocalTime.of(end, 0))
+                                            .userParticipationInfoList(userParticipationInfoList)
+                                            .build();
+                                    candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                }
+
+                            }
+                    );
+
+                }
+        );
+
+        return candidateDateInfoRespDtos;
     }
 }

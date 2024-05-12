@@ -4,9 +4,14 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
+
+    List<UserAppointmentMapping> findAllByAppointmentSeq(Long appointmentId);
+
+    List<UserAppointmentMapping> findAllByAppointmentSeqAndUserRole(Long userId, UserRole userRole);
 
     void deleteAllByAppointmentSeq(Long appointmentId);
 

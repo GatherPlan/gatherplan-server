@@ -1,28 +1,31 @@
 package com.example.gatherplan.appointment.dto;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.appointment.enums.UserRole;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Builder
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class AppointmentCandidateInfoRespDto {
+public class AppointmentCandidateDateInfoRespDto {
     private LocalDate candidateDate;
-    private LocalTime startDateTime;
-    private LocalTime endDateTime;
-    private List<ParticipationUserInfo> participants;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private List<UserParticipationInfo> userParticipationInfoList;
 
-    @Builder
     @Getter
+    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ParticipationUserInfo {
+    public static class UserParticipationInfo {
         private String nickname;
+        private boolean participant;
         private UserAuthType userAuthType;
+        private UserRole userRole;
     }
 }

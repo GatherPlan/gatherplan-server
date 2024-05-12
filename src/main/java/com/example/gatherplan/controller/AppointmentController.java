@@ -202,6 +202,22 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/candidate-date:confirm")
+    @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
+    public ResponseEntity<ListResponse<AppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo
+    ) {
+        List<AppointmentCandidateDateInfoRespDto> respDtos
+                = appointmentService.retrieveAppointmentCandidateDate(appointmentCode, userInfo.getEmail());
+
+        return ResponseEntity.ok(
+                ListResponse.of(
+                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                )
+        );
+    }
+
     @PostMapping(":confirm")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
