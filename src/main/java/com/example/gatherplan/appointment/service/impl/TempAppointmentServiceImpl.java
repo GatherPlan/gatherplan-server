@@ -14,7 +14,6 @@ import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.ParticipationInfo;
-import com.example.gatherplan.common.unit.TempUserInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,13 +110,11 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                             String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
 
-        TempUserInfo tempUserInfo = reqDto.getTempUserInfo();
-
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointment.getId())
                 .userRole(UserRole.GUEST)
-                .nickname(tempUserInfo.getNickname())
-                .tempPassword(tempUserInfo.getPassword())
+                .nickname(reqDto.getTempUserInfo().getNickname())
+                .tempPassword(reqDto.getTempUserInfo().getPassword())
                 .userAuthType(UserAuthType.TEMPORARY)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
