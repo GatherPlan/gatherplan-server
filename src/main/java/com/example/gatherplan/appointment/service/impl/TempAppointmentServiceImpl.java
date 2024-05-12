@@ -180,6 +180,19 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
     }
 
+    @Override
+    public void updateAppointmentParticipation(UpdateTempAppointmentParticipationReqDto reqDto) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findUserAppointmentMappingByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
+                        appointment.getId(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
+
+        userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
+    }
+
 
     @Override
     @Transactional
