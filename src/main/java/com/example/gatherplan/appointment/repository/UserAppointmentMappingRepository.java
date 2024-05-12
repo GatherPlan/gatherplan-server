@@ -20,10 +20,6 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
     Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
             Long appointmentId, Long userId, UserRole userRole);
 
-    Optional<UserAppointmentMapping> findByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
-            Long appointmentId, String nickname, String tempPassword, UserRole userRole
-    );
-
     boolean existsByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(Long appointmentId, String nickname, String tempPassword, UserRole userRole);
 
     boolean existsByAppointmentSeqAndUserSeqAndUserRole(Long appointmentId, Long userId, UserRole userRole);
