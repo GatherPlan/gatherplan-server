@@ -3,18 +3,15 @@ package com.example.gatherplan.appointment.repository.impl;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
@@ -26,20 +23,6 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
 
     public CustomUserAppointmentMappingRepositoryImpl(EntityManager entityManager) {
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
-    }
-
-    @Override
-    public boolean existUserMappedToAppointment(String email, String appointmentCode, UserRole userRole) {
-        UserAppointmentMapping result = jpaQueryFactory
-                .selectFrom(userAppointmentMapping)
-                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
-                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
-                .where(user.email.eq(email)
-                        .and(appointment.appointmentCode.eq(appointmentCode))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchFirst();
-
-        return ObjectUtils.isNotEmpty(result);
     }
 
     @Override
