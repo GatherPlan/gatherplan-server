@@ -49,14 +49,23 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
 
 
     @Override
-    public Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode, String email, UserRole userRole) {
+    public Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode, Long userId) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
-                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
                 .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(user.email.eq(email))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
+                        .and(userAppointmentMapping.userSeq.eq(userId)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Appointment> findByAppointmentCodeAndUserInfoAndUserRole(String appointmentCode, Long userId, UserRole userReole) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .where(appointment.appointmentCode.eq(appointmentCode)
+                        .and(userAppointmentMapping.userSeq.eq(userId))
+                        .and(userAppointmentMapping.userRole.eq(userReole)))
                 .fetchOne());
     }
 

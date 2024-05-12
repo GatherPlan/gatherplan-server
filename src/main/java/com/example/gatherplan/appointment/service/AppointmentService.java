@@ -21,15 +21,15 @@ public interface AppointmentService {
     List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
                                                                             String nickname);
 
-    AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
+    AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, Long userId);
 
-    AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email);
+    AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, Long userId);
 
-    void deleteAppointment(String appointmentCode, String email);
+    void deleteAppointment(String appointmentCode, Long userId);
 
-    void updateAppointment(UpdateAppointmentReqDto reqDto, String email);
+    void updateAppointment(UpdateAppointmentReqDto reqDto, Long userId);
 
     AppointmentRespDto retrieveAppointment(String appointmentCode);
 
-    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
+    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId);
 }

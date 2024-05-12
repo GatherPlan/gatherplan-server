@@ -14,6 +14,7 @@ import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.ParticipationInfo;
+import com.example.gatherplan.common.utils.MathUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -169,7 +171,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
     }
 
-
     @Override
     @Transactional
     public void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto) {
@@ -181,34 +182,34 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
 
-//    public List<AppointmentCandidateInfoRespDto> retrieveAppointmentCandidateInfoList(AppointmentCandidateInfoReqDto reqDto) {
-//        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
-//                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
-//                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-//
-//        List<ParticipationInfo> participationInfoList =
-//                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
-//
-//        return combinationedAppointmentCandidateInfoList(participationInfoList);
-//    }
-//
-//    private List<AppointmentCandidateInfoRespDto> combinationedAppointmentCandidateInfoList(List<ParticipationInfo> participationInfoList) {
-//
-//        List<String> participants = participationInfoList.stream()
-//                .map(ParticipationInfo::getNickname).toList();
-//
-//        List<Set<String>> combinations = MathUtils.combinations(participants);
-//
-//        List<List<Object>> list = combinations.stream().map(
-//                combination -> {
-//                    List<ParticipationInfo> fiteredParticipationInfoList = participationInfoList.stream()
-//                            .filter(participationInfo -> combination.contains(participationInfo.getNickname()))
-//                            .toList();
-//
-//                    return List.of();
-//                }
-//        ).toList();
-//
-//        return List.of(AppointmentCandidateInfoRespDto.builder().build());
-//    }
+    public List<AppointmentCandidateInfoRespDto> retrieveAppointmentCandidateInfoList(AppointmentCandidateInfoReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        List<ParticipationInfo> participationInfoList =
+                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
+
+        return combinationedAppointmentCandidateInfoList(participationInfoList);
+    }
+
+    private List<AppointmentCandidateInfoRespDto> combinationedAppointmentCandidateInfoList(List<ParticipationInfo> participationInfoList) {
+
+        List<String> participants = participationInfoList.stream()
+                .map(ParticipationInfo::getNickname).toList();
+
+        List<Set<String>> combinations = MathUtils.combinations(participants);
+
+        List<List<Object>> list = combinations.stream().map(
+                combination -> {
+                    List<ParticipationInfo> fiteredParticipationInfoList = participationInfoList.stream()
+                            .filter(participationInfo -> combination.contains(participationInfo.getNickname()))
+                            .toList();
+
+                    return List.of();
+                }
+        ).toList();
+
+        return List.of(AppointmentCandidateInfoRespDto.builder().build());
+    }
 }

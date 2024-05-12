@@ -131,63 +131,6 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/detail")
-    @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfoDetail(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        AppointmentInfoDetailRespDto respDto = appointmentService.retrieveAppointmentInfoDetail(appointmentCode, userInfo.getEmail());
-
-        return ResponseEntity.ok(
-                appointmentVoMapper.to(respDto)
-        );
-    }
-
-    @GetMapping("/participants")
-    @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        AppointmentParticipationInfoRespDto respDto = appointmentService
-                .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getEmail());
-
-        return ResponseEntity.ok(
-                appointmentVoMapper.to(respDto)
-        );
-    }
-
-    @DeleteMapping
-    @Operation(summary = "회원의 약속 삭제 요청", description = "회원이 약속을 삭제할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> deleteAppointment(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        appointmentService.deleteAppointment(appointmentCode, userInfo.getEmail());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
-    @PutMapping
-    @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointment(
-            @Valid @RequestBody UpdateAppointmentReq req,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.updateAppointment(reqDto, userInfo.getEmail());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
     @GetMapping("/detail/{appointmentCode}")
     @Operation(summary = "약속 단건 조회", description = "약속 코드를 통해 하나의 약속을 조회합니다.")
     public ResponseEntity<AppointmentResp> retrieveAppointment(
@@ -202,6 +145,63 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/detail")
+    @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfoDetail(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        AppointmentInfoDetailRespDto respDto = appointmentService.retrieveAppointmentInfoDetail(appointmentCode, userInfo.getId());
+
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
+    }
+
+    @GetMapping("/participants")
+    @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<AppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        AppointmentParticipationInfoRespDto respDto = appointmentService
+                .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getId());
+
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
+    }
+
+    @DeleteMapping
+    @Operation(summary = "회원의 약속 삭제 요청", description = "회원이 약속을 삭제할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> deleteAppointment(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        appointmentService.deleteAppointment(appointmentCode, userInfo.getId());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @PutMapping
+    @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateAppointment(
+            @Valid @RequestBody UpdateAppointmentReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.updateAppointment(reqDto, userInfo.getId());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
     @PostMapping(":confirm")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
@@ -209,7 +209,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.confirmedAppointment(reqDto, userInfo.getEmail());
+        appointmentService.confirmedAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()

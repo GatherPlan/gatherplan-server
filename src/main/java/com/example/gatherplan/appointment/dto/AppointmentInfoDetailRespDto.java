@@ -18,5 +18,6 @@ public class AppointmentInfoDetailRespDto {
     private String hostName;
     private AppointmentState appointmentState;
     private String appointmentCode;
+    private String notice;
 
 }
