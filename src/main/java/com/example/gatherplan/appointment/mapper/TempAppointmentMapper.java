@@ -25,7 +25,7 @@ public interface TempAppointmentMapper {
 
     TempAppointmentInfoRespDto to(Appointment appointment, String hostName);
 
-    TempAppointmentInfoDetailRespDto too(Appointment appointment, String hostName);
+    TempAppointmentInfoDetailRespDto toTempAppointmentInfoDetailRespDto(Appointment appointment, String hostName);
 
     TempAppointmentParticipationInfoRespDto to(Appointment appointment, List<ParticipationInfo> participationInfoList);
 }

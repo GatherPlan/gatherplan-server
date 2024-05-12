@@ -2,8 +2,6 @@ package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
 
-import java.util.List;
-
 public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId);
@@ -19,7 +17,7 @@ public interface AppointmentService {
     void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
 
-    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId);
+    //List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId);
 
     AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
 
@@ -30,7 +28,6 @@ public interface AppointmentService {
     void updateAppointment(UpdateAppointmentReqDto reqDto, String email);
 
     AppointmentRespDto retrieveAppointment(String appointmentCode);
-
 
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
 }
