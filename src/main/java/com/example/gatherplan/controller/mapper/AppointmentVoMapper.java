@@ -14,7 +14,7 @@ import org.mapstruct.*;
 public interface AppointmentVoMapper {
     CreateAppointmentReqDto to(CreateAppointmentReq req);
 
-    AppointmentInfoResp to(AppointmentInfoRespDto respDto);
+    AppointmentInfoResp to(AppointmentInfoDetailRespDto respDto);
 
     AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
 
@@ -26,6 +26,8 @@ public interface AppointmentVoMapper {
 
     @Mapping(target = "isHost", source = "host")
     AppointmentWithHostByKeywordResp to(AppointmentWithHostByKeywordRespDto respDto);
-    
+
     ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
+
+    AppointmentInfoResp to(AppointmentInfoRespDto respDto);
 }

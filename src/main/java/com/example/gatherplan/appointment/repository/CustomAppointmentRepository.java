@@ -17,5 +17,5 @@ public interface CustomAppointmentRepository {
     Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode
             , String email, UserRole userRole);
 
-    List<Appointment> findAllByUserInfoAndKeyword(String email, UserRole userRole, String keyword);
+    List<Appointment> findAllByUserInfoAndKeyword(Long userId, UserRole userRole, String keyword);
 }

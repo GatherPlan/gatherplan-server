@@ -8,13 +8,20 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId);
 
-    boolean isUserParticipated(String appointmentCode, String email);
+    AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode);
+
+    boolean retrieveParticipationStatus(String appointmentCode, String email);
+
+    boolean validateName(String appointmentCode, String name);
+
+    boolean validateNickname(String appointmentCode, String nickname);
+
+    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
 
-    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
-                                                                            String nickname);
+    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId);
 
-    AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, String email);
+    AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
 
     AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email);
 
@@ -24,7 +31,6 @@ public interface AppointmentService {
 
     AppointmentRespDto retrieveAppointment(String appointmentCode);
 
-    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
 }

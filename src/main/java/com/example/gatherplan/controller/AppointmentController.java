@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -46,17 +47,70 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping
+    @Operation(summary = "회원 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode) {
+
+        AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode);
+
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(respDto)
+        );
+    }
+
     @GetMapping("/participation-status")
-    @Operation(summary = "회원의 약속 참여 상태 확인 요청", description = "회원의 약속 참여 상태를 판단할 때 사용됩니다.")
+    @Operation(summary = "회원 약속 참여 여부 조회", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> retrieveParticipationStatus(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean isParticipated = appointmentService.isUserParticipated(appointmentCode, userInfo.getEmail());
+        boolean isValid = appointmentService.retrieveParticipationStatus(appointmentCode, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                BooleanResp.of(isParticipated)
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @GetMapping("/validation/name")
+    @Operation(summary = "회원 이름 약속 참여 가능 여부 확인", description = "회원의 이름으로 약속에 참여 가능한지 확인합니다.")
+    public ResponseEntity<BooleanResp> validateName(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        boolean isValid = appointmentService.validateName(appointmentCode, userInfo.getUsername());
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @GetMapping("/validation/nickname")
+    @Operation(summary = "회원이 입력한 닉네임으로 약속 참여 가능 여부 확인", description = "회원이 입력한 닉네임으로 약속에 참여 가능한지 확인합니다.")
+    public ResponseEntity<BooleanResp> validateNickname(
+            @Valid @ModelAttribute @ParameterObject ValidationNicknameReq req) {
+
+        boolean isValid = appointmentService.validateNickname(req.getAppointmentCode(), req.getNickname());
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @PostMapping("/participation")
+    @Operation(summary = "회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
+    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
+            @Valid @RequestBody CreateAppointmentParticipationReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getId());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
         );
     }
 
@@ -68,7 +122,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentWithHostByKeywordRespDto> respDtos = appointmentService
-                .retrieveAppointmentSearchList(keyword, userInfo.getEmail(), userInfo.getUsername());
+                .retrieveAppointmentSearchList(keyword, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -79,12 +133,12 @@ public class AppointmentController {
 
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
+    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfoDetail(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode, userInfo.getEmail());
+        AppointmentInfoDetailRespDto respDto = appointmentService.retrieveAppointmentInfoDetail(appointmentCode, userInfo.getEmail());
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
@@ -145,20 +199,6 @@ public class AppointmentController {
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
-        );
-    }
-
-    @PostMapping("/participation")
-    @Operation(summary = "회원의 약속 참여 등록", description = "회원의 약속 참여 정보를 등록합니다.")
-    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @Valid @RequestBody CreateAppointmentParticipationReq req,
-            @AuthenticationPrincipal UserInfo userInfo
-    ) {
-        CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getId());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
         );
     }
 
