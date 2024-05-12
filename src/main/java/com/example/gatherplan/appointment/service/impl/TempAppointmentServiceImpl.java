@@ -140,7 +140,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<UserAppointmentMapping> participationInfoList =
-                userAppointmentMappingRepository.findAllByAppointmentSeq(appointment.getId());
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
         return tempAppointmentMapper.to(appointment, participationInfoList);
     }
@@ -178,36 +178,4 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
-
-
-//    public List<AppointmentCandidateInfoRespDto> retrieveAppointmentCandidateInfoList(AppointmentCandidateInfoReqDto reqDto) {
-//        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
-//                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
-//                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-//
-//        List<ParticipationInfo> participationInfoList =
-//                customUserAppointmentMappingRepository.findAppointmentParticipationInfo(appointment.getId()).stream().toList();
-//
-//        return combinationedAppointmentCandidateInfoList(participationInfoList);
-//    }
-//
-//    private List<AppointmentCandidateInfoRespDto> combinationedAppointmentCandidateInfoList(List<ParticipationInfo> participationInfoList) {
-//
-//        List<String> participants = participationInfoList.stream()
-//                .map(ParticipationInfo::getNickname).toList();
-//
-//        List<Set<String>> combinations = MathUtils.combinations(participants);
-//
-//        List<List<Object>> list = combinations.stream().map(
-//                combination -> {
-//                    List<ParticipationInfo> fiteredParticipationInfoList = participationInfoList.stream()
-//                            .filter(participationInfo -> combination.contains(participationInfo.getNickname()))
-//                            .toList();
-//
-//                    return List.of();
-//                }
-//        ).toList();
-//
-//        return List.of(AppointmentCandidateInfoRespDto.builder().build());
-//    }
 }
