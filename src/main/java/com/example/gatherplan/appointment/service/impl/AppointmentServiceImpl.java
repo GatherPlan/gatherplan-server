@@ -127,6 +127,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointment.getId())
                 .userSeq(userId)
+                .nickname(reqDto.getNickname())
                 .userRole(UserRole.GUEST)
                 .userAuthType(UserAuthType.LOCAL)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
