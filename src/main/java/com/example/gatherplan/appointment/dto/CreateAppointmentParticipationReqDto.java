@@ -12,4 +12,5 @@ import java.util.List;
 public class CreateAppointmentParticipationReqDto {
     String appointmentCode;
     List<SelectedDateTime> selectedDateTimeList;
+    private String nickname;
 }
