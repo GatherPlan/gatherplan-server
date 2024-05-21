@@ -6,6 +6,7 @@ import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.mapstruct.*;
 
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
