@@ -34,4 +34,8 @@ public interface AppointmentService {
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
 
     List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, String email);
+
+    void deleteAppointmentParticipation(String appointmentCode, String email, Long userId);
+
+    void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, String email, Long userId);
 }
