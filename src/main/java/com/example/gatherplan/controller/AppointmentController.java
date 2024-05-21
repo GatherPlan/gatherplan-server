@@ -247,6 +247,21 @@ public class AppointmentController {
         );
     }
 
+    @PutMapping("/participation")
+    @Operation(summary = "회원 약속 참여 변경 요청", description = "회원이 약속 참여를 변경할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
+            @Valid @RequestBody UpdateAppointmentParticipationReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
+
+        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getEmail(), userInfo.getId());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
     @GetMapping("/detail/{appointmentCode}")
     @Operation(summary = "약속 단건 조회", description = "약속 코드를 통해 하나의 약속을 조회합니다.")
     public ResponseEntity<AppointmentResp> retrieveAppointment(
