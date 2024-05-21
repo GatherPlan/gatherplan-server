@@ -240,21 +240,6 @@ public class AppointmentController {
 
         UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
 
-        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getId());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
-    @PutMapping("/participation")
-    @Operation(summary = "회원 약속 참여 변경 요청", description = "회원이 약속 참여를 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
-            @Valid @RequestBody UpdateAppointmentParticipationReq req,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
-
         appointmentService.updateAppointmentParticipation(reqDto, userInfo.getEmail(), userInfo.getId());
 
         return ResponseEntity.ok(
