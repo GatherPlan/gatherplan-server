@@ -24,6 +24,7 @@ public interface AppointmentMapper {
     AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName,
                                                                 boolean isParticipated, boolean isHost);
 
+    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
     AppointmentParticipationInfoRespDto to(UserAppointmentMapping userAppointmentMapping);
 
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
