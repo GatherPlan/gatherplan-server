@@ -6,6 +6,9 @@ import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -16,7 +19,10 @@ public class AppointmentInfoDetailRespDto {
     private ConfirmedDateTime confirmedDateTime;
     private String appointmentName;
     private String hostName;
+    private String notice;
     private AppointmentState appointmentState;
     private String appointmentCode;
-
+    private List<LocalDate> candidateDateList;
+    private boolean isParticipated;
+    private boolean isHost;
 }

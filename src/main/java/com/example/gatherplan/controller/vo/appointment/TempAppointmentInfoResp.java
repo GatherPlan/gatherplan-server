@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 정보 조회 응답 객체")
+@Schema(description = "비회원의 약속 정보 미리보기 조회 응답 객체")
 public class TempAppointmentInfoResp {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")

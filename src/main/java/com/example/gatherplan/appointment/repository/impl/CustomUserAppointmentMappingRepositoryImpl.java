@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
 @Repository
@@ -39,10 +38,9 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     public List<AppointmentWithHostDto> findAllAppointmentWithHost(List<Long> appointmentIdList) {
         return new ArrayList<>(jpaQueryFactory
                 .select(Projections.constructor(AppointmentWithHostDto.class,
-                        user.name,
+                        userAppointmentMapping.nickname,
                         userAppointmentMapping.appointmentSeq))
                 .from(userAppointmentMapping)
-                .join(user).on(userAppointmentMapping.userSeq.eq(user.id))
                 .where(userAppointmentMapping.appointmentSeq.in(appointmentIdList)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetch());
