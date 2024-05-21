@@ -225,22 +225,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.updateAppointment(reqDto, userInfo.getEmail());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
-    @PutMapping("/participation")
-    @Operation(summary = "회원 약속 참여 변경 요청", description = "회원이 약속 참여를 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
-            @Valid @RequestBody UpdateAppointmentParticipationReq req,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
-
-        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getEmail(), userInfo.getId());
+        appointmentService.updateAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -283,7 +268,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo
     ) {
         List<AppointmentCandidateDateInfoRespDto> respDtos
-                = appointmentService.retrieveAppointmentCandidateDate(appointmentCode, userInfo.getEmail());
+                = appointmentService.retrieveAppointmentCandidateDate(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -299,7 +284,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmedAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.confirmedAppointment(reqDto, userInfo.getEmail());
+        appointmentService.confirmedAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
