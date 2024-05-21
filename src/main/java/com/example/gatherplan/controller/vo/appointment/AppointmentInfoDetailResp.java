@@ -2,18 +2,18 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.common.unit.Address;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원 약속 미리보기 정보 조회 응답 객체")
-public class AppointmentInfoResp {
+@Schema(description = "회원 약속 정보 조회 응답 객체")
+public class AppointmentInfoDetailResp {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;
@@ -32,10 +32,18 @@ public class AppointmentInfoResp {
             "\"placeName\": \"성수역 2호선 2번출구\", \"placeUrl\": \"http://place.map.kakao.com/7942972\"}")
     private Address address;
 
+    @Schema(description = "약속 확정 시간 정보", example = "{\"confirmedDate\": \"2024-03-18\", \"confirmedStartTime\": \"09:00\", \"confirmedEndTime\": \"10:00\"}")
+    private ConfirmedDateTime confirmedDateTime;
+
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private List<LocalDate> candidateDateList;
 
     @Schema(description = "약속 상태", example = "UNCONFIRMED")
     private AppointmentState appointmentState;
 
+    @Schema(description = "참여 여부", example = "true")
+    private boolean isParticipated;
+
+    @Schema(description = "호스트 여부", example = "true")
+    private boolean isHost;
 }

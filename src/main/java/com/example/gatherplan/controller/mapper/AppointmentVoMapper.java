@@ -14,7 +14,9 @@ import org.mapstruct.*;
 public interface AppointmentVoMapper {
     CreateAppointmentReqDto to(CreateAppointmentReq req);
 
-    AppointmentInfoResp to(AppointmentInfoDetailRespDto respDto);
+    @Mapping(target = "isHost", source = "host")
+    @Mapping(target = "isParticipated", source = "participated")
+    AppointmentInfoDetailResp to(AppointmentInfoDetailRespDto respDto);
 
     AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
 

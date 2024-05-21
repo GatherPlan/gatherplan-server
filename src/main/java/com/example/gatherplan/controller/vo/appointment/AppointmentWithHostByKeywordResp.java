@@ -25,4 +25,7 @@ public class AppointmentWithHostByKeywordResp {
 
     @Schema(description = "호스트 여부", example = "true")
     private boolean isHost;
+
+    @Schema(description = "공지사항", example = "점심약속입니다.")
+    private String notice;
 }

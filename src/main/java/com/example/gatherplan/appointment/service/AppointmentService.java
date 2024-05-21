@@ -23,7 +23,7 @@ public interface AppointmentService {
 
     AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
 
-    AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email);
+    List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, String email);
 
     void deleteAppointment(String appointmentCode, String email);
 

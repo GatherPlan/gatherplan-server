@@ -15,6 +15,7 @@ import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.MathUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -54,9 +55,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long appointmentId = appointmentRepository.save(appointment).getId();
 
+        User user = userRepository.findById(userId).orElseThrow(()->new UserException(ErrorCode.USER_NOT_FOUND));
+
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
                 .appointmentSeq(appointmentId)
-                .userSeq(userId)
+                .userSeq(user.getId())
+                .nickname(user.getName())
                 .userRole(UserRole.HOST)
                 .userAuthType(UserAuthType.LOCAL)
                 .build();
@@ -139,7 +143,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
-                                                                                   String nickname) {
+                                                                                   String name) {
         List<Appointment> appointmentList =
                 customAppointmentRepository.findAllByUserInfoAndKeyword(email, UserRole.GUEST, keyword);
         List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
@@ -150,7 +154,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentList.stream()
                 .map(appointment ->
                         appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getId()),
-                                StringUtils.equals(nickname, hostNameMap.get(appointment.getId()))))
+                                StringUtils.equals(name, hostNameMap.get(appointment.getId()))))
                 .toList();
     }
 
@@ -163,18 +167,27 @@ public class AppointmentServiceImpl implements AppointmentService {
         String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
-        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+        boolean isParticipated = userAppointmentMappingRepository
+                .existsByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), user.getId(), UserRole.GUEST);
+
+        boolean isHost = userAppointmentMappingRepository
+                .existsByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), user.getId(), UserRole.HOST);
+
+        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost);
     }
 
     @Override
-    public AppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
+    public List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, String email) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode,
                         email, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentSeq(appointment.getId());
-        return appointmentMapper.to(appointment, participationInfoList);
+
+        return participationInfoList.stream().map(appointmentMapper::to).toList();
     }
 
     @Override
@@ -239,10 +252,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         combinations.forEach(
                 combination -> {
-                    List<AppointmentCandidateDateInfoRespDto.UserParticipationInfo> userParticipationInfoList =
+                    List<UserParticipationInfo> userParticipationInfoList =
                             participationInfoList.stream()
                                     .map(participationInfo ->
-                                            AppointmentCandidateDateInfoRespDto.UserParticipationInfo.builder()
+                                            UserParticipationInfo.builder()
                                                     .nickname(participationInfo.getNickname())
                                                     .userRole(participationInfo.getUserRole())
                                                     .userAuthType(participationInfo.getUserAuthType())

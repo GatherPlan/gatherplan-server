@@ -6,7 +6,6 @@ import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.mapstruct.*;
 
-import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -22,9 +21,10 @@ public interface AppointmentMapper {
 
     AppointmentInfoRespDto to(Appointment appointment, String hostName);
 
-    AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName);
+    AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName,
+                                                                boolean isParticipated, boolean isHost);
 
-    AppointmentParticipationInfoRespDto to(Appointment appointment, List<UserAppointmentMapping> participationInfoList);
+    AppointmentParticipationInfoRespDto to(UserAppointmentMapping userAppointmentMapping);
 
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
                                                                               boolean isHost);

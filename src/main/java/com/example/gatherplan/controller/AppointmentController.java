@@ -47,8 +47,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping
-    @Operation(summary = "회원 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
+    @GetMapping("/preview")
+    @Operation(summary = "회원 약속 미리보기 정보 조회 요청", description = "회원이 약속 미리보기 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode) {
@@ -131,9 +131,9 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/detail")
-    @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfoDetail(
+    @GetMapping
+    @Operation(summary = "회원 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<AppointmentInfoDetailResp> retrieveAppointmentInfoDetail(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
@@ -145,18 +145,20 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/participants")
+    @GetMapping("/participation")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
+    public ResponseEntity<ListResponse<AppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentParticipationInfoRespDto respDto = appointmentService
+        List<AppointmentParticipationInfoRespDto> respDtoList = appointmentService
                 .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getEmail());
 
         return ResponseEntity.ok(
-                appointmentVoMapper.to(respDto)
+                ListResponse.of(
+                        respDtoList.stream().map(appointmentVoMapper::to).toList()
+                )
         );
     }
 
