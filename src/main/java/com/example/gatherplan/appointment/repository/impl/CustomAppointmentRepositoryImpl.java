@@ -48,24 +48,25 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
 
+
     @Override
-    public Optional<Appointment> findByAppointmentCodeAndUserInfo(String appointmentCode, String email, UserRole userRole) {
+    public Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
                 .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
                 .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(user.email.eq(email))
+                        .and(user.id.eq(userId))
                         .and(userAppointmentMapping.userRole.eq(userRole)))
                 .fetchOne());
     }
 
     @Override
-    public List<Appointment> findAllByUserInfoAndKeyword(String email, UserRole userRole, String keyword) {
+    public List<Appointment> findAllByUserInfoAndKeyword(Long userId,UserRole userRole, String keyword) {
         return jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
-                .where(user.email.eq(email).and(userAppointmentMapping.userRole.eq(userRole))
+                .where(user.id.eq(userId).and(userAppointmentMapping.userRole.eq(userRole))
                         .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))
                 .fetch();
     }

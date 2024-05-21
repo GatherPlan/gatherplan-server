@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    String registerAppointment(CreateAppointmentReqDto reqDto, Long userId);
+    String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name);
 
     AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode);
 
-    boolean retrieveParticipationStatus(String appointmentCode, String email);
+    boolean retrieveParticipationStatus(String appointmentCode, Long userId);
+
+    boolean retrieveHostStatus(String appointmentCode, Long userId);
 
     boolean validateName(String appointmentCode, String name);
 
@@ -18,24 +20,24 @@ public interface AppointmentService {
 
     void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
-    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, String email,
+    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId,
                                                                             String nickname);
 
-    AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, String email);
+    AppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(String appointmentCode, Long userId);
 
-    List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, String email);
+    List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, Long userId);
 
-    void deleteAppointment(String appointmentCode, String email);
+    void deleteAppointment(String appointmentCode, Long userId);
 
-    void updateAppointment(UpdateAppointmentReqDto reqDto, String email);
+    void updateAppointment(UpdateAppointmentReqDto reqDto, Long userId);
 
     AppointmentRespDto retrieveAppointment(String appointmentCode);
 
-    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, String email);
+    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId);
 
-    List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, String email);
+    List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, Long userId);
 
-    void deleteAppointmentParticipation(String appointmentCode, String email, Long userId);
+    void deleteAppointmentParticipation(String appointmentCode, Long userId);
 
-    void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, String email, Long userId);
+    void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, Long userId);
 }
