@@ -332,4 +332,27 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return candidateDateInfoRespDtos;
     }
+
+    @Override
+    public void deleteAppointmentParticipation(String appointmentCode, String email, Long userId) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(appointmentCode, email, UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        Long appointmentId = appointment.getId();
+
+        userAppointmentMappingRepository.deleteByAppointmentSeqAndUserSeqAndUserRole(appointmentId, userId, UserRole.GUEST);
+    }
+
+    @Override
+    public void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, String email, Long userId) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserInfo(reqDto.getAppointmentCode(), email, UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
+                        appointment.getId(), userId, UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
+
+        userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
+    }
 }
