@@ -2,6 +2,7 @@ package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.controller.vo.appointment.*;
+import com.example.gatherplan.controller.vo.tempappointment.*;
 import org.mapstruct.*;
 
 @Mapper(

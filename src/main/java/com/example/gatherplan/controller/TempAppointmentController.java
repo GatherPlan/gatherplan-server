@@ -7,6 +7,7 @@ import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
+import com.example.gatherplan.controller.vo.tempappointment.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

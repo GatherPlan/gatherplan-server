@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment;
+package com.example.gatherplan.controller.vo.tempappointment;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
