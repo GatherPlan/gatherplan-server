@@ -204,20 +204,6 @@ public class AppointmentController {
         );
     }
 
-    @DeleteMapping("/participation")
-    @Operation(summary = "회원 약속 참여 삭제 요청", description = "회원이 약속 참여를 삭제할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> deleteAppointmentParticipation(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        appointmentService.deleteAppointmentParticipation(appointmentCode, userInfo.getEmail(), userInfo.getId());
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
     @PutMapping
     @Operation(summary = "회원의 약속 변경 요청", description = "회원이 약속을 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointment(
@@ -240,7 +226,7 @@ public class AppointmentController {
 
         UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
 
-        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getEmail(), userInfo.getId());
+        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
