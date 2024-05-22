@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,4 +27,7 @@ public class TempConfirmedAppointmentReq {
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
     private TempUserInfo tempUserInfo;
+
+    @Schema(description = "참여 가능 사용자 닉네임 리스트", example = "[이재훈,박정빈,박승일]")
+    private List<String> nicknameList;
 }

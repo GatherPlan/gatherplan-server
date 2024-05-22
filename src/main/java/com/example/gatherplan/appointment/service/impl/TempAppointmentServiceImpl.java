@@ -208,6 +208,13 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
+        reqDto.getNicknameList().stream()
+                .map(nickname -> userAppointmentMappingRepository
+                        .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), nickname, UserRole.GUEST))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(mapping -> mapping.updateIsParticipated(true));
+
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
 

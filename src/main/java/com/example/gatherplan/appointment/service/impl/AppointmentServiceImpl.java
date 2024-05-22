@@ -233,8 +233,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         reqDto.getNicknameList().stream()
-                .map(name -> userAppointmentMappingRepository
-                        .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), name, UserRole.GUEST))
+                .map(nickname -> userAppointmentMappingRepository
+                        .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), nickname, UserRole.GUEST))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(mapping -> mapping.updateIsParticipated(true));
