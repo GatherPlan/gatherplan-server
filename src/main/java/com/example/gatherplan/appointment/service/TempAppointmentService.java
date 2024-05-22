@@ -2,6 +2,8 @@ package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
 
+import java.util.List;
+
 public interface TempAppointmentService {
     String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
@@ -29,4 +31,6 @@ public interface TempAppointmentService {
     void deleteAppointmentParticipation(DeleteTempAppointmentParticipationReqDto reqDto);
 
     void updateAppointmentParticipation(UpdateTempAppointmentParticipationReqDto reqDto);
+
+    List<TempAppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(TempAppointmentCandidateDateInfoReqDto reqDto);
 }
