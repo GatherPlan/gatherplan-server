@@ -31,7 +31,7 @@ public interface AppointmentVoMapper {
 
     ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
 
-    AppointmentInfoResp to(AppointmentInfoRespDto respDto);
+    AppointmentPreviewResp to(AppointmentPreviewRespDto respDto);
 
     AppointmentCandidateDateInfoReqDto to(String appointmentId, String email);
 

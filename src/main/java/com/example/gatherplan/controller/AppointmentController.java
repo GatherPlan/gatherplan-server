@@ -48,12 +48,12 @@ public class AppointmentController {
     }
 
     @GetMapping("/preview")
-    @Operation(summary = "회원 약속 미리보기 정보 조회 요청", description = "회원이 약속 미리보기 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
+    @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기 정보를 조회할 때 사용됩니다.")
+    public ResponseEntity<AppointmentPreviewResp> retrieveAppointmentPreview(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode) {
 
-        AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode);
+        AppointmentPreviewRespDto respDto = appointmentService.retrieveAppointmentPreview(appointmentCode);
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
@@ -61,30 +61,30 @@ public class AppointmentController {
     }
 
     @GetMapping("/participation-status")
-    @Operation(summary = "회원 약속 참여 여부 조회", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다.")
+    @Operation(summary = "회원의 약속 참여 여부 조회", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> retrieveParticipationStatus(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean isValid = appointmentService.retrieveParticipationStatus(appointmentCode, userInfo.getId());
+        boolean isParticipated = appointmentService.retrieveParticipationStatus(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
-                BooleanResp.of(isValid)
+                BooleanResp.of(isParticipated)
         );
     }
 
-    @GetMapping("/host-status")
-    @Operation(summary = "회원 약속 호스트 여부 조회", description = "회원의 약속 호스트 여부를 조회할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> retrieveHoststatus(
+    @GetMapping("/host")
+    @Operation(summary = "회원의 호스트 여부 조회", description = "회원의 호스트 여부를 조회할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> retrieveHostStatus(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean isValid = appointmentService.retrieveHostStatus(appointmentCode, userInfo.getId());
+        boolean isHost = appointmentService.retrieveHostStatus(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
-                BooleanResp.of(isValid)
+                BooleanResp.of(isHost)
         );
     }
 

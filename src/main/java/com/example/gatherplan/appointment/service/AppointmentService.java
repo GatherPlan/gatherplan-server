@@ -8,7 +8,7 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name);
 
-    AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode);
+    AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
     boolean retrieveParticipationStatus(String appointmentCode, Long userId);
 

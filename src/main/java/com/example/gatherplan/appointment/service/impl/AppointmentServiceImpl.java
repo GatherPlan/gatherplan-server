@@ -67,7 +67,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode) {
+    public AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode).orElseThrow(()
                 -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
@@ -92,8 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         return userAppointmentMappingRepository
-                .existsByAppointmentSeqAndUserSeqAndUserRole(
-                        appointment.getId(), userId, UserRole.HOST);
+                .existsByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), userId, UserRole.HOST);
     }
 
     @Override
@@ -187,7 +186,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<UserAppointmentMapping> participationInfoList =
-                userAppointmentMappingRepository.findAllByAppointmentSeq(appointment.getId());
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
         return participationInfoList.stream().map(appointmentMapper::to).toList();
     }
@@ -338,6 +337,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void deleteAppointmentParticipation(String appointmentCode, Long userId) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode,
                         userId, UserRole.GUEST)
@@ -347,14 +347,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto,  Long userId) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(),
                         userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
-                        appointment.getId(), userId, UserRole.GUEST)
+                .findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
 
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());

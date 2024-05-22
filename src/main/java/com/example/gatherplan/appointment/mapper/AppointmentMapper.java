@@ -20,7 +20,7 @@ public interface AppointmentMapper {
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateAppointmentReqDto reqDto, AppointmentState appointmentState, String appointmentCode);
 
-    AppointmentInfoRespDto to(Appointment appointment, String hostName);
+    AppointmentPreviewRespDto to(Appointment appointment, String hostName);
 
     AppointmentInfoDetailRespDto toAppointmentInfoDetailRespDto(Appointment appointment, String hostName,
                                                                 boolean isParticipated, boolean isHost);
