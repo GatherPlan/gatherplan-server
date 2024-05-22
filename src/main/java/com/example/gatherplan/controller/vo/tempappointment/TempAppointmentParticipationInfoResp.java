@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.appointment;
+package com.example.gatherplan.controller.vo.tempappointment;
 
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
