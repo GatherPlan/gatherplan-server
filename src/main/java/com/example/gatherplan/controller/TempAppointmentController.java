@@ -6,6 +6,7 @@ import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
+import com.example.gatherplan.controller.vo.common.ListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -14,6 +15,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -180,7 +183,23 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping("/:confirm")
+    @GetMapping("/candidate-date:confirm")
+    @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
+    public ResponseEntity<ListResponse<TempAppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
+            @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDateInfoReq req) {
+        TempAppointmentCandidateDateInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
+
+        List<TempAppointmentCandidateDateInfoRespDto> respDtos
+                = tempAppointmentService.retrieveAppointmentCandidateDate(reqDto);
+
+        return ResponseEntity.ok(
+                ListResponse.of(
+                        respDtos.stream().map(tempAppointmentVoMapper::to).toList()
+                )
+        );
+    }
+
+    @PostMapping(":confirm")
     @Operation(summary = "비회원의 약속 확정 요청", description = "비회원이 약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
             @Valid @RequestBody TempConfirmedAppointmentReq req) {

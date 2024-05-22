@@ -17,7 +17,7 @@ public class MathUtils {
             recursionCombinations(elements, visited, 0, r, result);
         }
 
-        return result;
+        return result.reversed();
     }
 
 

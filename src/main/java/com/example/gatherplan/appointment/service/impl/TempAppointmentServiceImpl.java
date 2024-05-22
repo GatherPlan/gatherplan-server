@@ -13,15 +13,22 @@ import com.example.gatherplan.appointment.repository.entity.UserAppointmentMappi
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.utils.MathUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -202,5 +209,170 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
+    }
+
+    @Override
+    public List<TempAppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(TempAppointmentCandidateDateInfoReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
+
+        List<UserAppointmentMapping> participationInfoList =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
+
+        UserAppointmentMapping hostUserAppointMapping =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST).stream()
+                        .findAny().orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+        List<String> participants = participationInfoList.stream()
+                .map(UserAppointmentMapping::getNickname).toList();
+
+        List<Set<String>> combinations = MathUtils.combinations(participants);
+
+        List<TempAppointmentCandidateDateInfoRespDto> candidateDateInfoRespDtos = new ArrayList<>();
+
+        combinations.forEach(
+                combination -> {
+                    List<TempAppointmentCandidateDateInfoRespDto.UserParticipationInfo> userParticipationInfoList =
+                            participationInfoList.stream()
+                                    .map(participationInfo -> {
+                                        UserRole userRole =
+                                                StringUtils.equals(participationInfo.getNickname(), hostUserAppointMapping.getNickname()) ?
+                                                        UserRole.HOST : UserRole.GUEST;
+
+                                        return TempAppointmentCandidateDateInfoRespDto.UserParticipationInfo.builder()
+                                                .nickname(participationInfo.getNickname())
+                                                .userRole(userRole)
+                                                .userAuthType(participationInfo.getUserAuthType())
+                                                .participant(combination.contains(participationInfo.getNickname()))
+                                                .build();
+                                    })
+                                    .toList();
+
+                    List<UserAppointmentMapping> filteredParticipationInfoList = participationInfoList.stream()
+                            .filter(participationInfo -> combination.contains(participationInfo.getNickname()))
+                            .toList();
+
+                    List<List<SelectedDateTime>> filteredSelectedDatesList = filteredParticipationInfoList.stream()
+                            .map(UserAppointmentMapping::getSelectedDateTimeList)
+                            .toList();
+
+                    candidateDateList.forEach(
+                            candidateDate -> {
+                                // 24시간 동안 1시간 단위로 해당 조합의 멤버 모두 참여 가능한 시간 리스트 구하기 ex) [1,2,3,5,6,10, ...]
+                                List<Integer> timeList = new ArrayList<>();
+                                for (int nowHour = 0; nowHour < 24; nowHour++) {
+
+                                    int includedCount = 0;
+                                    for (List<SelectedDateTime> selectedDateTimes : filteredSelectedDatesList) {
+                                        for (SelectedDateTime selectedDateTime : selectedDateTimes) {
+                                            LocalDate date = selectedDateTime.getSelectedDate();
+                                            int startHour = selectedDateTime.getSelectedStartTime().getHour();
+                                            int endHour = selectedDateTime.getSelectedEndTime().getHour();
+
+                                            if (candidateDate.equals(date) && (startHour <= nowHour && nowHour <= endHour)) {
+                                                includedCount++;
+                                            }
+                                        }
+                                    }
+
+                                    if (includedCount == filteredParticipationInfoList.size()) {
+                                        timeList.add(nowHour);
+                                    }
+                                }
+
+                                // 시간 리스트에서 연속적인 시간 그룹 찾기 ex) [1,2,3,4,10,11,18] -> [[1,2,3,4],[10,11],[18]]
+                                if (ObjectUtils.isNotEmpty(timeList)) {
+
+                                    int start = timeList.get(0);
+                                    int end = start;
+
+                                    for (int i = 1; i < timeList.size(); i++) {
+                                        if (timeList.get(i) == end + 1) {
+                                            end = timeList.get(i);
+                                        } else {
+                                            // check
+                                            int finalStart = start;
+                                            int finalEnd = end;
+                                            boolean isDuplicated = candidateDateInfoRespDtos.stream()
+                                                    .anyMatch(
+                                                            candidateDateInfo -> {
+                                                                LocalDate date = candidateDateInfo.getCandidateDate();
+                                                                LocalTime startTime = candidateDateInfo.getStartTime();
+                                                                LocalTime endTime = candidateDateInfo.getEndTime();
+
+                                                                // 날짜 및 시간 동일한지 확인
+                                                                boolean isEqualDateTime =
+                                                                        date.equals(candidateDate) &&
+                                                                                startTime.getHour() == finalStart && endTime.getHour() == finalEnd;
+                                                                // 참여 가능 멤버가 동일한지 확인
+                                                                boolean isEqualParticipants =
+                                                                        candidateDateInfo.getUserParticipationInfoList().stream()
+                                                                                .filter(p -> combination.contains(p.getNickname()))
+                                                                                .allMatch(TempAppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+
+                                                                return isEqualDateTime && isEqualParticipants;
+                                                            }
+                                                    );
+
+                                            if (!isDuplicated) {
+                                                TempAppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = TempAppointmentCandidateDateInfoRespDto.builder()
+                                                        .candidateDate(candidateDate)
+                                                        .startTime(LocalTime.of(start, 0))
+                                                        .endTime(LocalTime.of(end, 0))
+                                                        .userParticipationInfoList(userParticipationInfoList)
+                                                        .build();
+
+                                                candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                            }
+
+                                            start = end = timeList.get(i);
+                                        }
+                                    }
+                                    // check
+                                    int finalStart = start;
+                                    int finalEnd = end;
+                                    boolean isDuplicated = candidateDateInfoRespDtos.stream()
+                                            .anyMatch(
+                                                    candidateDateInfo -> {
+                                                        LocalDate date = candidateDateInfo.getCandidateDate();
+                                                        LocalTime startTime = candidateDateInfo.getStartTime();
+                                                        LocalTime endTime = candidateDateInfo.getEndTime();
+
+                                                        // 날짜 및 시간 동일한지 확인
+                                                        boolean isEqualDateTime =
+                                                                date.equals(candidateDate) &&
+                                                                        startTime.getHour() == finalStart && endTime.getHour() == finalEnd;
+                                                        // 참여 가능 멤버가 동일한지 확인
+                                                        boolean isEqualParticipants =
+                                                                candidateDateInfo.getUserParticipationInfoList().stream()
+                                                                        .filter(p -> combination.contains(p.getNickname()))
+                                                                        .allMatch(TempAppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+
+                                                        return isEqualDateTime && isEqualParticipants;
+                                                    }
+                                            );
+
+                                    if (!isDuplicated) {
+                                        // check
+                                        TempAppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = TempAppointmentCandidateDateInfoRespDto.builder()
+                                                .candidateDate(candidateDate)
+                                                .startTime(LocalTime.of(start, 0))
+                                                .endTime(LocalTime.of(end, 0))
+                                                .userParticipationInfoList(userParticipationInfoList)
+                                                .build();
+                                        candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                    }
+                                }
+
+                            }
+                    );
+
+                }
+        );
+
+        return candidateDateInfoRespDtos;
     }
 }

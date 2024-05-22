@@ -33,8 +33,6 @@ public interface AppointmentVoMapper {
 
     AppointmentPreviewResp to(AppointmentPreviewRespDto respDto);
 
-    AppointmentCandidateDateInfoReqDto to(String appointmentId, String email);
-
     AppointmentCandidateDateInfoResp to(AppointmentCandidateDateInfoRespDto respDto);
 
     UpdateAppointmentParticipationReqDto to(UpdateAppointmentParticipationReq req);

@@ -247,6 +247,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
+        UserAppointmentMapping hostUserAppointMapping =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.HOST).stream()
+                        .findAny().orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
         List<String> participants = participationInfoList.stream()
                 .map(UserAppointmentMapping::getNickname).toList();
 
@@ -256,15 +260,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         combinations.forEach(
                 combination -> {
-                    List<UserParticipationInfo> userParticipationInfoList =
+                    List<AppointmentCandidateDateInfoRespDto.UserParticipationInfo> userParticipationInfoList =
                             participationInfoList.stream()
-                                    .map(participationInfo ->
-                                            UserParticipationInfo.builder()
-                                                    .nickname(participationInfo.getNickname())
-                                                    .userRole(participationInfo.getUserRole())
-                                                    .userAuthType(participationInfo.getUserAuthType())
-                                                    .participant(combination.contains(participationInfo.getNickname()))
-                                                    .build())
+                                    .map(participationInfo -> {
+                                        UserRole userRole =
+                                                StringUtils.equals(participationInfo.getNickname(), hostUserAppointMapping.getNickname()) ?
+                                                        UserRole.HOST : UserRole.GUEST;
+
+                                        return AppointmentCandidateDateInfoRespDto.UserParticipationInfo.builder()
+                                                .nickname(participationInfo.getNickname())
+                                                .userRole(userRole)
+                                                .userAuthType(participationInfo.getUserAuthType())
+                                                .participant(combination.contains(participationInfo.getNickname()))
+                                                .build();
+                                    })
                                     .toList();
 
                     List<UserAppointmentMapping> filteredParticipationInfoList = participationInfoList.stream()
@@ -277,6 +286,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                     candidateDateList.forEach(
                             candidateDate -> {
+                                // 24시간 동안 1시간 단위로 해당 조합의 멤버 모두 참여 가능한 시간 리스트 구하기 ex) [1,2,3,5,6,10, ...]
                                 List<Integer> timeList = new ArrayList<>();
                                 for (int nowHour = 0; nowHour < 24; nowHour++) {
 
@@ -298,6 +308,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                     }
                                 }
 
+                                // 시간 리스트에서 연속적인 시간 그룹 찾기 ex) [1,2,3,4,10,11,18] -> [[1,2,3,4],[10,11],[18]]
                                 if (ObjectUtils.isNotEmpty(timeList)) {
 
                                     int start = timeList.get(0);
@@ -307,25 +318,78 @@ public class AppointmentServiceImpl implements AppointmentService {
                                         if (timeList.get(i) == end + 1) {
                                             end = timeList.get(i);
                                         } else {
-                                            AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
-                                                    .candidateDate(candidateDate)
-                                                    .startTime(LocalTime.of(start, 0))
-                                                    .endTime(LocalTime.of(end, 0))
-                                                    .userParticipationInfoList(userParticipationInfoList)
-                                                    .build();
+                                            // check
+                                            int finalStart = start;
+                                            int finalEnd = end;
+                                            boolean isDuplicated = candidateDateInfoRespDtos.stream()
+                                                    .anyMatch(
+                                                            candidateDateInfo -> {
+                                                                LocalDate date = candidateDateInfo.getCandidateDate();
+                                                                LocalTime startTime = candidateDateInfo.getStartTime();
+                                                                LocalTime endTime = candidateDateInfo.getEndTime();
 
-                                            candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                                                // 날짜 및 시간 동일한지 확인
+                                                                boolean isEqualDateTime =
+                                                                        date.equals(candidateDate) &&
+                                                                                startTime.getHour() == finalStart && endTime.getHour() == finalEnd;
+                                                                // 참여 가능 멤버가 동일한지 확인
+                                                                boolean isEqualParticipants =
+                                                                        candidateDateInfo.getUserParticipationInfoList().stream()
+                                                                                .filter(p -> combination.contains(p.getNickname()))
+                                                                                .allMatch(AppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+
+                                                                return isEqualDateTime && isEqualParticipants;
+                                                            }
+                                                    );
+
+                                            if (!isDuplicated) {
+                                                AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                                        .candidateDate(candidateDate)
+                                                        .startTime(LocalTime.of(start, 0))
+                                                        .endTime(LocalTime.of(end, 0))
+                                                        .userParticipationInfoList(userParticipationInfoList)
+                                                        .build();
+
+                                                candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                            }
+
                                             start = end = timeList.get(i);
                                         }
                                     }
+                                    // check
+                                    int finalStart = start;
+                                    int finalEnd = end;
+                                    boolean isDuplicated = candidateDateInfoRespDtos.stream()
+                                            .anyMatch(
+                                                    candidateDateInfo -> {
+                                                        LocalDate date = candidateDateInfo.getCandidateDate();
+                                                        LocalTime startTime = candidateDateInfo.getStartTime();
+                                                        LocalTime endTime = candidateDateInfo.getEndTime();
 
-                                    AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
-                                            .candidateDate(candidateDate)
-                                            .startTime(LocalTime.of(start, 0))
-                                            .endTime(LocalTime.of(end, 0))
-                                            .userParticipationInfoList(userParticipationInfoList)
-                                            .build();
-                                    candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                                        // 날짜 및 시간 동일한지 확인
+                                                        boolean isEqualDateTime =
+                                                                date.equals(candidateDate) &&
+                                                                        startTime.getHour() == finalStart && endTime.getHour() == finalEnd;
+                                                        // 참여 가능 멤버가 동일한지 확인
+                                                        boolean isEqualParticipants =
+                                                                candidateDateInfo.getUserParticipationInfoList().stream()
+                                                                        .filter(p -> combination.contains(p.getNickname()))
+                                                                        .allMatch(AppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+
+                                                        return isEqualDateTime && isEqualParticipants;
+                                                    }
+                                            );
+
+                                    if (!isDuplicated) {
+                                        // check
+                                        AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                                .candidateDate(candidateDate)
+                                                .startTime(LocalTime.of(start, 0))
+                                                .endTime(LocalTime.of(end, 0))
+                                                .userParticipationInfoList(userParticipationInfoList)
+                                                .build();
+                                        candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                    }
                                 }
 
                             }
