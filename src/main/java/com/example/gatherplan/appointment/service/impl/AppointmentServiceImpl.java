@@ -136,7 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .nickname(reqDto.getNickname())
                 .userRole(UserRole.GUEST)
                 .userAuthType(UserAuthType.LOCAL)
-                .isParticipated(false)
+                .isAvailable(false)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
 
@@ -176,7 +176,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean isHost = userAppointmentMappingRepository
                 .existsByAppointmentSeqAndUserSeqAndUserRole(appointment.getId(), userId, UserRole.HOST);
 
-        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
+
+        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
+                .map(appointmentMapper::toUserParticipationInfo)
+                .toList();
+
+        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost, userParticipationInfoList);
     }
 
     @Override
@@ -237,7 +244,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                         .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), nickname, UserRole.GUEST))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .forEach(mapping -> mapping.updateIsParticipated(true));
+                .forEach(mapping -> mapping.updateIsAvailable(true));
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
@@ -277,7 +284,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                 .nickname(participationInfo.getNickname())
                                                 .userRole(userRole)
                                                 .userAuthType(participationInfo.getUserAuthType())
-                                                .participant(combination.contains(participationInfo.getNickname()))
+                                                .isAvailable(combination.contains(participationInfo.getNickname()))
                                                 .build();
                                     })
                                     .toList();
@@ -342,7 +349,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                 boolean isEqualParticipants =
                                                                         candidateDateInfo.getUserParticipationInfoList().stream()
                                                                                 .filter(p -> combination.contains(p.getNickname()))
-                                                                                .allMatch(UserParticipationInfo::isParticipant);
+                                                                                .allMatch(UserParticipationInfo::isAvailable);
 
                                                                 return isEqualDateTime && isEqualParticipants;
                                                             }
@@ -380,7 +387,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                         boolean isEqualParticipants =
                                                                 candidateDateInfo.getUserParticipationInfoList().stream()
                                                                         .filter(p -> combination.contains(p.getNickname()))
-                                                                        .allMatch(UserParticipationInfo::isParticipant);
+                                                                        .allMatch(UserParticipationInfo::isAvailable);
 
                                                         return isEqualDateTime && isEqualParticipants;
                                                     }
