@@ -137,6 +137,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .nickname(reqDto.getNickname())
                 .userRole(UserRole.GUEST)
                 .userAuthType(UserAuthType.LOCAL)
+                .isParticipated(false)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
 
@@ -231,6 +232,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(),
                         userId, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        reqDto.getNicknameList().stream()
+                .map(name -> userAppointmentMappingRepository
+                        .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), name, UserRole.GUEST))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(mapping -> mapping.updateIsParticipated(true));
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }
