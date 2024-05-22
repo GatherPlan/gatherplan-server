@@ -3,6 +3,7 @@ package com.example.gatherplan.controller.vo.appointment;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
+import com.example.gatherplan.common.unit.UserParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -46,4 +47,8 @@ public class AppointmentInfoDetailResp {
 
     @Schema(description = "호스트 여부", example = "true")
     private boolean isHost;
+
+    @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\",\"isAvailable\" : " +
+            "\"true\",\"userAuthType\" : \"LOCAL\",\"userRole\" : \"GUEST\"}]")
+    private List<UserParticipationInfo> userParticipationInfoList;
 }

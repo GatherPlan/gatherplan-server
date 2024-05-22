@@ -14,6 +14,7 @@ import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.MathUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -122,6 +123,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .nickname(reqDto.getTempUserInfo().getNickname())
                 .tempPassword(reqDto.getTempUserInfo().getPassword())
                 .userAuthType(UserAuthType.TEMPORARY)
+                .isAvailable(false)
                 .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
                 .build();
 
@@ -137,7 +139,22 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
-        return tempAppointmentMapper.toTempAppointmentInfoDetailRespDto(appointment, hostName);
+        boolean isParticipated = userAppointmentMappingRepository
+                .existsByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
+                        appointment.getId(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
+
+        boolean isHost = userAppointmentMappingRepository
+                .existsByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
+                        appointment.getId(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST);
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
+
+        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
+                .map(tempAppointmentMapper::to)
+                .toList();
+
+        return tempAppointmentMapper.toTempAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost, userParticipationInfoList);
     }
 
     @Override
@@ -213,7 +230,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         .findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(appointment.getId(), nickname, UserRole.GUEST))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .forEach(mapping -> mapping.updateIsParticipated(true));
+                .forEach(mapping -> mapping.updateIsAvailable(true));
 
         appointment.confirmed(reqDto.getConfirmedDateTime());
     }

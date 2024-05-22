@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserParticipationInfo {
     private String nickname;
-    private boolean participant;
+    private boolean isAvailable;
     private UserAuthType userAuthType;
     private UserRole userRole;
 }

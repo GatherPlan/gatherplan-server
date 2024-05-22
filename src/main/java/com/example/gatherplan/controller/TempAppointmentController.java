@@ -107,7 +107,7 @@ public class TempAppointmentController {
     }
 
     @GetMapping
-    @Operation(summary = "비회원 약속 상세 정보 조회", description = "비회원이 약속 상세 정보를 조회할 때 사용됩니다.")
+    @Operation(summary = "비회원 약속 정보 조회", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfoDetail(
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoDetailReq req) {
 

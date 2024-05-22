@@ -37,14 +37,14 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
 
     private String nickname;
 
-    private boolean isParticipated;
+    private boolean isAvailable;
 
     private String tempPassword;
 
     private UserAuthType userAuthType;
 
-    public void updateIsParticipated(boolean isParticipated) {
-        this.isParticipated = isParticipated;
+    public void updateIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     public void update(List<SelectedDateTime> selectedDateTimeList) {

@@ -4,6 +4,7 @@ package com.example.gatherplan.appointment.dto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
+import com.example.gatherplan.common.unit.UserParticipationInfo;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,4 +26,5 @@ public class AppointmentInfoDetailRespDto {
     private List<LocalDate> candidateDateList;
     private boolean isParticipated;
     private boolean isHost;
+    private List<UserParticipationInfo> userParticipationInfoList;
 }
