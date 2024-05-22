@@ -9,7 +9,6 @@ import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
-import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
@@ -260,14 +259,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         combinations.forEach(
                 combination -> {
-                    List<AppointmentCandidateDateInfoRespDto.UserParticipationInfo> userParticipationInfoList =
+                    List<UserParticipationInfo> userParticipationInfoList =
                             participationInfoList.stream()
                                     .map(participationInfo -> {
                                         UserRole userRole =
                                                 StringUtils.equals(participationInfo.getNickname(), hostUserAppointMapping.getNickname()) ?
                                                         UserRole.HOST : UserRole.GUEST;
 
-                                        return AppointmentCandidateDateInfoRespDto.UserParticipationInfo.builder()
+                                        return UserParticipationInfo.builder()
                                                 .nickname(participationInfo.getNickname())
                                                 .userRole(userRole)
                                                 .userAuthType(participationInfo.getUserAuthType())
@@ -336,7 +335,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                 boolean isEqualParticipants =
                                                                         candidateDateInfo.getUserParticipationInfoList().stream()
                                                                                 .filter(p -> combination.contains(p.getNickname()))
-                                                                                .allMatch(AppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+                                                                                .allMatch(UserParticipationInfo::isParticipant);
 
                                                                 return isEqualDateTime && isEqualParticipants;
                                                             }
@@ -374,7 +373,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                         boolean isEqualParticipants =
                                                                 candidateDateInfo.getUserParticipationInfoList().stream()
                                                                         .filter(p -> combination.contains(p.getNickname()))
-                                                                        .allMatch(AppointmentCandidateDateInfoRespDto.UserParticipationInfo::isParticipant);
+                                                                        .allMatch(UserParticipationInfo::isParticipant);
 
                                                         return isEqualDateTime && isEqualParticipants;
                                                     }
@@ -413,7 +412,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto,  Long userId) {
+    public void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, Long userId) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(),
                         userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
