@@ -66,6 +66,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
         return jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
                 .where(user.id.eq(userId).and(userAppointmentMapping.userRole.eq(userRole))
                         .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))
                 .fetch();
