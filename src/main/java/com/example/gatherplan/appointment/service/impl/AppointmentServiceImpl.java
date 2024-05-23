@@ -57,6 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentSeq(appointmentId)
                 .userSeq(userId)
                 .userRole(UserRole.HOST)
+                .nickname(name)
                 .userAuthType(UserAuthType.LOCAL)
                 .build();
 
