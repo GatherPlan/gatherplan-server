@@ -146,8 +146,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId,
-                                                                                   String name) {
+    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
         List<Appointment> appointmentList =
                 customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
         List<Long> appointmentIdList = appointmentList.stream().map(Appointment::getId).toList();
