@@ -121,14 +121,16 @@ public class TempAppointmentController {
 
     @GetMapping("/participation")
     @Operation(summary = "비회원의 약속 참여 정보 조회 요청", description = "비회원이 약속 참여 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<TempAppointmentParticipationInfoResp> retrieveAppointmentParticipationInfo(
+    public ResponseEntity<ListResponse<TempAppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationInfoReq req) {
 
         TempAppointmentParticipationInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
-        TempAppointmentParticipationInfoRespDto respDto = tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto);
+        List<TempAppointmentParticipationInfoRespDto> respDtoList = tempAppointmentService.retrieveAppointmentParticipationInfo(reqDto);
 
         return ResponseEntity.ok(
-                tempAppointmentVoMapper.to(respDto)
+                ListResponse.of(
+                        respDtoList.stream().map(tempAppointmentVoMapper::to).toList()
+                )
         );
     }
 

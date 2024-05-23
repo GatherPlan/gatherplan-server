@@ -151,14 +151,14 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
         List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .map(tempAppointmentMapper::to)
+                .map(tempAppointmentMapper::toUserParticipationInfo)
                 .toList();
 
         return tempAppointmentMapper.toTempAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost, userParticipationInfoList);
     }
 
     @Override
-    public TempAppointmentParticipationInfoRespDto retrieveAppointmentParticipationInfo(TempAppointmentParticipationInfoReqDto reqDto) {
+    public List<TempAppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(TempAppointmentParticipationInfoReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
@@ -166,7 +166,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentSeqAndUserRole(appointment.getId(), UserRole.GUEST);
 
-        return tempAppointmentMapper.to(appointment, participationInfoList);
+        return participationInfoList.stream().map(tempAppointmentMapper::to).toList();
     }
 
     @Override

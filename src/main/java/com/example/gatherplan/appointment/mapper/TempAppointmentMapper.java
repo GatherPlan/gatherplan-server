@@ -1,9 +1,6 @@
 package com.example.gatherplan.appointment.mapper;
 
-import com.example.gatherplan.appointment.dto.CreateTempAppointmentReqDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoDetailRespDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentInfoRespDto;
-import com.example.gatherplan.appointment.dto.TempAppointmentParticipationInfoRespDto;
+import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
@@ -30,7 +27,9 @@ public interface TempAppointmentMapper {
                                                                         boolean isParticipated, boolean isHost,
                                                                         List<UserParticipationInfo> userParticipationInfoList);
 
-    UserParticipationInfo to(UserAppointmentMapping userAppointmentMapping);
+    @Mapping(target = "isAvailable", source = "available")
+    UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
 
-    TempAppointmentParticipationInfoRespDto to(Appointment appointment, List<UserAppointmentMapping> participationInfoList);
+    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
+    TempAppointmentParticipationInfoRespDto to(UserAppointmentMapping userAppointmentMapping);
 }
