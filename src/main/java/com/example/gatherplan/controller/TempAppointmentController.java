@@ -44,7 +44,7 @@ public class TempAppointmentController {
 
     @GetMapping
     @Operation(summary = "비회원의 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfo(
+    public ResponseEntity<TempAppointmentInfoResp> retrieveAppointmentInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoDetailReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);

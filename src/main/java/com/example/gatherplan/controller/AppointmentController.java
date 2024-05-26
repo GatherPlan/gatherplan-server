@@ -49,7 +49,7 @@ public class AppointmentController {
 
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoDetailResp> retrieveAppointment(
+    public ResponseEntity<AppointmentInfoResp> retrieveAppointment(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {

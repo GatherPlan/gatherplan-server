@@ -37,7 +37,9 @@ public interface TempAppointmentVoMapper {
 
     TempAppointmentInfoReqDto to(TempAppointmentInfoDetailReq req);
 
-    TempAppointmentInfoDetailResp to(TempAppointmentInfoRespDto respDto);
+    @Mapping(target = "isParticipated", source = "participated")
+    @Mapping(target = "isHost", source = "host")
+    TempAppointmentInfoResp to(TempAppointmentInfoRespDto respDto);
 
     DeleteTempAppointmentParticipationReqDto to(DeleteTempAppointmentParticipationReq req);
 

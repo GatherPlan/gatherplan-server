@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "회원 약속 정보 조회 응답 객체")
-public class AppointmentInfoDetailResp {
+public class AppointmentInfoResp {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;

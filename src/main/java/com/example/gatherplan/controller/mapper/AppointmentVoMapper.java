@@ -16,7 +16,7 @@ public interface AppointmentVoMapper {
 
     @Mapping(target = "isHost", source = "host")
     @Mapping(target = "isParticipated", source = "participated")
-    AppointmentInfoDetailResp to(AppointmentInfoRespDto respDto);
+    AppointmentInfoResp to(AppointmentInfoRespDto respDto);
 
     AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
 
