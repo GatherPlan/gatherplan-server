@@ -135,7 +135,7 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/candidate-date:confirm")
+    @GetMapping("/candidate-info:confirm")
     @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
     public ResponseEntity<ListResponse<TempAppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDateInfoReq req) {
