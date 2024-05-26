@@ -42,59 +42,8 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping("/join:validate")
-    @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
-    public ResponseEntity<BooleanResp> validJoinUser(
-            @Valid @RequestBody CreateTempUserReq req) {
-
-        CreateTempUserReqDto reqDto = tempAppointmentVoMapper.to(req);
-        boolean isValid = tempAppointmentService.validJoinTempUser(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isValid)
-        );
-    }
-
-    @PostMapping("/login")
-    @Operation(summary = "비회원 호스트의 로그인", description = "비회원 호스트의 로그인 정보를 확인합니다.")
-    public ResponseEntity<BooleanResp> login(@RequestBody @Valid TempUserLoginReq req) {
-
-        TempUserLoginReqDto reqDto = tempAppointmentVoMapper.to(req);
-        boolean isValid = tempAppointmentService.login(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isValid)
-        );
-    }
-
-    @GetMapping("/participation-status")
-    @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> retrieveParticipationStatus(
-            @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationStatusReq req) {
-
-        TempAppointmentParticipationStatusReqDto reqDto = tempAppointmentVoMapper.to(req);
-        boolean isValid = tempAppointmentService.retrieveParticipationStatus(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isValid)
-        );
-    }
-
-    @PostMapping("/participation")
-    @Operation(summary = "비회원 약속 참여 등록", description = "비회원의 약속 참여 정보를 등록합니다.")
-    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @Valid @RequestBody CreateTempAppointmentParticipationReq req
-    ) {
-        CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentService.registerAppointmentParticipation(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
     @GetMapping
-    @Operation(summary = "비회원 약속 정보 조회", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfoDetail(
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoDetailReq req) {
 
@@ -103,6 +52,45 @@ public class TempAppointmentController {
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
+        );
+    }
+
+    @PutMapping
+    @Operation(summary = "비회원의 약속 변경 요청", description = "비회원이 약속을 변경할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateAppointment(
+            @Valid @RequestBody UpdateTempAppointmentReq req) {
+
+        UpdateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.updateAppointment(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @DeleteMapping
+    @Operation(summary = "비회원의 약속 삭제 요청", description = "비회원이 약속을 삭제할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> deleteAppointment(
+            @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentReq req) {
+
+        DeleteTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.deleteAppointment(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @PostMapping("/participation")
+    @Operation(summary = "비회원 약속 참여 등록", description = "비회원이 약속에 참여할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
+            @Valid @RequestBody CreateTempAppointmentParticipationReq req) {
+
+        CreateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.registerAppointmentParticipation(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
         );
     }
 
@@ -121,13 +109,13 @@ public class TempAppointmentController {
         );
     }
 
-    @DeleteMapping
-    @Operation(summary = "비회원의 약속 삭제 요청", description = "비회원이 약속을 삭제할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> deleteAppointment(
-            @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentReq req) {
+    @PutMapping("/participation")
+    @Operation(summary = "비회원의 약속 참여 변경 요청", description = "비회원이 약속 참여를 변경할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
+            @Valid @RequestBody UpdateTempAppointmentParticipationReq req) {
 
-        DeleteTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentService.deleteAppointment(reqDto);
+        UpdateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
+        tempAppointmentService.updateAppointmentParticipation(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -141,32 +129,6 @@ public class TempAppointmentController {
 
         DeleteTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
         tempAppointmentService.deleteAppointmentParticipation(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
-    @PutMapping
-    @Operation(summary = "비회원의 약속 변경 요청", description = "비회원이 약속을 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointment(
-            @Valid @RequestBody UpdateTempAppointmentReq req) {
-
-        UpdateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentService.updateAppointment(reqDto);
-
-        return ResponseEntity.ok(
-                BooleanResp.success()
-        );
-    }
-
-    @PutMapping("/participation")
-    @Operation(summary = "비회원의 약속 참여 변경 요청", description = "비회원이 약속 참여를 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
-            @Valid @RequestBody UpdateTempAppointmentParticipationReq req) {
-
-        UpdateTempAppointmentParticipationReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentService.updateAppointmentParticipation(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -199,6 +161,44 @@ public class TempAppointmentController {
 
         return ResponseEntity.ok(
                 BooleanResp.success()
+        );
+    }
+
+    @GetMapping("/host")
+    @Operation(summary = "비회원 호스트의 여부 조회 요청", description = "비회원 호스트의 로그인 정보를 확인합니다.")
+    public ResponseEntity<BooleanResp> login(@RequestBody @Valid TempUserLoginReq req) {
+
+        TempUserLoginReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.login(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @GetMapping("/participation-status")
+    @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> retrieveParticipationStatus(
+            @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationStatusReq req) {
+
+        TempAppointmentParticipationStatusReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.retrieveParticipationStatus(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
+        );
+    }
+
+    @PostMapping("/join:validate")
+    @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
+    public ResponseEntity<BooleanResp> validJoinUser(
+            @Valid @RequestBody CreateTempUserReq req) {
+
+        CreateTempUserReqDto reqDto = tempAppointmentVoMapper.to(req);
+        boolean isValid = tempAppointmentService.validJoinTempUser(reqDto);
+
+        return ResponseEntity.ok(
+                BooleanResp.of(isValid)
         );
     }
 }

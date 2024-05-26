@@ -10,7 +10,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateAppointmentParticipationReqDto {
-    String appointmentCode;
-    List<SelectedDateTime> selectedDateTimeList;
+
+    private String appointmentCode;
+
+    private List<SelectedDateTime> selectedDateTimeList;
+
     private String nickname;
 }

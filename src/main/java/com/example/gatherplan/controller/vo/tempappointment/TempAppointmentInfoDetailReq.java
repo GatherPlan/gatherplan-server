@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "비회원의 약속 정보 조회 요청 객체")
 public class TempAppointmentInfoDetailReq {
 
     @Valid
