@@ -149,7 +149,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/candidate-date:confirm")
+    @GetMapping("/candidate-info:confirm")
     @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
     public ResponseEntity<ListResponse<AppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,

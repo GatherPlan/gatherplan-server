@@ -1,7 +1,6 @@
 package com.example.gatherplan.controller.vo.tempappointment;
 
-import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.common.unit.UserParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -19,16 +18,4 @@ public class TempAppointmentCandidateDateInfoResp {
     private LocalTime startTime;
     private LocalTime endTime;
     private List<UserParticipationInfo> userParticipationInfoList;
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    @Schema(description = "회원, 비회원 참여 정보")
-    public static class UserParticipationInfo {
-        private String nickname;
-        private boolean participant;
-        private UserAuthType userAuthType;
-        private UserRole userRole;
-    }
 }
