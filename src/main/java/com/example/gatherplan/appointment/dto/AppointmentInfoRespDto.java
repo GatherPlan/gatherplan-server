@@ -16,15 +16,26 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AppointmentInfoRespDto {
-    private Address address;
-    private ConfirmedDateTime confirmedDateTime;
+
     private String appointmentName;
+
     private String hostName;
-    private String notice;
-    private AppointmentState appointmentState;
+
     private String appointmentCode;
+
+    private Address address;
+
+    private String notice;
+
+    private AppointmentState appointmentState;
+
+    private ConfirmedDateTime confirmedDateTime;
+
     private List<LocalDate> candidateDateList;
+
     private boolean isParticipated;
+
     private boolean isHost;
+
     private List<UserParticipationInfo> userParticipationInfoList;
 }

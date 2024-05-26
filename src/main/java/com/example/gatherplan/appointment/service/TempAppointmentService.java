@@ -7,7 +7,7 @@ import java.util.List;
 public interface TempAppointmentService {
     String registerAppointment(CreateTempAppointmentReqDto reqDto);
 
-    TempAppointmentInfoDetailRespDto retrieveAppointmentInfoDetail(TempAppointmentInfoDetailReqDto reqDto);
+    TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto);
 
     void updateAppointment(UpdateTempAppointmentReqDto reqDto);
 
@@ -26,9 +26,9 @@ public interface TempAppointmentService {
 
     void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto);
 
-    boolean login(TempUserLoginReqDto reqDto);
+    boolean checkHost(TempUserLoginReqDto reqDto);
 
-    boolean retrieveParticipationStatus(TempAppointmentParticipationStatusReqDto reqDto);
+    boolean checkParticipation(TempAppointmentParticipationStatusReqDto reqDto);
 
     boolean validJoinTempUser(CreateTempUserReqDto reqDto);
 }

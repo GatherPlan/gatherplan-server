@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempAppointmentInfoDetailReqDto {
+public class TempAppointmentInfoReqDto {
 
     private TempUserInfo tempUserInfo;
 

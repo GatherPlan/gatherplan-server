@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
 @Repository
@@ -19,11 +20,12 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     }
 
     @Override
-    public List<String> findAllUserNameByAppointmentId(Long appointmentId) {
+    public List<String> findAllUserNameByAppointmentCode(String appointmentCode) {
         return jpaQueryFactory
                 .selectDistinct(userAppointmentMapping.nickname)
                 .from(userAppointmentMapping)
-                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId))
+                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
+                .where(appointment.appointmentCode.eq(appointmentCode))
                 .fetch();
     }
 

@@ -26,9 +26,9 @@ public interface AppointmentService {
 
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId);
 
-    boolean retrieveHostStatus(String appointmentCode, Long userId);
+    boolean checkHost(String appointmentCode, Long userId);
 
-    boolean retrieveParticipationStatus(String appointmentCode, Long userId);
+    boolean checkParticipation(String appointmentCode, Long userId);
 
     boolean validateName(String appointmentCode, String name);
 

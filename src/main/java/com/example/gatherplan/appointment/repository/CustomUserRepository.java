@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CustomUserRepository {
 
-    List<String> findAllUserNameByAppointmentId(Long appointmentId);
+    List<String> findAllUserNameByAppointmentCode(String appointmentCode);
 }

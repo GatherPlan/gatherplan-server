@@ -44,11 +44,11 @@ public class TempAppointmentController {
 
     @GetMapping
     @Operation(summary = "비회원의 약속 정보 조회 요청", description = "비회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfoDetail(
+    public ResponseEntity<TempAppointmentInfoDetailResp> retrieveAppointmentInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoDetailReq req) {
 
-        TempAppointmentInfoDetailReqDto reqDto = tempAppointmentVoMapper.to(req);
-        TempAppointmentInfoDetailRespDto respDto = tempAppointmentService.retrieveAppointmentInfoDetail(reqDto);
+        TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
@@ -165,24 +165,25 @@ public class TempAppointmentController {
     }
 
     @GetMapping("/host")
-    @Operation(summary = "비회원 호스트의 여부 조회 요청", description = "비회원 호스트의 로그인 정보를 확인합니다.")
-    public ResponseEntity<BooleanResp> login(@RequestBody @Valid TempUserLoginReq req) {
+    @Operation(summary = "비회원 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> checkHost(
+            @RequestBody @Valid TempUserLoginReq req) {
 
         TempUserLoginReqDto reqDto = tempAppointmentVoMapper.to(req);
-        boolean isValid = tempAppointmentService.login(reqDto);
+        boolean isValid = tempAppointmentService.checkHost(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
         );
     }
 
-    @GetMapping("/participation-status")
+    @GetMapping("/participation:check")
     @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> retrieveParticipationStatus(
+    public ResponseEntity<BooleanResp> checkParticipation(
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationStatusReq req) {
 
         TempAppointmentParticipationStatusReqDto reqDto = tempAppointmentVoMapper.to(req);
-        boolean isValid = tempAppointmentService.retrieveParticipationStatus(reqDto);
+        boolean isValid = tempAppointmentService.checkParticipation(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)

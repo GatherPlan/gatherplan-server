@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempAppointmentInfoDetailRespDto {
+public class TempAppointmentInfoRespDto {
 
     private String appointmentName;
 

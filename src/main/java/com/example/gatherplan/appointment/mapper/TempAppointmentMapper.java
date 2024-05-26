@@ -21,9 +21,9 @@ public interface TempAppointmentMapper {
     @Mapping(target = "confirmedDateTime", ignore = true)
     Appointment to(CreateTempAppointmentReqDto req, AppointmentState appointmentState, String appointmentCode);
 
-    TempAppointmentInfoDetailRespDto toTempAppointmentInfoDetailRespDto(Appointment appointment, String hostName,
-                                                                        boolean isParticipated, boolean isHost,
-                                                                        List<UserParticipationInfo> userParticipationInfoList);
+    TempAppointmentInfoRespDto toTempAppointmentInfoDetailRespDto(Appointment appointment, String hostName,
+                                                                  boolean isParticipated, boolean isHost,
+                                                                  List<UserParticipationInfo> userParticipationInfoList);
 
     @Mapping(target = "isAvailable", source = "available")
     UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
