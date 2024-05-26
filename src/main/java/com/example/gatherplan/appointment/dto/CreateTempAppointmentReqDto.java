@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateTempAppointmentReqDto {
+
     private String appointmentName;
 
     private String notice;
@@ -21,5 +22,4 @@ public class CreateTempAppointmentReqDto {
     private List<LocalDate> candidateDateList;
 
     private TempUserInfo tempUserInfo;
-
 }

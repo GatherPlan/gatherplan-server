@@ -14,9 +14,9 @@ public class CreateAppointmentReqDto {
 
     private String appointmentName;
 
-    private Address address;
-
     private String notice;
+
+    private Address address;
 
     private List<LocalDate> candidateDateList;
 }

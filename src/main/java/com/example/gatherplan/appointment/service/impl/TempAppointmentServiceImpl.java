@@ -33,19 +33,22 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     private final TempAppointmentMapper tempAppointmentMapper;
+
     private final AppointmentRepository appointmentRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
+
+    private final CustomUserRepository customUserRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
     private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
-    private final CustomUserRepository customUserRepository;
 
     @Override
     @Transactional
-    public String registerTempAppointment(CreateTempAppointmentReqDto reqDto) {
+    public String registerAppointment(CreateTempAppointmentReqDto reqDto) {
         String appointmentCode = UuidUtils.generateRandomString(12);
 
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
@@ -63,6 +66,31 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
+    }
+
+    @Override
+    @Transactional
+    public void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
+                .ifPresent(result -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
+                });
+
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
+                .appointmentSeq(appointment.getId())
+                .userRole(UserRole.GUEST)
+                .userAuthType(UserAuthType.TEMPORARY)
+                .isAvailable(false)
+                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
+                .nickname(reqDto.getTempUserInfo().getNickname())
+                .tempPassword(reqDto.getTempUserInfo().getPassword())
+                .build();
+
+        userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
     @Override
@@ -93,30 +121,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         return userAppointmentMappingRepository
                 .existsByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(
                         appointment.getId(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
-    }
-
-    @Override
-    public void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
-                .ifPresent(result -> {
-                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                            String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
-                });
-
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
-                .appointmentSeq(appointment.getId())
-                .userRole(UserRole.GUEST)
-                .nickname(reqDto.getTempUserInfo().getNickname())
-                .tempPassword(reqDto.getTempUserInfo().getPassword())
-                .userAuthType(UserAuthType.TEMPORARY)
-                .isAvailable(false)
-                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
-                .build();
-
-        userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
     @Override

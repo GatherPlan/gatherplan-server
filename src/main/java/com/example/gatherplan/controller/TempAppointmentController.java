@@ -30,12 +30,12 @@ public class TempAppointmentController {
     private final TempAppointmentService tempAppointmentService;
 
     @PostMapping
-    @Operation(summary = "비회원 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다.")
     public ResponseEntity<CreateTempAppointmentResp> registerAppointment(
             @Valid @RequestBody CreateTempAppointmentReq req) {
 
         CreateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        String appointmentCode = tempAppointmentService.registerTempAppointment(reqDto);
+        String appointmentCode = tempAppointmentService.registerAppointment(reqDto);
 
         return ResponseEntity.ok(
                 CreateTempAppointmentResp.of(appointmentCode)

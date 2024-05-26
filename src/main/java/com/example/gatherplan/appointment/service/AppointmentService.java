@@ -8,6 +8,8 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name);
 
+    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
+
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
     boolean retrieveParticipationStatus(String appointmentCode, Long userId);
@@ -17,8 +19,6 @@ public interface AppointmentService {
     boolean validateName(String appointmentCode, String name);
 
     boolean validateNickname(String appointmentCode, String nickname);
-
-    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
 
     List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId,
                                                                             String nickname);

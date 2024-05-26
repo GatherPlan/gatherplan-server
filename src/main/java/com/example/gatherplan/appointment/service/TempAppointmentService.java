@@ -5,15 +5,15 @@ import com.example.gatherplan.appointment.dto.*;
 import java.util.List;
 
 public interface TempAppointmentService {
-    String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
+    String registerAppointment(CreateTempAppointmentReqDto reqDto);
+
+    void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
 
     boolean validJoinTempUser(CreateTempUserReqDto reqDto);
 
     boolean login(TempUserLoginReqDto reqDto);
 
     boolean retrieveParticipationStatus(TempAppointmentParticipationStatusReqDto reqDto);
-
-    void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
 
     List<TempAppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(
             TempAppointmentParticipationInfoReqDto reqDto);

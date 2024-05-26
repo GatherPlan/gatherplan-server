@@ -48,7 +48,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/preview")
-    @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기 정보를 조회할 때 사용됩니다.")
+    @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentPreviewResp> retrieveAppointmentPreview(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode) {

@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentMapper appointmentMapper;
+
     private final AppointmentRepository appointmentRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
+
     private final CustomUserRepository customUserRepository;
-
     private final CustomAppointmentRepository customAppointmentRepository;
-
+    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
     @Override
     @Transactional
@@ -64,6 +64,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
+    }
+
+    @Override
+    @Transactional
+    public void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
+                .ifPresent(result -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
+                });
+
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
+                .appointmentSeq(appointment.getId())
+                .userSeq(userId)
+                .userRole(UserRole.GUEST)
+                .userAuthType(UserAuthType.LOCAL)
+                .isAvailable(false)
+                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
+                .nickname(reqDto.getNickname())
+                .build();
+
+        userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
     @Override
@@ -112,38 +137,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return customUserRepository.findAllUserNameByAppointmentId(appointment.getId()).stream()
                 .noneMatch(findNickname -> StringUtils.equals(findNickname, nickname));
     }
-
-    @Override
-    @Transactional
-    public void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        AppointmentValidator.retrieveInvalidSelectedDateTime(appointment, reqDto.getSelectedDateTimeList())
-                .ifPresent(result -> {
-                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                            String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
-                });
-
-        userAppointmentMappingRepository.findUserAppointmentMappingByAppointmentSeqAndUserSeqAndUserRole(
-                appointment.getId(), userId, UserRole.GUEST
-        ).ifPresent(result -> {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
-        });
-
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
-                .appointmentSeq(appointment.getId())
-                .userSeq(userId)
-                .nickname(reqDto.getNickname())
-                .userRole(UserRole.GUEST)
-                .userAuthType(UserAuthType.LOCAL)
-                .isAvailable(false)
-                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
-                .build();
-
-        userAppointmentMappingRepository.save(userAppointmentMapping);
-    }
-
 
     @Override
     public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
