@@ -15,10 +15,6 @@ import org.mapstruct.*;
 public interface TempAppointmentVoMapper {
     CreateTempAppointmentReqDto to(CreateTempAppointmentReq req);
 
-    TempAppointmentInfoReqDto to(TempAppointmentInfoReq req);
-
-    TempAppointmentInfoResp to(TempAppointmentInfoRespDto respDto);
-
     TempAppointmentParticipationInfoReqDto to(TempAppointmentParticipationInfoReq req);
 
     TempAppointmentParticipationInfoResp to(TempAppointmentParticipationInfoRespDto respDto);

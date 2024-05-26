@@ -42,19 +42,6 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/preview")
-    @Operation(summary = "비회원 약속 정보 미리보기 조회 요청", description = "비회원이 약속 정보 미리보기 조회할 때 사용됩니다.")
-    public ResponseEntity<TempAppointmentInfoResp> retrieveAppointmentInfo(
-            @Valid @ModelAttribute @ParameterObject TempAppointmentInfoReq req) {
-
-        TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
-        TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
-
-        return ResponseEntity.ok(
-                tempAppointmentVoMapper.to(respDto)
-        );
-    }
-
     @PostMapping("/join:validate")
     @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validJoinUser(

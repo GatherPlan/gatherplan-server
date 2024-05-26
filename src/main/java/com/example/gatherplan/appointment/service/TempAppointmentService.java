@@ -7,8 +7,6 @@ import java.util.List;
 public interface TempAppointmentService {
     String registerTempAppointment(CreateTempAppointmentReqDto reqDto);
 
-    TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto);
-
     boolean validJoinTempUser(CreateTempUserReqDto reqDto);
 
     boolean login(TempUserLoginReqDto reqDto);

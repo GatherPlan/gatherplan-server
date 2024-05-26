@@ -66,17 +66,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
-    public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode()).orElseThrow(()
-                -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-
-        String hostName = Optional.ofNullable(customUserAppointmentMappingRepository.findHostName(appointment.getId()))
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
-
-        return tempAppointmentMapper.to(appointment, hostName);
-    }
-
-    @Override
     @Transactional
     public boolean validJoinTempUser(CreateTempUserReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
