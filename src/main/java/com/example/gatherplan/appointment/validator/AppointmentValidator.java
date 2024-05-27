@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.validator;
 
-import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import lombok.experimental.UtilityClass;
 
@@ -12,9 +11,7 @@ import java.util.Optional;
 public class AppointmentValidator {
 
     public Optional<SelectedDateTime> retrieveInvalidSelectedDateTime(
-            Appointment appointment, List<SelectedDateTime> selectedDateTimeList) {
-
-        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
+            List<LocalDate> candidateDateList, List<SelectedDateTime> selectedDateTimeList) {
 
         return selectedDateTimeList.stream()
                 .filter(selectedDateTime ->

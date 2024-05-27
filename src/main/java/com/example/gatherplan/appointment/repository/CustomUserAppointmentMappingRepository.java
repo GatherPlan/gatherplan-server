@@ -9,9 +9,7 @@ import java.util.Optional;
 
 public interface CustomUserAppointmentMappingRepository {
 
-    String findHostName(Long appointmentId);
-
-    List<AppointmentWithHostDto> findAllAppointmentWithHost(List<Long> appointmentIdList);
+    List<AppointmentWithHostDto> findAllAppointmentWithHost(List<String> appointmentCodeList);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(
             String appointmentCode, Long userId, UserRole userRole);
@@ -22,5 +20,4 @@ public interface CustomUserAppointmentMappingRepository {
     boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
 
     boolean existsByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole);
-
 }

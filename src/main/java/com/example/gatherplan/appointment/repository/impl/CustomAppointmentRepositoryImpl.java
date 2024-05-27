@@ -27,7 +27,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     public Optional<Appointment> findByAppointmentCodeAndUserSeq(String appointmentCode, Long userId) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.userSeq.eq(userId)))
                 .fetchOne());
@@ -38,7 +38,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
             , String nickname, String password, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.nickname.eq(nickname))
                         .and(userAppointmentMapping.tempPassword.eq(password))
@@ -50,7 +50,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     public Optional<Appointment> findByAppointmentCodeAndTempUserInfo(String appointmentCode, String nickname, String password) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.nickname.eq(nickname))
                         .and(userAppointmentMapping.tempPassword.eq(password)))
@@ -63,10 +63,9 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     public Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
-                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(user.id.eq(userId))
+                        .and(userAppointmentMapping.userSeq.eq(userId))
                         .and(userAppointmentMapping.userRole.eq(userRole)))
                 .fetchOne());
     }
@@ -75,7 +74,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     public List<Appointment> findAllByUserInfoAndKeyword(Long userId,UserRole userRole, String keyword) {
         return jpaQueryFactory
                 .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
                 .where(user.id.eq(userId).and(userAppointmentMapping.userRole.eq(userRole))
                         .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))

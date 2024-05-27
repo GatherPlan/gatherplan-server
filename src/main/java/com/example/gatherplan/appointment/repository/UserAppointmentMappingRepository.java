@@ -9,15 +9,17 @@ import java.util.Optional;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
 
-    List<UserAppointmentMapping> findAllByAppointmentSeqAndUserRole(Long userId, UserRole userRole);
+    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
-    void deleteAllByAppointmentSeq(Long appointmentId);
+    List<UserAppointmentMapping> findAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
-    void deleteAllByAppointmentSeqAndUserRole(Long appointmentId, UserRole userRole);
+    void deleteAllByAppointmentCode(String appointmentCode);
 
-    boolean existsByAppointmentSeqAndNicknameAndTempPasswordAndUserRole(Long appointmentId, String nickname, String tempPassword, UserRole userRole);
+    void deleteAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
-    boolean existsByAppointmentSeqAndUserSeqAndUserRole(Long appointmentId, Long userId, UserRole userRole);
+    boolean existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(String appointmentCode, String nickname, String tempPassword, UserRole userRole);
 
-    Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentSeqAndNicknameAndUserRole(Long appointmentId, String nickname, UserRole userRole);
+    boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
+
+    Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentCodeAndNicknameAndUserRole(String appointmentCode, String nickname, UserRole userRole);
 }

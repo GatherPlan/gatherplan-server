@@ -24,7 +24,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
         return jpaQueryFactory
                 .selectDistinct(userAppointmentMapping.nickname)
                 .from(userAppointmentMapping)
-                .join(appointment).on(userAppointmentMapping.appointmentSeq.eq(appointment.id))
+                .join(appointment).on(userAppointmentMapping.appointmentCode.eq(appointment.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode))
                 .fetch();
     }

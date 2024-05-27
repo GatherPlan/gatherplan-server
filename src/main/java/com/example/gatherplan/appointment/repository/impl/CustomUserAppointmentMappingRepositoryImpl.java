@@ -28,32 +28,23 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public String findHostName(Long appointmentId) {
-        return jpaQueryFactory
-                .select(userAppointmentMapping.nickname)
-                .from(userAppointmentMapping)
-                .where(userAppointmentMapping.appointmentSeq.eq(appointmentId)
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetchOne();
-    }
-
-    @Override
-    public List<AppointmentWithHostDto> findAllAppointmentWithHost(List<Long> appointmentIdList) {
+    public List<AppointmentWithHostDto> findAllAppointmentWithHost(List<String> appointmentCodeList) {
         return new ArrayList<>(jpaQueryFactory
                 .select(Projections.constructor(AppointmentWithHostDto.class,
                         userAppointmentMapping.nickname,
-                        userAppointmentMapping.appointmentSeq))
+                        userAppointmentMapping.appointmentCode))
                 .from(userAppointmentMapping)
-                .where(userAppointmentMapping.appointmentSeq.in(appointmentIdList)
+                .where(userAppointmentMapping.appointmentCode.in(appointmentCodeList)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetch());
     }
+
 
     @Override
     public Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.userSeq.eq(userId))
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
@@ -64,7 +55,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     public Optional<UserAppointmentMapping> findByAppointmentCodeAndTempInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.nickname.eq(nickname))
                         .and(userAppointmentMapping.tempPassword.eq(password))
@@ -76,7 +67,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     public boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
         return jpaQueryFactory
                 .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.userSeq.eq(userId))
                         .and(userAppointmentMapping.userRole.eq(userRole)))
@@ -87,7 +78,7 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     public boolean existsByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole) {
         return jpaQueryFactory
                 .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.id.eq(userAppointmentMapping.appointmentSeq))
+                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(appointment.appointmentCode.eq(appointmentCode)
                         .and(userAppointmentMapping.nickname.eq(nickname))
                         .and(userAppointmentMapping.tempPassword.eq(password))

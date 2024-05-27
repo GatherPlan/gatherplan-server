@@ -249,21 +249,7 @@ public class AppointmentController {
                 )
         );
     }
-
-    @GetMapping("/detail/{appointmentCode}")
-    @Operation(summary = "약속 단건 조회", description = "약속 코드를 통해 하나의 약속을 조회합니다.")
-    public ResponseEntity<AppointmentResp> retrieveAppointment(
-            @Schema(description = "약속 코드", example = "abcdefghj124")
-            @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.")
-            @PathVariable String appointmentCode
-    ) {
-        AppointmentRespDto respDto = appointmentService.retrieveAppointment(appointmentCode);
-
-        return ResponseEntity.ok(
-                appointmentVoMapper.to(respDto)
-        );
-    }
-
+    
     @GetMapping("/preview")
     @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentPreviewResp> retrieveAppointmentPreview(

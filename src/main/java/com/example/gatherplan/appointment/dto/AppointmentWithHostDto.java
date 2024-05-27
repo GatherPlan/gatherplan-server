@@ -8,5 +8,5 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class AppointmentWithHostDto {
     private String hostName;
-    private Long appointmentId;
+    private String appointmentCode;
 }
