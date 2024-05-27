@@ -34,7 +34,4 @@ public interface AppointmentMapper {
 
     AppointmentWithHostByKeywordRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
                                                                               boolean isHost);
-
-    AppointmentRespDto toAppointmentRespDto(Appointment appointment, String hostName);
-
 }

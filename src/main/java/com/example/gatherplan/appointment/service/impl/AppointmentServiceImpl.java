@@ -72,7 +72,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND))
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
                 .getNickname();
 
         boolean isParticipated = userAppointmentMappingRepository

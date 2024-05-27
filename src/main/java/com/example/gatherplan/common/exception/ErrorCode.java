@@ -23,7 +23,8 @@ public enum ErrorCode {
 
     APPOINTMENT_NOT_PARTICIPATE(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
     APPOINTMENT_ALREADY_PARTICIPATE(HttpStatus.BAD_REQUEST, 4001, "이미 참여한 약속입니다."),
-    NOT_FOUND_APPOINTMENT(HttpStatus.NOT_FOUND, 4002, "약속을 찾을 수 없습니다.");
+    NOT_FOUND_APPOINTMENT(HttpStatus.NOT_FOUND, 4002, "약속을 찾을 수 없습니다."),
+    NOT_FOUND_HOST(HttpStatus.NOT_FOUND,4003,"약속의 호스트를 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

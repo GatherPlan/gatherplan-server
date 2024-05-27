@@ -4,7 +4,6 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
 import com.example.gatherplan.controller.validation.RequestValidationSeq;
-import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.tempappointment.*;

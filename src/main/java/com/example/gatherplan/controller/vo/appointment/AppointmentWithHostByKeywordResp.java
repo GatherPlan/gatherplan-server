@@ -1,6 +1,7 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class AppointmentWithHostByKeywordResp {
     private String appointmentCode;
 
     @Schema(description = "호스트 여부", example = "true")
+    @JsonProperty("isHost")
     private boolean isHost;
 
     @Schema(description = "공지사항", example = "점심약속입니다.")

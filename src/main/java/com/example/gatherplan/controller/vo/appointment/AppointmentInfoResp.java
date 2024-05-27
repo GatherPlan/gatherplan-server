@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -43,9 +44,11 @@ public class AppointmentInfoResp {
     private AppointmentState appointmentState;
 
     @Schema(description = "참여 여부", example = "true")
+    @JsonProperty("isParticipated")
     private boolean isParticipated;
 
     @Schema(description = "호스트 여부", example = "true")
+    @JsonProperty("isHost")
     private boolean isHost;
 
     @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\",\"isAvailable\" : " +
