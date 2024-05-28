@@ -50,10 +50,5 @@ public class UserController {
                 BooleanResp.success()
         );
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<BooleanResp> test() {
-        return ResponseEntity.ok(BooleanResp.success());
-    }
 }
 
