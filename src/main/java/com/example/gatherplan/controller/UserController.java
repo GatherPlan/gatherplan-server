@@ -26,7 +26,7 @@ public class UserController {
     private final UserService userService;
     private final UserVoMapper userVoMapper;
 
-    @PostMapping("/auth/email")
+    @PostMapping("/auth")
     @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Valid @RequestBody EmailAuthReq req) {

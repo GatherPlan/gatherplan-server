@@ -89,7 +89,7 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/participation")
+    @PostMapping("/join")
     @Operation(summary = "회원의 약속 참여하기 요청", description = "회원이 약속에 참여할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointmentParticipation(
             @Valid @RequestBody CreateAppointmentParticipationReq req,
@@ -103,7 +103,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/participation")
+    // TODO: AppointmentParticipationInfoResp 필드 빼내기
+    @GetMapping("/participants")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<ListResponse<AppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
             @Schema(description = "약속 코드", example = "985a61f6f636")
@@ -120,7 +121,7 @@ public class AppointmentController {
         );
     }
 
-    @PutMapping("/participation")
+    @PutMapping("/join")
     @Operation(summary = "회원 약속 참여 변경 요청", description = "회원이 약속 참여를 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointmentParticipation(
             @Valid @RequestBody UpdateAppointmentParticipationReq req,
@@ -135,7 +136,7 @@ public class AppointmentController {
         );
     }
 
-    @DeleteMapping("/participation")
+    @DeleteMapping("/join")
     @Operation(summary = "회원 약속 참여 삭제 요청", description = "회원이 약속 참여를 삭제할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> deleteAppointmentParticipation(
             @Schema(description = "약속 코드", example = "985a61f6f636")
@@ -149,7 +150,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/candidate-info:confirm")
+    @GetMapping("/candidates")
     @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
     public ResponseEntity<ListResponse<AppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
@@ -179,7 +180,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/host")
+    // TODO: 참석 여부 조회 와 API 합치기 (가능여부 판단 후 통합)
+    @GetMapping("/host:check")
     @Operation(summary = "회원의 호스트 여부 조회", description = "회원의 호스트 여부를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkHost(
             @Schema(description = "약속 코드", example = "985a61f6f636")
@@ -193,7 +195,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/participation:check")
+    // TODO: 호스트 여부 조회 와 API 합치기 (가능여부 판단 후 통합)
+    @GetMapping("/join:check")
     @Operation(summary = "회원의 약속 참여 여부 조회", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkParticipation(
             @Schema(description = "약속 코드", example = "985a61f6f636")
@@ -207,8 +210,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/validation/name")
-    @Operation(summary = "회원 이름 약속 참여 가능 여부 확인", description = "회원의 이름으로 약속에 참여 가능한지 확인합니다.")
+    @GetMapping("/name:check")
+    @Operation(summary = "회원 이름 중복 여부 확인", description = "회원의 이름으로 약속에 참여 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validateName(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
@@ -221,7 +224,7 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/validation/nickname")
+    @GetMapping("/nickname:check")
     @Operation(summary = "회원이 입력한 닉네임으로 약속 참여 가능 여부 확인", description = "회원이 입력한 닉네임으로 약속에 참여 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validateNickname(
             @Valid @ModelAttribute @ParameterObject ValidationNicknameReq req) {
@@ -249,7 +252,7 @@ public class AppointmentController {
                 )
         );
     }
-    
+
     @GetMapping("/preview")
     @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기를 조회할 때 사용됩니다.")
     public ResponseEntity<AppointmentPreviewResp> retrieveAppointmentPreview(
