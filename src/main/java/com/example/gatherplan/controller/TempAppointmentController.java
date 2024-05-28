@@ -108,7 +108,7 @@ public class TempAppointmentController {
         );
     }
 
-    @PutMapping("/join")
+    @PutMapping("join")
     @Operation(summary = "비회원의 약속 참여 변경 요청", description = "비회원이 약속 참여를 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointmentParticipation(
             @Valid @RequestBody UpdateTempAppointmentParticipationReq req) {
@@ -150,7 +150,7 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping(":confirm")
+    @PostMapping("/candidates:confirm")
     @Operation(summary = "비회원의 약속 확정 요청", description = "비회원이 약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
             @Valid @RequestBody TempConfirmedAppointmentReq req) {

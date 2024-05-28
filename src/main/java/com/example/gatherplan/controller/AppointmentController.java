@@ -165,7 +165,7 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping(":confirm")
+    @PostMapping("/candidates:confirm")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmedAppointment(
             @Valid @RequestBody ConfirmedAppointmentReq req,
