@@ -103,7 +103,6 @@ public class AppointmentController {
         );
     }
 
-    // TODO: AppointmentParticipationInfoResp 필드 빼내기
     @GetMapping("/participants")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<ListResponse<AppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
