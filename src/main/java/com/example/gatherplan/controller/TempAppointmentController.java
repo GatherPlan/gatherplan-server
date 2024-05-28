@@ -80,7 +80,7 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping("/participation")
+    @PostMapping("/join")
     @Operation(summary = "비회원 약속 참여 등록", description = "비회원이 약속에 참여할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointmentParticipation(
             @Valid @RequestBody CreateTempAppointmentParticipationReq req) {
@@ -93,7 +93,7 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/participation")
+    @GetMapping("/participants")
     @Operation(summary = "비회원의 약속 참여 정보 조회 요청", description = "비회원이 약속 참여 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<ListResponse<TempAppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationInfoReq req) {
@@ -108,7 +108,7 @@ public class TempAppointmentController {
         );
     }
 
-    @PutMapping("/participation")
+    @PutMapping("/join")
     @Operation(summary = "비회원의 약속 참여 변경 요청", description = "비회원이 약속 참여를 변경할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> updateAppointmentParticipation(
             @Valid @RequestBody UpdateTempAppointmentParticipationReq req) {
@@ -121,7 +121,7 @@ public class TempAppointmentController {
         );
     }
 
-    @DeleteMapping("/participation")
+    @DeleteMapping("/join")
     @Operation(summary = "비회원 약속 참여 삭제 요청", description = "비회원이 약속 참여를 삭제할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> deleteAppointmentParticipation(
             @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentParticipationReq req) {
@@ -134,7 +134,7 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/candidate-info:confirm")
+    @GetMapping("/candidates")
     @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
     public ResponseEntity<ListResponse<TempAppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDateInfoReq req) {
@@ -163,7 +163,7 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/host")
+    @GetMapping("/host:check")
     @Operation(summary = "비회원 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkHost(
             @RequestBody @Valid TempUserLoginReq req) {
@@ -176,7 +176,7 @@ public class TempAppointmentController {
         );
     }
 
-    @GetMapping("/participation:check")
+    @GetMapping("/join:check")
     @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkParticipation(
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipationStatusReq req) {
@@ -189,7 +189,7 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping("/join:validate")
+    @PostMapping("/join:valid")
     @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validJoinUser(
             @Valid @RequestBody CreateTempUserReq req) {
