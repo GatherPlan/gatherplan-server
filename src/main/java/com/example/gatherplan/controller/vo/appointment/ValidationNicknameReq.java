@@ -14,7 +14,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원의 닉네임 사용 가능 여부 조회 요청 객체")
+@Schema(description = "회원의 닉네임 중복 여부 확인 요청 객체")
 public class ValidationNicknameReq {
 
     @Schema(description = "약속 코드", example = "985a61f6f636")

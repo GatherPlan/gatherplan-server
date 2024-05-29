@@ -22,8 +22,6 @@ public interface AppointmentVoMapper {
 
     UpdateAppointmentReqDto to(UpdateAppointmentReq req);
 
-    AppointmentResp to(AppointmentRespDto respDto);
-
     CreateAppointmentJoinReqDto to(CreateAppointmentJoinReq req);
 
     @Mapping(target = "isHost", source = "host")
