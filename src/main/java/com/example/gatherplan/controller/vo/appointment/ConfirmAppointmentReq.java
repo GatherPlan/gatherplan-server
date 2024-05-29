@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 확정 요청 객체")
+@Schema(description = "회원의 약속 확정 요청 객체")
 public class ConfirmAppointmentReq {
 
     @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")

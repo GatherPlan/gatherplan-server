@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원의 약속 참여하기 요청 객체")
+@Schema(description = "회원의 약속 참여 요청 객체")
 public class CreateAppointmentJoinReq {
 
     @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
@@ -34,7 +33,7 @@ public class CreateAppointmentJoinReq {
                     "\"selectedEndTime\": \"21:00\"}]")
     private List<@Valid SelectedDateTime> selectedDateTimeList;
 
-    @Comment("닉네임")
+    @Schema(description = "닉네임", example = "이재훈")
     @NotBlank(message = "닉네임은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
     @Size(min = 2, max = 6, message = "닉네임은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
     private String nickname;

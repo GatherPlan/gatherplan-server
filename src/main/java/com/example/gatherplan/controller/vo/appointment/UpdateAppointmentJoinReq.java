@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원 약속 참여 변경 요청 객체")
+@Schema(description = "회원의 약속 참여 변경 요청 객체")
 public class UpdateAppointmentJoinReq {
 
     @Schema(description = "약속 코드", example = "985a61f6f636")
