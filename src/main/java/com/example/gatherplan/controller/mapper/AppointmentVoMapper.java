@@ -18,22 +18,22 @@ public interface AppointmentVoMapper {
     @Mapping(target = "isParticipated", source = "participated")
     AppointmentInfoResp to(AppointmentInfoRespDto respDto);
 
-    AppointmentParticipationInfoResp to(AppointmentParticipationInfoRespDto respDto);
+    AppointmentParticipantsResp to(AppointmentParticipantsRespDto respDto);
 
     UpdateAppointmentReqDto to(UpdateAppointmentReq req);
 
     AppointmentResp to(AppointmentRespDto respDto);
 
-    CreateAppointmentParticipationReqDto to(CreateAppointmentParticipationReq req);
+    CreateAppointmentJoinReqDto to(CreateAppointmentJoinReq req);
 
     @Mapping(target = "isHost", source = "host")
-    AppointmentWithHostByKeywordResp to(AppointmentWithHostByKeywordRespDto respDto);
+    AppointmentSearchListResp to(AppointmentSearchListRespDto respDto);
 
     ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
 
     AppointmentPreviewResp to(AppointmentPreviewRespDto respDto);
 
-    AppointmentCandidateDateInfoResp to(AppointmentCandidateDateInfoRespDto respDto);
+    AppointmentCandidateDatesResp to(AppointmentCandidateDatesRespDto respDto);
 
-    UpdateAppointmentParticipationReqDto to(UpdateAppointmentParticipationReq req);
+    UpdateAppointmentJoinReqDto to(UpdateAppointmentJoinReq req);
 }

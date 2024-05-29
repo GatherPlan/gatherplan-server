@@ -91,12 +91,12 @@ public class AppointmentController {
 
     @PostMapping("/join")
     @Operation(summary = "회원의 약속 참여하기 요청", description = "회원이 약속에 참여할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> registerAppointmentParticipation(
-            @Valid @RequestBody CreateAppointmentParticipationReq req,
+    public ResponseEntity<BooleanResp> registerAppointmentJoin(
+            @Valid @RequestBody CreateAppointmentJoinReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        CreateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.registerAppointmentParticipation(reqDto, userInfo.getId());
+        CreateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.registerAppointmentJoin(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -105,13 +105,13 @@ public class AppointmentController {
 
     @GetMapping("/participants")
     @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<AppointmentParticipationInfoResp>> retrieveAppointmentParticipationInfo(
+    public ResponseEntity<ListResponse<AppointmentParticipantsResp>> retrieveAppointmentParticipants(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentParticipationInfoRespDto> respDtoList = appointmentService
-                .retrieveAppointmentParticipationInfo(appointmentCode, userInfo.getId());
+        List<AppointmentParticipantsRespDto> respDtoList = appointmentService
+                .retrieveAppointmentParticipants(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -122,13 +122,13 @@ public class AppointmentController {
 
     @PutMapping("/join")
     @Operation(summary = "회원 약속 참여 변경 요청", description = "회원이 약속 참여를 변경할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> updateAppointmentParticipation(
-            @Valid @RequestBody UpdateAppointmentParticipationReq req,
+    public ResponseEntity<BooleanResp> updateAppointmentJoin(
+            @Valid @RequestBody UpdateAppointmentJoinReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        UpdateAppointmentParticipationReqDto reqDto = appointmentVoMapper.to(req);
+        UpdateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
 
-        appointmentService.updateAppointmentParticipation(reqDto, userInfo.getId());
+        appointmentService.updateAppointmentJoin(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -137,12 +137,12 @@ public class AppointmentController {
 
     @DeleteMapping("/join")
     @Operation(summary = "회원 약속 참여 삭제 요청", description = "회원이 약속 참여를 삭제할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> deleteAppointmentParticipation(
+    public ResponseEntity<BooleanResp> deleteAppointmentJoin(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        appointmentService.deleteAppointmentParticipation(appointmentCode, userInfo.getId());
+        appointmentService.deleteAppointmentJoin(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -151,16 +151,16 @@ public class AppointmentController {
 
     @GetMapping("/candidates")
     @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
-    public ResponseEntity<ListResponse<AppointmentCandidateDateInfoResp>> retrieveCandidateDateInfo(
+    public ResponseEntity<ListResponse<AppointmentCandidateDatesResp>> retrieveCandidateDates(
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo
     ) {
-        List<AppointmentCandidateDateInfoRespDto> respDtos
-                = appointmentService.retrieveAppointmentCandidateDate(appointmentCode, userInfo.getId());
+        List<AppointmentCandidateDatesRespDto> respDtoList
+                = appointmentService.retrieveCandidateDates(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                        respDtoList.stream().map(appointmentVoMapper::to).toList()
                 )
         );
     }
@@ -197,12 +197,12 @@ public class AppointmentController {
     // TODO: 호스트 여부 조회 와 API 합치기 (가능여부 판단 후 통합)
     @GetMapping("/join:check")
     @Operation(summary = "회원의 약속 참여 여부 조회", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다.")
-    public ResponseEntity<BooleanResp> checkParticipation(
+    public ResponseEntity<BooleanResp> checkJoin(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean isParticipated = appointmentService.checkParticipation(appointmentCode, userInfo.getId());
+        boolean isParticipated = appointmentService.checkJoin(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.of(isParticipated)
@@ -211,12 +211,12 @@ public class AppointmentController {
 
     @GetMapping("/name:check")
     @Operation(summary = "회원 이름 중복 여부 확인", description = "회원의 이름으로 약속에 참여 가능한지 확인합니다.")
-    public ResponseEntity<BooleanResp> validateName(
+    public ResponseEntity<BooleanResp> checkName(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        boolean isValid = appointmentService.validateName(appointmentCode, userInfo.getUsername());
+        boolean isValid = appointmentService.checkName(appointmentCode, userInfo.getUsername());
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
@@ -225,10 +225,10 @@ public class AppointmentController {
 
     @GetMapping("/nickname:check")
     @Operation(summary = "회원이 입력한 닉네임으로 약속 참여 가능 여부 확인", description = "회원이 입력한 닉네임으로 약속에 참여 가능한지 확인합니다.")
-    public ResponseEntity<BooleanResp> validateNickname(
+    public ResponseEntity<BooleanResp> checkNickname(
             @Valid @ModelAttribute @ParameterObject ValidationNicknameReq req) {
 
-        boolean isValid = appointmentService.validateNickname(req.getAppointmentCode(), req.getNickname());
+        boolean isValid = appointmentService.checkNickname(req.getAppointmentCode(), req.getNickname());
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
@@ -237,17 +237,17 @@ public class AppointmentController {
 
     @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다.")
-    public ResponseEntity<ListResponse<AppointmentWithHostByKeywordResp>> retrieveAppointmentSearchList(
+    public ResponseEntity<ListResponse<AppointmentSearchListResp>> retrieveAppointmentSearchList(
             @Schema(description = "약속 이름 검색 키워드", example = "세 얼간이")
             @RequestParam(required = false) String keyword,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentWithHostByKeywordRespDto> respDtos = appointmentService
+        List<AppointmentSearchListRespDto> respDtoList = appointmentService
                 .retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        respDtos.stream().map(appointmentVoMapper::to).toList()
+                        respDtoList.stream().map(appointmentVoMapper::to).toList()
                 )
         );
     }

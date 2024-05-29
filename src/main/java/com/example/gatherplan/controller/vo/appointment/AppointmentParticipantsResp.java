@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 참여 정보 조회 응답 객체")
-public class AppointmentParticipationInfoResp {
+public class AppointmentParticipantsResp {
 
     @Schema(description = "약속 참여 정보", example = "{\"nickname\": \"박승일\"," +
             " \"selectedDateTime\": [{\"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\"}]}")

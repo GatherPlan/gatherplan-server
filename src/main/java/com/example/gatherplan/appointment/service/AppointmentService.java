@@ -14,28 +14,28 @@ public interface AppointmentService {
 
     void deleteAppointment(String appointmentCode, Long userId);
 
-    void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId);
+    void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId);
 
-    List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, Long userId);
+    List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId);
 
-    void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, Long userId);
+    void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId);
 
-    void deleteAppointmentParticipation(String appointmentCode, Long userId);
+    void deleteAppointmentJoin(String appointmentCode, Long userId);
 
-    List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, Long userId);
+    List<AppointmentCandidateDatesRespDto> retrieveCandidateDates(String appointmentCode, Long userId);
 
     void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId);
 
     boolean checkHost(String appointmentCode, Long userId);
 
-    boolean checkParticipation(String appointmentCode, Long userId);
+    boolean checkJoin(String appointmentCode, Long userId);
 
-    boolean validateName(String appointmentCode, String name);
+    boolean checkName(String appointmentCode, String name);
 
-    boolean validateNickname(String appointmentCode, String nickname);
+    boolean checkNickname(String appointmentCode, String nickname);
 
-    List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId,
-                                                                            String nickname);
+    List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId,
+                                                                     String nickname);
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 }
