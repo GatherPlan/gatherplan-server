@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 확정 요청 객체")
-public class ConfirmedAppointmentReq {
+public class ConfirmAppointmentReq {
 
     @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
     @Schema(description = "약속 코드", example = "abcd1234efgh")

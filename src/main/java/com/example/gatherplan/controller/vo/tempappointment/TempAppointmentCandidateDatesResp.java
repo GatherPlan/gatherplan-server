@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 확정 전, 후보 날짜 정보 응답 객체")
-public class TempAppointmentCandidateDateInfoResp {
+public class TempAppointmentCandidateDatesResp {
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     private LocalDate candidateDate;
