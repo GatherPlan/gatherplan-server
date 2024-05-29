@@ -1,11 +1,15 @@
 package com.example.gatherplan.controller.vo.appointment;
 
-
 import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.controller.validation.NotBlankNickName;
+import com.example.gatherplan.controller.validation.SizeCheckNickName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 import java.util.List;
 
@@ -13,10 +17,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원 약속 참여 변경 요청 객체")
-public class UpdateAppointmentParticipationReq {
+@Schema(description = "회원의 약속 참여하기 요청 객체")
+public class CreateAppointmentJoinReq {
 
-    @Schema(description = "약속 코드", example = "985a61f6f636")
+    @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
+    @Schema(description = "약속 코드", example = "abcd1234efgh")
     private String appointmentCode;
 
     @NotEmpty(message = "날짜 및 시간 정보는 비어 있을 수 없습니다.")
@@ -28,4 +33,9 @@ public class UpdateAppointmentParticipationReq {
                     "\"selectedStartTime\": \"19:00\"," +
                     "\"selectedEndTime\": \"21:00\"}]")
     private List<@Valid SelectedDateTime> selectedDateTimeList;
+
+    @Comment("닉네임")
+    @NotBlank(message = "닉네임은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
+    @Size(min = 2, max = 6, message = "닉네임은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
+    private String nickname;
 }

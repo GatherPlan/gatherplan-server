@@ -116,7 +116,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointmentParticipation(CreateAppointmentParticipationReqDto reqDto, Long userId) {
+    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
@@ -140,7 +140,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(String appointmentCode, Long userId) {
+    public List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId) {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST);
 
@@ -149,7 +149,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void updateAppointmentParticipation(UpdateAppointmentParticipationReqDto reqDto, Long userId) {
+    public void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId) {
         UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
                 .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
@@ -159,7 +159,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void deleteAppointmentParticipation(String appointmentCode, Long userId) {
+    public void deleteAppointmentJoin(String appointmentCode, Long userId) {
         UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
                 .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
@@ -168,7 +168,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(String appointmentCode, Long userId) {
+    public List<AppointmentCandidateDatesRespDto> retrieveCandidateDates(String appointmentCode, Long userId) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode,
                         userId, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
@@ -187,7 +187,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<Set<String>> combinations = MathUtils.combinations(participants);
 
-        List<AppointmentCandidateDateInfoRespDto> candidateDateInfoRespDtos = new ArrayList<>();
+        List<AppointmentCandidateDatesRespDto> candidateDateInfoRespDtos = new ArrayList<>();
 
         combinations.forEach(
                 combination -> {
@@ -274,14 +274,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                     );
 
                                             if (!isDuplicated) {
-                                                AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                                AppointmentCandidateDatesRespDto appointmentCandidateDatesRespDto = AppointmentCandidateDatesRespDto.builder()
                                                         .candidateDate(candidateDate)
                                                         .startTime(LocalTime.of(start, 0))
                                                         .endTime(LocalTime.of(end, 0))
                                                         .userParticipationInfoList(userParticipationInfoList)
                                                         .build();
 
-                                                candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                                candidateDateInfoRespDtos.add(appointmentCandidateDatesRespDto);
                                             }
 
                                             start = end = timeList.get(i);
@@ -313,13 +313,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                                     if (!isDuplicated) {
                                         // check
-                                        AppointmentCandidateDateInfoRespDto appointmentCandidateDateInfoRespDto = AppointmentCandidateDateInfoRespDto.builder()
+                                        AppointmentCandidateDatesRespDto appointmentCandidateDatesRespDto = AppointmentCandidateDatesRespDto.builder()
                                                 .candidateDate(candidateDate)
                                                 .startTime(LocalTime.of(start, 0))
                                                 .endTime(LocalTime.of(end, 0))
                                                 .userParticipationInfoList(userParticipationInfoList)
                                                 .build();
-                                        candidateDateInfoRespDtos.add(appointmentCandidateDateInfoRespDto);
+                                        candidateDateInfoRespDtos.add(appointmentCandidateDatesRespDto);
                                     }
                                 }
 
@@ -356,25 +356,25 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean checkParticipation(String appointmentCode, Long userId) {
+    public boolean checkJoin(String appointmentCode, Long userId) {
         return customUserAppointmentMappingRepository
                 .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST);
     }
 
     @Override
-    public boolean validateName(String appointmentCode, String name) {
+    public boolean checkName(String appointmentCode, String name) {
         return customUserRepository.findAllUserNameByAppointmentCode(appointmentCode).stream()
                 .noneMatch(findNickname -> StringUtils.equals(findNickname, name));
     }
 
     @Override
-    public boolean validateNickname(String appointmentCode, String nickname) {
+    public boolean checkNickname(String appointmentCode, String nickname) {
         return customUserRepository.findAllUserNameByAppointmentCode(appointmentCode).stream()
                 .noneMatch(findNickname -> StringUtils.equals(findNickname, nickname));
     }
 
     @Override
-    public List<AppointmentWithHostByKeywordRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
+    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
         List<Appointment> appointmentList =
                 customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
 
