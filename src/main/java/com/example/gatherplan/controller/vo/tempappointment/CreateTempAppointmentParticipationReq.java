@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 참여하기 요청 객체")
+@Schema(description = "비회원의 약속 참여 요청 객체")
 public class CreateTempAppointmentParticipationReq {
 
     @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")

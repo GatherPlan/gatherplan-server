@@ -28,6 +28,6 @@ public class TempConfirmAppointmentReq {
     @Valid
     private TempUserInfo tempUserInfo;
 
-    @Schema(description = "참여 가능 사용자 닉네임 리스트", example = "[이재훈,박정빈,박승일]")
+    @Schema(description = "참여 가능 사용자 닉네임 리스트", example = "[\"이재훈\", \"박정빈\", \"박승일\"]")
     private List<String> nicknameList;
 }

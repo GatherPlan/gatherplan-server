@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원 임시 회원가입 요청")
+@Schema(description = "임시 회원가입 가능 여부 확인 요청 객체")
 public class CreateTempUserReq {
 
     @Valid
