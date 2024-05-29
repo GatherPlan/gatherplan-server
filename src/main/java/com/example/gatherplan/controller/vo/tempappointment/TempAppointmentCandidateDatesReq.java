@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "비회원의 약속 확정 후보 날짜 정보 조회 요청 객체")
 public class TempAppointmentCandidateDatesReq {
 
     @Schema(description = "약속 코드", example = "985a61f6f636")

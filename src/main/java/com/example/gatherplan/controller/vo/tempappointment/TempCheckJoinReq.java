@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "비회원의 약속 참여 여부 확인 요청 객체")
 public class TempCheckJoinReq {
 
     @Valid

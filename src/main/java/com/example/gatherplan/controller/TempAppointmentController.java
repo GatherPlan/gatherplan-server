@@ -81,7 +81,7 @@ public class TempAppointmentController {
     }
 
     @PostMapping("/join")
-    @Operation(summary = "비회원 약속 참여 등록", description = "비회원이 약속에 참여할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 참여 요청", description = "비회원이 약속에 참여할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> registerAppointmentJoin(
             @Valid @RequestBody CreateTempAppointmentParticipationReq req) {
 
@@ -135,7 +135,7 @@ public class TempAppointmentController {
     }
 
     @GetMapping("/candidates")
-    @Operation(summary = "약속 확정 후보 일자 정보 조회", description = "약속 확정 전, 약속 후보 날짜 정보를 조회합니다.")
+    @Operation(summary = "비회원의 약속 확정 후보 날짜 정보 조회 요청", description = "회원이 약속 확정 후보 날짜 정보를 조회할 때 사용됩니다.")
     public ResponseEntity<ListResponse<TempAppointmentCandidateDatesResp>> retrieveCandidateDates(
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDatesReq req) {
         TempAppointmentCandidateDatesReqDto reqDto = tempAppointmentVoMapper.to(req);
@@ -151,7 +151,7 @@ public class TempAppointmentController {
     }
 
     @PostMapping("/candidates:confirm")
-    @Operation(summary = "비회원의 약속 확정 요청", description = "비회원이 약속 확정 시간을 정할때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 확정 요청", description = "비회원이 약속 시간을 확정할 떄 사용됩니다.")
     public ResponseEntity<BooleanResp> confirmAppointment(
             @Valid @RequestBody TempConfirmAppointmentReq req) {
 
@@ -164,7 +164,7 @@ public class TempAppointmentController {
     }
 
     @GetMapping("/host:check")
-    @Operation(summary = "비회원 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다.")
+    @Operation(summary = "비회원의 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkHost(
             @RequestBody @Valid TempCheckHostReq req) {
 
@@ -177,7 +177,7 @@ public class TempAppointmentController {
     }
 
     @GetMapping("/join:check")
-    @Operation(summary = "비회원 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
+    @Operation(summary = "비회원의 약속 참여 여부 조회", description = "비회원의 약속 참여 여부를 조회할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> checkJoin(
             @Valid @ModelAttribute @ParameterObject TempCheckJoinReq req) {
 
@@ -190,7 +190,7 @@ public class TempAppointmentController {
     }
 
     @PostMapping("/join:valid")
-    @Operation(summary = "비회원 임시 회원가입 가능 여부 확인", description = "지정 약속에 비회원으로 임시 가입이 가능한지 확인합니다.")
+    @Operation(summary = "비회원의 임시 회원가입 가능 여부 확인 요청", description = "지정 약속에 비회원으로 가입 및 참여가 가능한지 확인합니다.")
     public ResponseEntity<BooleanResp> validJoin(
             @Valid @RequestBody CreateTempUserReq req) {
 

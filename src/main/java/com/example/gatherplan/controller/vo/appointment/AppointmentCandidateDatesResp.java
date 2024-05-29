@@ -24,7 +24,6 @@ public class AppointmentCandidateDatesResp {
     @Schema(description = "종료 시간", example = "20:00")
     private LocalTime endTime;
 
-    @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\",\"isAvailable\" : " +
-            "\"true\",\"userAuthType\" : \"LOCAL\",\"userRole\" : \"GUEST\"}]")
+    @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\", \"isAvailable\" : true, \"userAuthType\" : \"LOCAL\", \"userRole\" : \"GUEST\"}]")
     private List<UserParticipationInfo> userParticipationInfoList;
 }

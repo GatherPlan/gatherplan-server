@@ -12,8 +12,10 @@ import lombok.*;
 @Schema(description = "약속 참여 정보 조회 응답 객체")
 public class AppointmentParticipantsResp {
 
-    @Schema(description = "약속 참여 정보", example = "{\"nickname\": \"박승일\"," +
-            " \"selectedDateTime\": [{\"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\"}]}")
+    @Schema(description = "약속 참여 정보", example = "{ \"nickname\": \"박승일\", " +
+            "\"userAuthType\": \"USER\", " +
+            "\"userRole\": \"PARTICIPANT\", " +
+            "\"selectedDateTimeList\": [{ \"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\" }] }")
     private ParticipationInfo participationInfo;
 
 }

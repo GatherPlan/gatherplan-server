@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = " 비회원의 로그인 요청 객체")
+@Schema(description = " 비회원의 호스트 확인 요청 객체")
 public class TempCheckHostReq {
 
     @Valid
