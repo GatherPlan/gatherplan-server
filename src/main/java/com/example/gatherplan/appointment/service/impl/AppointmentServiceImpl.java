@@ -334,7 +334,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId) {
+    public void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(),
                         userId, UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));

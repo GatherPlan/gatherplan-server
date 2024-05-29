@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempConfirmedAppointmentReqDto {
+public class TempConfirmAppointmentReqDto {
 
     private String appointmentCode;
 

@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "비회원의 약속 참여 변경 요청 객체")
-public class UpdateTempAppointmentParticipationReq {
+public class UpdateTempAppointmentJoinReq {
 
     @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;

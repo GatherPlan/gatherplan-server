@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempAppointmentCandidateDateInfoRespDto {
+public class TempAppointmentCandidateDatesRespDto {
     private LocalDate candidateDate;
     private LocalTime startTime;
     private LocalTime endTime;

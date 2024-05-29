@@ -49,7 +49,7 @@ public class AppointmentController {
 
     @GetMapping
     @Operation(summary = "회원의 약속 정보 조회 요청", description = "회원이 약속 정보를 조회할 때 사용됩니다.")
-    public ResponseEntity<AppointmentInfoResp> retrieveAppointment(
+    public ResponseEntity<AppointmentInfoResp> retrieveAppointmentInfo(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
@@ -167,12 +167,12 @@ public class AppointmentController {
 
     @PostMapping("/candidates:confirm")
     @Operation(summary = "회원의 약속 확정 요청", description = "약속 확정 시간을 정할때 사용됩니다.")
-    public ResponseEntity<BooleanResp> confirmedAppointment(
-            @Valid @RequestBody ConfirmedAppointmentReq req,
+    public ResponseEntity<BooleanResp> confirmAppointment(
+            @Valid @RequestBody ConfirmAppointmentReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        ConfirmedAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.confirmedAppointment(reqDto, userInfo.getId());
+        ConfirmAppointmentReqDto reqDto = appointmentVoMapper.to(req);
+        appointmentService.confirmAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()

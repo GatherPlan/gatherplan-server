@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = " 비회원의 로그인 요청 객체")
-public class TempUserLoginReq {
+public class TempCheckHostReq {
 
     @Valid
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")

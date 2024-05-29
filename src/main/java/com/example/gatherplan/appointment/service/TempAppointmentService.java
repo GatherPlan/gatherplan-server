@@ -13,22 +13,22 @@ public interface TempAppointmentService {
 
     void deleteAppointment(DeleteTempAppointmentReqDto reqDto);
 
-    void registerAppointmentParticipation(CreateTempAppointmentParticipationReqDto reqDto);
+    void registerAppointmentJoin(CreateTempAppointmentJoinReqDto reqDto);
 
-    List<TempAppointmentParticipationInfoRespDto> retrieveAppointmentParticipationInfo(
-            TempAppointmentParticipationInfoReqDto reqDto);
+    List<TempAppointmentParticipantsRespDto> retrieveAppointmentParticipants(
+            TempAppointmentParticipantsReqDto reqDto);
 
-    void updateAppointmentParticipation(UpdateTempAppointmentParticipationReqDto reqDto);
+    void updateAppointmentJoin(UpdateTempAppointmentJoinReqDto reqDto);
 
-    void deleteAppointmentParticipation(DeleteTempAppointmentParticipationReqDto reqDto);
+    void deleteAppointmentJoin(DeleteTempAppointmentJoinReqDto reqDto);
 
-    List<TempAppointmentCandidateDateInfoRespDto> retrieveAppointmentCandidateDate(TempAppointmentCandidateDateInfoReqDto reqDto);
+    List<TempAppointmentCandidateDatesRespDto> retrieveCandidateDates(TempAppointmentCandidateDatesReqDto reqDto);
 
-    void confirmedAppointment(TempConfirmedAppointmentReqDto reqDto);
+    void confirmAppointment(TempConfirmAppointmentReqDto reqDto);
 
-    boolean checkHost(TempUserLoginReqDto reqDto);
+    boolean checkHost(TempCheckHostReqDto reqDto);
 
-    boolean checkParticipation(TempAppointmentParticipationStatusReqDto reqDto);
+    boolean checkJoin(TempCheckJoinReqDto reqDto);
 
-    boolean validJoinTempUser(CreateTempUserReqDto reqDto);
+    boolean validJoin(CreateTempUserReqDto reqDto);
 }

@@ -14,37 +14,37 @@ import org.mapstruct.*;
 public interface TempAppointmentVoMapper {
     CreateTempAppointmentReqDto to(CreateTempAppointmentReq req);
 
-    TempAppointmentParticipationInfoReqDto to(TempAppointmentParticipationInfoReq req);
+    TempAppointmentParticipantsReqDto to(TempAppointmentParticipantsReq req);
 
-    TempAppointmentParticipationInfoResp to(TempAppointmentParticipationInfoRespDto respDto);
+    TempAppointmentParticipantsResp to(TempAppointmentParticipantsRespDto respDto);
 
     DeleteTempAppointmentReqDto to(DeleteTempAppointmentReq req);
 
     UpdateTempAppointmentReqDto to(UpdateTempAppointmentReq req);
 
-    CreateTempAppointmentParticipationReqDto to(CreateTempAppointmentParticipationReq req);
+    CreateTempAppointmentJoinReqDto to(CreateTempAppointmentParticipationReq req);
 
     TempConfirmedAppointmentParticipantsReqDto to(TempConfirmedAppointmentParticipantsReq req);
 
-    TempConfirmedAppointmentReqDto to(TempConfirmedAppointmentReq req);
+    TempConfirmAppointmentReqDto to(TempConfirmAppointmentReq req);
 
-    TempUserLoginReqDto to(TempUserLoginReq req);
+    TempCheckHostReqDto to(TempCheckHostReq req);
 
     CreateTempUserReqDto to(CreateTempUserReq req);
 
-    TempAppointmentParticipationStatusReqDto to(TempAppointmentParticipationStatusReq req);
+    TempCheckJoinReqDto to(TempCheckJoinReq req);
 
-    TempAppointmentInfoReqDto to(TempAppointmentInfoDetailReq req);
+    TempAppointmentInfoReqDto to(TempAppointmentInfoReq req);
 
     @Mapping(target = "isParticipated", source = "participated")
     @Mapping(target = "isHost", source = "host")
     TempAppointmentInfoResp to(TempAppointmentInfoRespDto respDto);
 
-    DeleteTempAppointmentParticipationReqDto to(DeleteTempAppointmentParticipationReq req);
+    DeleteTempAppointmentJoinReqDto to(DeleteTempAppointmentJoinReq req);
 
-    UpdateTempAppointmentParticipationReqDto to(UpdateTempAppointmentParticipationReq req);
+    UpdateTempAppointmentJoinReqDto to(UpdateTempAppointmentJoinReq req);
 
-    TempAppointmentCandidateDateInfoReqDto to(TempAppointmentCandidateDateInfoReq req);
+    TempAppointmentCandidateDatesReqDto to(TempAppointmentCandidateDatesReq req);
 
-    TempAppointmentCandidateDateInfoResp to(TempAppointmentCandidateDateInfoRespDto respDto);
+    TempAppointmentCandidateDatesResp to(TempAppointmentCandidateDatesRespDto respDto);
 }

@@ -24,7 +24,7 @@ public interface AppointmentService {
 
     List<AppointmentCandidateDatesRespDto> retrieveCandidateDates(String appointmentCode, Long userId);
 
-    void confirmedAppointment(ConfirmedAppointmentReqDto reqDto, Long userId);
+    void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId);
 
     boolean checkHost(String appointmentCode, Long userId);
 

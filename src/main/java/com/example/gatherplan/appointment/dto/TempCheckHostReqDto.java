@@ -5,12 +5,11 @@ import lombok.*;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempAppointmentParticipationInfoReqDto {
-
-    private String appointmentCode;
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TempCheckHostReqDto {
 
     private TempUserInfo tempUserInfo;
 
+    private String appointmentCode;
 }

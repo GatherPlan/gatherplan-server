@@ -29,7 +29,7 @@ public interface AppointmentVoMapper {
     @Mapping(target = "isHost", source = "host")
     AppointmentSearchListResp to(AppointmentSearchListRespDto respDto);
 
-    ConfirmedAppointmentReqDto to(ConfirmedAppointmentReq req);
+    ConfirmAppointmentReqDto to(ConfirmAppointmentReq req);
 
     AppointmentPreviewResp to(AppointmentPreviewRespDto respDto);
 
