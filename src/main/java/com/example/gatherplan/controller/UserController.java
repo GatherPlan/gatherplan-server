@@ -27,7 +27,7 @@ public class UserController {
     private final UserVoMapper userVoMapper;
 
     @PostMapping("/auth")
-    @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다.")
+    @Operation(summary = "이메일 인증 요청", description = "사용자가 이메일 인증 코드를 받기 위해 사용됩니다. [figma #4]")
     public ResponseEntity<BooleanResp> authenticateEmail(
             @Valid @RequestBody EmailAuthReq req) {
 
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다.")
+    @Operation(summary = "회원가입 요청", description = "사용자가 새로운 회원으로 가입할 때 사용됩니다. [figma #4]")
     public ResponseEntity<BooleanResp> joinUser(
             @Valid @RequestBody CreateUserReq req) {
 
