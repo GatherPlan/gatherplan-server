@@ -150,7 +150,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
                 .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
 
@@ -160,7 +160,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void deleteAppointmentJoin(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
                 .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
 
