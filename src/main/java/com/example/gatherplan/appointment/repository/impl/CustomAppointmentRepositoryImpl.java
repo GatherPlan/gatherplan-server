@@ -70,13 +70,12 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public List<Appointment> findAllByUserInfoAndKeyword(Long userId,UserRole userRole, String keyword) {
+    public List<Appointment> findAllByUserSeqAndKeyword(Long userId, String keyword) {
         return jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
                 .where(userAppointmentMapping.userSeq.eq(userId)
                         .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))
-                .orderBy(userAppointmentMapping.userRole.asc())
                 .fetch();
     }
 
