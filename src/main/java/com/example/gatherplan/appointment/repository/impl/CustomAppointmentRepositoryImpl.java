@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
-import static com.example.gatherplan.appointment.repository.entity.QUser.user;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
 @Repository
@@ -75,9 +74,9 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
         return jpaQueryFactory
                 .selectFrom(appointment)
                 .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .join(user).on(user.id.eq(userAppointmentMapping.userSeq))
-                .where(user.id.eq(userId).and(userAppointmentMapping.userRole.eq(userRole))
+                .where(userAppointmentMapping.userSeq.eq(userId)
                         .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))
+                .orderBy(userAppointmentMapping.userRole.asc())
                 .fetch();
     }
 
