@@ -376,7 +376,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
         List<Appointment> appointmentList =
-                customAppointmentRepository.findAllByUserInfoAndKeyword(userId, UserRole.GUEST, keyword);
+                customAppointmentRepository.findAllByUserSeqAndKeyword(userId, keyword);
 
         List<String> appointmentCodeList = appointmentList.stream().map(Appointment::getAppointmentCode).toList();
 
