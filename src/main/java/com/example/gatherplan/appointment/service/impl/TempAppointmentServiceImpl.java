@@ -151,8 +151,12 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public List<TempAppointmentParticipantsRespDto> retrieveAppointmentParticipants(TempAppointmentParticipantsReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository
+                .findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(),reqDto.getTempUserInfo().getPassword())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
         List<UserAppointmentMapping> participationInfoList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
+                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
 
         return participationInfoList.stream().map(tempAppointmentMapper::to).toList();
     }
