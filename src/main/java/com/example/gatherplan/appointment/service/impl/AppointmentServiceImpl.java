@@ -118,7 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId) {
         userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.HOST)
+                .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.GUEST)
                 .ifPresent(mapping -> {
                     throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
                 });
