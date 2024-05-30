@@ -351,13 +351,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean checkHost(String appointmentCode, Long userId) {
-        return customUserAppointmentMappingRepository
+        return userAppointmentMappingRepository
                 .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST);
     }
 
     @Override
     public boolean checkJoin(String appointmentCode, Long userId) {
-        return customUserAppointmentMappingRepository
+        return userAppointmentMappingRepository
                 .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST);
     }
 

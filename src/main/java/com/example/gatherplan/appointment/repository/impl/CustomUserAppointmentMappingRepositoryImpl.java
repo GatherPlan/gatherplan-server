@@ -63,26 +63,4 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .fetchOne());
     }
 
-    @Override
-    public boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
-        return jpaQueryFactory
-                .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchFirst().isAvailable();
-    }
-
-    @Override
-    public boolean existsByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole) {
-        return jpaQueryFactory
-                .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.nickname.eq(nickname))
-                        .and(userAppointmentMapping.tempPassword.eq(password))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchFirst().isAvailable();
-    }
 }
