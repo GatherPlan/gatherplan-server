@@ -28,4 +28,8 @@ public class AppointmentSearchListResp {
 
     @Schema(description = "공지사항", example = "점심약속입니다.")
     private String notice;
+
+    public boolean getIsHost(){
+        return this.isHost;
+    }
 }

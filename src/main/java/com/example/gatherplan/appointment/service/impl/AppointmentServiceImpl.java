@@ -267,7 +267,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                 boolean isEqualParticipants =
                                                                         candidateDateInfo.getUserParticipationInfoList().stream()
                                                                                 .filter(p -> combination.contains(p.getNickname()))
-                                                                                .allMatch(UserParticipationInfo::isAvailable);
+                                                                                .allMatch(UserParticipationInfo::getIsAvailable);
 
                                                                 return isEqualDateTime && isEqualParticipants;
                                                             }
@@ -305,7 +305,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                         boolean isEqualParticipants =
                                                                 candidateDateInfo.getUserParticipationInfoList().stream()
                                                                         .filter(p -> combination.contains(p.getNickname()))
-                                                                        .allMatch(UserParticipationInfo::isAvailable);
+                                                                        .allMatch(UserParticipationInfo::getIsAvailable);
 
                                                         return isEqualDateTime && isEqualParticipants;
                                                     }

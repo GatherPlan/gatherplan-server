@@ -50,4 +50,13 @@ public class AppointmentInfoResp {
 
     @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\", \"isAvailable\" : true, \"userAuthType\" : \"LOCAL\", \"userRole\" : \"GUEST\"}]")
     private List<UserParticipationInfo> userParticipationInfoList;
+
+    public boolean getIsHost(){
+        return this.isHost;
+    }
+
+    public boolean getIsParticipated(){
+        return this.isParticipated;
+    }
+
 }
