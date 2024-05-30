@@ -117,9 +117,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId) {
-        if (checkJoin(reqDto.getAppointmentCode(), userId)){
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
-        }
+        userAppointmentMappingRepository
+                .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.HOST)
+                .ifPresent(mapping -> {
+                    throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
+                });
 
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));

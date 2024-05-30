@@ -121,6 +121,12 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void registerAppointmentJoin(CreateTempAppointmentJoinReqDto reqDto) {
+        userAppointmentMappingRepository
+                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(reqDto.getAppointmentCode(),reqDto.getTempUserInfo().getNickname(),reqDto.getTempUserInfo().getPassword(),UserRole.GUEST)
+                .ifPresent(mapping -> {
+                    throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
+                });
+
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
