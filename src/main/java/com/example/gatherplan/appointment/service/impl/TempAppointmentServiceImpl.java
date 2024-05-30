@@ -44,7 +44,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     private final CustomUserRepository customUserRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
-    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
     @Override
     @Transactional
