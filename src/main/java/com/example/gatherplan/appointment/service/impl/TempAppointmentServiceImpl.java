@@ -154,8 +154,9 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public void updateAppointmentJoin(UpdateTempAppointmentJoinReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
-                .findByAppointmentCodeAndTempInfoAndUserRole(reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
 
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
@@ -164,8 +165,9 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void deleteAppointmentJoin(DeleteTempAppointmentJoinReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = customUserAppointmentMappingRepository
-                .findByAppointmentCodeAndTempInfoAndUserRole(reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
 
         userAppointmentMappingRepository.deleteById(userAppointmentMapping.getId());

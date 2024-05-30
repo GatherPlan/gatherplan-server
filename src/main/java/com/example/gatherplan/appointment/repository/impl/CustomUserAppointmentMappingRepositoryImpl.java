@@ -3,7 +3,6 @@ package com.example.gatherplan.appointment.repository.impl;
 import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
 import static com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping.userAppointmentMapping;
 
 @Repository
@@ -37,30 +34,6 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
                 .where(userAppointmentMapping.appointmentCode.in(appointmentCodeList)
                         .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
                 .fetch());
-    }
-
-
-    @Override
-    public Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId))
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetchOne());
-    }
-
-    @Override
-    public Optional<UserAppointmentMapping> findByAppointmentCodeAndTempInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(userAppointmentMapping)
-                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.nickname.eq(nickname))
-                        .and(userAppointmentMapping.tempPassword.eq(password))
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
-                .fetchOne());
     }
 
 }
