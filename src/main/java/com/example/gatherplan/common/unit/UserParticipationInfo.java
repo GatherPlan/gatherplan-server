@@ -13,4 +13,8 @@ public class UserParticipationInfo {
     private boolean isAvailable;
     private UserAuthType userAuthType;
     private UserRole userRole;
+
+    public boolean getIsAvailable(){
+        return this.isAvailable;
+    }
 }

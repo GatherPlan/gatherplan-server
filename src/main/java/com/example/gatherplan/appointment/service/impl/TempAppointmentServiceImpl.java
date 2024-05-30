@@ -272,7 +272,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                                                                 boolean isEqualParticipants =
                                                                         candidateDateInfo.getUserParticipationInfoList().stream()
                                                                                 .filter(p -> combination.contains(p.getNickname()))
-                                                                                .allMatch(UserParticipationInfo::isAvailable);
+                                                                                .allMatch(UserParticipationInfo::getIsAvailable);
 
                                                                 return isEqualDateTime && isEqualParticipants;
                                                             }
@@ -310,7 +310,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                                                         boolean isEqualParticipants =
                                                                 candidateDateInfo.getUserParticipationInfoList().stream()
                                                                         .filter(p -> combination.contains(p.getNickname()))
-                                                                        .allMatch(UserParticipationInfo::isAvailable);
+                                                                        .allMatch(UserParticipationInfo::getIsAvailable);
 
                                                         return isEqualDateTime && isEqualParticipants;
                                                     }
