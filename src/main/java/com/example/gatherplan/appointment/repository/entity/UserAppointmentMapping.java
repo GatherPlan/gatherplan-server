@@ -40,6 +40,7 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
 
     private String tempPassword;
 
+    @Enumerated(EnumType.STRING)
     private UserAuthType userAuthType;
 
     public void updateIsAvailable(boolean isAvailable) {
