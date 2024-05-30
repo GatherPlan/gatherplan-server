@@ -355,16 +355,16 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public boolean checkHost(TempCheckHostReqDto reqDto) {
-        return customUserAppointmentMappingRepository
-                .existsByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode()
-                        , reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST);
+        return userAppointmentMappingRepository
+                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST);
     }
 
     @Override
     public boolean checkJoin(TempCheckJoinReqDto reqDto) {
-        return customUserAppointmentMappingRepository
-                .existsByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
+        return userAppointmentMappingRepository
+                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
     }
 
     @Override

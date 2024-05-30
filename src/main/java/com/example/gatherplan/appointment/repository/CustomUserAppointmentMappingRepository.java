@@ -16,8 +16,4 @@ public interface CustomUserAppointmentMappingRepository {
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndTempInfoAndUserRole(
             String appointmentCode, String nickname, String password, UserRole userRole);
-
-    boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
-
-    boolean existsByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode, String nickname, String password, UserRole userRole);
 }
