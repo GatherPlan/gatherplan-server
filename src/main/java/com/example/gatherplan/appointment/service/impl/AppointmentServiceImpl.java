@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -393,19 +392,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
-        List<Appointment> appointmentList =
-                customAppointmentRepository.findAllByUserSeqAndKeyword(userId, keyword);
+        List<String> appointmentCodeList = customUserAppointmentMappingRepository.findAllByUserSeq(userId);
 
-        List<String> appointmentCodeList = appointmentList.stream().map(Appointment::getAppointmentCode).toList();
-
-        Map<String, String> hostNameMap = customUserAppointmentMappingRepository.findAllAppointmentWithHost(appointmentCodeList).stream()
-                .collect(Collectors.toMap(AppointmentWithHostDto::getAppointmentCode, AppointmentWithHostDto::getHostName));
-
-        return appointmentList.stream()
-                .map(appointment ->
-                        appointmentMapper.toAppointmentWithHostByKeywordRespDto(appointment, hostNameMap.get(appointment.getAppointmentCode()),
-                                StringUtils.equals(name, hostNameMap.get(appointment.getAppointmentCode()))))
-                .toList();
+        return customAppointmentRepository.findAppointmentSearchListRespDtoList(appointmentCodeList, name, keyword);
     }
 
     @Override

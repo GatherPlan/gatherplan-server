@@ -240,13 +240,11 @@ public class AppointmentController {
             @RequestParam(required = false) String keyword,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentSearchListRespDto> respDtoList = appointmentService
-                .retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
+        List<AppointmentSearchListRespDto> appointmentListInfoDtoSearchList =
+                appointmentService.retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
-                ListResponse.of(
-                        respDtoList.stream().map(appointmentVoMapper::to).toList()
-                )
+                ListResponse.of(appointmentListInfoDtoSearchList.stream().map(appointmentVoMapper::to).toList())
         );
     }
 

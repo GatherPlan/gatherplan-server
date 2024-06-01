@@ -32,6 +32,4 @@ public interface AppointmentMapper {
     @Mapping(target = "isAvailable", source = "available")
     UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
 
-    AppointmentSearchListRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
-                                                                       boolean isHost);
 }
