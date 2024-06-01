@@ -33,3 +33,5 @@ public class AppointmentSearchListResp {
         return this.isHost;
     }
 }
+
+

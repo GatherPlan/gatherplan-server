@@ -1,9 +1,6 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentWithHostDto;
-import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomUserAppointmentMappingRepository;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +22,11 @@ public class CustomUserAppointmentMappingRepositoryImpl implements CustomUserApp
     }
 
     @Override
-    public List<AppointmentWithHostDto> findAllAppointmentWithHost(List<String> appointmentCodeList) {
+    public List<String> findAllByUserSeq(Long userId) {
         return new ArrayList<>(jpaQueryFactory
-                .select(Projections.constructor(AppointmentWithHostDto.class,
-                        userAppointmentMapping.nickname,
-                        userAppointmentMapping.appointmentCode))
+                .selectDistinct(userAppointmentMapping.appointmentCode)
                 .from(userAppointmentMapping)
-                .where(userAppointmentMapping.appointmentCode.in(appointmentCodeList)
-                        .and(userAppointmentMapping.userRole.eq(UserRole.HOST)))
+                .where(userAppointmentMapping.userSeq.eq(userId))
                 .fetch());
     }
-
 }

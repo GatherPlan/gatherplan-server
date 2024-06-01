@@ -1,13 +1,16 @@
 package com.example.gatherplan.appointment.repository.impl;
 
+import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,13 +73,24 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public List<Appointment> findAllByUserSeqAndKeyword(Long userId, String keyword) {
-        return jpaQueryFactory
-                .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(userAppointmentMapping.userSeq.eq(userId)
-                        .and(keyword != null ? appointment.appointmentName.contains(keyword) : Expressions.TRUE))
-                .fetch();
+    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoList(
+            List<String> appointmentCodeList, String name, String keyword) {
+
+        return new ArrayList<>(jpaQueryFactory
+                .selectDistinct(Projections.constructor(AppointmentSearchListRespDto.class,
+                        appointment.appointmentCode,
+                        appointment.appointmentName,
+                        appointment.appointmentState,
+                        appointment.notice,
+                        userAppointmentMapping.nickname,
+                        userAppointmentMapping.nickname.eq(name)
+                ))
+                .from(userAppointmentMapping)
+                .join(appointment).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
+                .where(userAppointmentMapping.appointmentCode.in(appointmentCodeList).and(userAppointmentMapping.userRole.eq(UserRole.HOST))
+                        .and(keyword != null ? appointment.appointmentName.contains(keyword)
+                                .or(userAppointmentMapping.nickname.contains(keyword)) : Expressions.TRUE))
+                .fetch());
     }
 
 }
