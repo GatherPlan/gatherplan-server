@@ -151,11 +151,11 @@ public class AppointmentController {
 
     @GetMapping("/candidates")
     @Operation(summary = "회원의 약속 확정 후보 날짜 정보 조회 요청", description = "회원이 약속 확정 후보 날짜 정보를 조회할 때 사용됩니다. [figma #37]")
-    public ResponseEntity<ListResponse<AppointmentCandidateDatesResp>> retrieveCandidateDates(
+    public ResponseEntity<ListResponse<AppointmentCandidateInfoResp>> retrieveCandidateDates(
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo
     ) {
-        List<AppointmentCandidateDatesRespDto> respDtoList
+        List<AppointmentCandidateInfoRespDto> respDtoList
                 = appointmentService.retrieveCandidateDates(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(

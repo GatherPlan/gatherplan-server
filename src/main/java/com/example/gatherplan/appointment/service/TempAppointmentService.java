@@ -22,7 +22,7 @@ public interface TempAppointmentService {
 
     void deleteAppointmentJoin(DeleteTempAppointmentJoinReqDto reqDto);
 
-    List<TempAppointmentCandidateDatesRespDto> retrieveCandidateDates(TempAppointmentCandidateDatesReqDto reqDto);
+    List<TempAppointmentCandidateInfoRespDto> retrieveCandidateDates(TempAppointmentCandidateInfoReqDto reqDto);
 
     void confirmAppointment(TempConfirmAppointmentReqDto reqDto);
 

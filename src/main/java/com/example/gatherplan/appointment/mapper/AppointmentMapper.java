@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
+import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import org.mapstruct.*;
 
@@ -32,4 +33,8 @@ public interface AppointmentMapper {
     @Mapping(target = "isAvailable", source = "available")
     UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
 
+    AppointmentSearchListRespDto toAppointmentWithHostByKeywordRespDto(Appointment appointment, String hostName,
+                                                                       boolean isHost);
+
+    AppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
 }
