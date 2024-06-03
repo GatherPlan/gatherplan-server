@@ -41,7 +41,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final CustomUserRepository customUserRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
-    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
 
     @Override
     @Transactional
