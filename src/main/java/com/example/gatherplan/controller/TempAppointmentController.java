@@ -25,8 +25,9 @@ import java.util.List;
 @Validated(value = RequestValidationSeq.class)
 public class TempAppointmentController {
 
-    private final TempAppointmentVoMapper tempAppointmentVoMapper;
     private final TempAppointmentService tempAppointmentService;
+    private final TempAppointmentVoMapper tempAppointmentVoMapper;
+
 
     @PostMapping
     @Operation(summary = "비회원의 약속 만들기 요청", description = "비회원이 새로운 약속을 생성할 때 사용됩니다. [figma #8]")
@@ -136,11 +137,11 @@ public class TempAppointmentController {
 
     @GetMapping("/candidates")
     @Operation(summary = "비회원의 약속 확정 후보 날짜 정보 조회 요청", description = "회원이 약속 확정 후보 날짜 정보를 조회할 때 사용됩니다. [figma #37]")
-    public ResponseEntity<ListResponse<TempAppointmentCandidateDatesResp>> retrieveCandidateDates(
+    public ResponseEntity<ListResponse<TempAppointmentCandidateInfoResp>> retrieveCandidateDates(
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDatesReq req) {
-        TempAppointmentCandidateDatesReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentCandidateInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
 
-        List<TempAppointmentCandidateDatesRespDto> respDtos
+        List<TempAppointmentCandidateInfoRespDto> respDtos
                 = tempAppointmentService.retrieveCandidateDates(reqDto);
 
         return ResponseEntity.ok(

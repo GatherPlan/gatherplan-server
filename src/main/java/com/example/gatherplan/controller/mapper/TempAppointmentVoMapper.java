@@ -44,7 +44,7 @@ public interface TempAppointmentVoMapper {
 
     UpdateTempAppointmentJoinReqDto to(UpdateTempAppointmentJoinReq req);
 
-    TempAppointmentCandidateDatesReqDto to(TempAppointmentCandidateDatesReq req);
+    TempAppointmentCandidateInfoReqDto to(TempAppointmentCandidateDatesReq req);
 
-    TempAppointmentCandidateDatesResp to(TempAppointmentCandidateDatesRespDto respDto);
+    TempAppointmentCandidateInfoResp to(TempAppointmentCandidateInfoRespDto respDto);
 }
