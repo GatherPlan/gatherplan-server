@@ -73,7 +73,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoList(
+    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
             String keyword, Long userId, String name) {
 
         QUserAppointmentMapping hostMapping = new QUserAppointmentMapping("hostMapping");

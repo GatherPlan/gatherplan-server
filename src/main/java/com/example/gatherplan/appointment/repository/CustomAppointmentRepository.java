@@ -20,6 +20,6 @@ public interface CustomAppointmentRepository {
     Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode
             , Long userId, UserRole userRole);
 
-    List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoList(
+    List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
             String keyword, Long userId, String name);
 }

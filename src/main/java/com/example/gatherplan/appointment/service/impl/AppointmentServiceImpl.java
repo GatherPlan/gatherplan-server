@@ -391,7 +391,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
-        return customAppointmentRepository.findAppointmentSearchListRespDtoList(keyword, userId, name);
+        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(keyword, userId, name);
     }
 
     @Override
