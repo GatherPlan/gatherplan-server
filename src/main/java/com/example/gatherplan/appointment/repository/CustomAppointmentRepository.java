@@ -21,5 +21,5 @@ public interface CustomAppointmentRepository {
             , Long userId, UserRole userRole);
 
     List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoList(
-            List<String> appointmentCodeList, String name, String keyword);
+            String keyword, Long userId, String name);
 }
