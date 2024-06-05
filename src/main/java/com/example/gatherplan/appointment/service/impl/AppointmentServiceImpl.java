@@ -192,9 +192,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST);
 
-        String hostNickname = userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST).stream()
-                        .findAny().orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND))
-                        .getNickname();
+        String hostNickname = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
+                .orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND))
+                .getNickname();
 
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
                 AppointmentUtils.retrieveCandidateInfoList(candidateDateList, participationInfoList, hostNickname);
