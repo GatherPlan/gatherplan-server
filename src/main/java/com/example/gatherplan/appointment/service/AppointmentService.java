@@ -22,7 +22,7 @@ public interface AppointmentService {
 
     void deleteAppointmentJoin(String appointmentCode, Long userId);
 
-    List<AppointmentCandidateInfoRespDto> retrieveCandidateDates(String appointmentCode, Long userId);
+    List<AppointmentCandidateInfoRespDto> retrieveCandidateInfo(String appointmentCode, Long userId);
 
     void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId);
 

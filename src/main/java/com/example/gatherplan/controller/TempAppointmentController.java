@@ -137,12 +137,12 @@ public class TempAppointmentController {
 
     @GetMapping("/candidates")
     @Operation(summary = "비회원의 약속 확정 후보 날짜 정보 조회 요청", description = "회원이 약속 확정 후보 날짜 정보를 조회할 때 사용됩니다. [figma #37]")
-    public ResponseEntity<ListResponse<TempAppointmentCandidateInfoResp>> retrieveCandidateDates(
+    public ResponseEntity<ListResponse<TempAppointmentCandidateInfoResp>> retrieveCandidateInfo(
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDatesReq req) {
         TempAppointmentCandidateInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
 
         List<TempAppointmentCandidateInfoRespDto> respDtos
-                = tempAppointmentService.retrieveCandidateDates(reqDto);
+                = tempAppointmentService.retrieveCandidateInfo(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
