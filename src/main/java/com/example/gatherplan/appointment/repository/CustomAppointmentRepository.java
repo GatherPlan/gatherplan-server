@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.repository;
 
 import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 
@@ -22,4 +23,6 @@ public interface CustomAppointmentRepository {
 
     List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
             String keyword, Long userId, String name);
+
+    Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRoleAndAppointmentState(String appointmentCode, Long userId, UserRole userRole, AppointmentState appointmentState);
 }
