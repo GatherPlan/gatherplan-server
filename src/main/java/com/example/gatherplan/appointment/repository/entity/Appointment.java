@@ -62,6 +62,7 @@ public class Appointment extends BaseAuditableEntity {
 
     public void confirmed(ConfirmedDateTime confirmedDateTime) {
         this.confirmedDateTime = confirmedDateTime;
+        this.appointmentState = AppointmentState.CONFIRMED;
     }
 
 }
