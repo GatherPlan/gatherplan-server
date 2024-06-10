@@ -21,7 +21,7 @@ public class CreateAppointmentReq {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     @NotBlank(message = "약속 이름은 공백이 될 수 없습니다.", groups = NotBlankAppointmentName.class)
-    @Size(min = 1, max = 12, message = "약속 이름은 1자 이상 12자 이하여야 합니다.", groups = SizeCheckAppointmentName.class)
+    @Size(min = 2, max = 20, message = "약속 이름은 2자 이상 20자 이하여야 합니다.", groups = SizeCheckAppointmentName.class)
     private String appointmentName;
 
     @Schema(description = "공지사항", example = "점심약속입니다.")
