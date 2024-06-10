@@ -20,7 +20,9 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 @Getter
@@ -63,11 +65,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, Authentication authentication) throws IOException {
         UserInfo userInfo = (UserInfo) authentication.getPrincipal();
 
         Long id = userInfo.getId();
-        String nickname = userInfo.getUsername();
+        String name = userInfo.getUsername();
         String email = userInfo.getEmail();
         String userAuthType = userInfo.getUserAuthType();
 
@@ -76,9 +78,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(id, nickname, email, userAuthType, role, 23 * 60 * 60 * 1000L);
+        String token = jwtUtil.createJwt(id, name, email, userAuthType, role, 23 * 60 * 60 * 1000L);
 
         response.addHeader("Authorization", "Bearer " + token);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("name", userInfo.getUsername());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getWriter(), responseBody);
     }
 
     @Override
