@@ -37,4 +37,6 @@ public interface AppointmentService {
     List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name);
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
+
+    AppointmentParticipantRespDto retrieveAppointmentParticipant(String appointmentCode, Long userId);
 }

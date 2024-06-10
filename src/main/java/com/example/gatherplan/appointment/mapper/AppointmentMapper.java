@@ -30,6 +30,9 @@ public interface AppointmentMapper {
     @Mapping(target = "participationInfo", source = "userAppointmentMapping")
     AppointmentParticipantsRespDto to(UserAppointmentMapping userAppointmentMapping);
 
+    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
+    AppointmentParticipantRespDto toAppointmentParticipantRespDto(UserAppointmentMapping userAppointmentMapping);
+
     @Mapping(target = "isAvailable", source = "available")
     UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
 
