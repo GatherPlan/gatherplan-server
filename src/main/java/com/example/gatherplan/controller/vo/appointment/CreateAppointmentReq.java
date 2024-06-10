@@ -6,6 +6,7 @@ import com.example.gatherplan.controller.validation.SizeCheckAppointmentName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -35,6 +36,7 @@ public class CreateAppointmentReq {
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
     @Size(max = 10, message = "약속 후보 날짜는 10개 이하여야 합니다.")
+    @NotNull
     private List<LocalDate> candidateDateList;
 
 }
