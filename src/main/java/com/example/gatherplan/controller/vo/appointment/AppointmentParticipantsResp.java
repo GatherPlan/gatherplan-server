@@ -2,6 +2,7 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.*;
 
 
@@ -16,6 +17,7 @@ public class AppointmentParticipantsResp {
             "\"userAuthType\": \"USER\", " +
             "\"userRole\": \"PARTICIPANT\", " +
             "\"selectedDateTimeList\": [{ \"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\" }] }")
+    @Nullable
     private ParticipationInfo participationInfo;
 
 }

@@ -2,6 +2,8 @@ package com.example.gatherplan.controller.vo.tempappointment;
 
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,14 +18,18 @@ import java.util.List;
 public class TempAppointmentCandidateInfoResp {
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
+    @NotNull
     private LocalDate candidateDate;
 
     @Schema(description = "시작 시간", example = "18:00")
+    @NotNull
     private LocalTime startTime;
 
     @Schema(description = "종료 시간", example = "20:00")
+    @NotNull
     private LocalTime endTime;
 
     @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\", \"isAvailable\" : true, \"userAuthType\" : \"LOCAL\", \"userRole\" : \"GUEST\"}]")
+    @Nullable
     private List<UserParticipationInfo> userParticipationInfoList;
 }

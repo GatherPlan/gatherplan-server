@@ -2,6 +2,8 @@ package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -12,21 +14,27 @@ import lombok.*;
 public class AppointmentSearchListResp {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
+    @NotNull
     private String appointmentName;
 
     @Schema(description = "호스트 이름", example = "박정빈")
+    @NotNull
     private String hostName;
 
     @Schema(description = "약속 상태", example = "UNCONFIRMED")
+    @NotNull
     private AppointmentState appointmentState;
 
     @Schema(description = "약속 코드", example = "985a61f6f636")
+    @NotNull
     private String appointmentCode;
 
     @Schema(description = "호스트 여부", example = "true")
+    @NotNull
     private boolean isHost;
 
     @Schema(description = "공지사항", example = "점심약속입니다.")
+    @Nullable
     private String notice;
 
     public boolean getIsHost(){
