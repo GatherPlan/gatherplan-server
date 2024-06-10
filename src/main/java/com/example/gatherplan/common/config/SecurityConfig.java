@@ -3,7 +3,6 @@ package com.example.gatherplan.common.config;
 import com.example.gatherplan.common.config.jwt.JWTFilter;
 import com.example.gatherplan.common.config.jwt.JWTUtil;
 import com.example.gatherplan.common.config.jwt.LoginFilter;
-import com.example.gatherplan.common.config.jwt.RoleType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +55,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/region/**").permitAll()
                         .requestMatchers("/api/v1/temporary/**").permitAll()
                         .requestMatchers("/api/v1/appointments/preview").permitAll()
-                        .requestMatchers("/api/v1/appointments/**").hasRole(RoleType.USER.name())
                         .anyRequest().authenticated());
 
         httpSecurity
