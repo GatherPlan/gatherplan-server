@@ -104,7 +104,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/participants")
-    @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다. [figma #24,#29,#41]")
+    @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다. [figma #24,#41]")
     public ResponseEntity<ListResponse<AppointmentParticipantsResp>> retrieveAppointmentParticipants(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
@@ -117,6 +117,21 @@ public class AppointmentController {
                 ListResponse.of(
                         respDtoList.stream().map(appointmentVoMapper::to).toList()
                 )
+        );
+    }
+
+    @GetMapping("/participant")
+    @Operation(summary = "회원의 약속 참여 정보 단건 조회 요청", description = "회원이 약속 참여 정보 단건을 조회할 때 사용됩니다. [figma #29]")
+    public ResponseEntity<AppointmentParticipantResp> retrieveAppointmentParticipant(
+            @Schema(description = "약속 코드", example = "985a61f6f636")
+            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        AppointmentParticipantRespDto appointmentParticipantRespDto =
+                appointmentService.retrieveAppointmentParticipant(appointmentCode, userInfo.getId());
+
+        return ResponseEntity.ok(
+                appointmentVoMapper.to(appointmentParticipantRespDto)
         );
     }
 
