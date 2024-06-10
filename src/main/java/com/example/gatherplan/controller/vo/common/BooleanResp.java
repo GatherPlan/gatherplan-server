@@ -26,4 +26,8 @@ public class BooleanResp {
                 .build();
     }
 
+    public boolean getIsSuccess(){
+        return this.isSuccess;
+    }
+
 }
