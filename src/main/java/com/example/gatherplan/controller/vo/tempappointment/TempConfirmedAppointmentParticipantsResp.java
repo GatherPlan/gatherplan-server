@@ -1,6 +1,7 @@
 package com.example.gatherplan.controller.vo.tempappointment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class TempConfirmedAppointmentParticipantsResp {
 
     @Schema(description = "참여 가능한 사용자 조회 리스트", example = "[박승일,박정빈,이재훈]")
+    @Nullable
     private List<String> nicknameList;
 
     public static TempConfirmedAppointmentParticipantsResp of(List<String> nicknameList) {
