@@ -155,7 +155,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
+        Appointment appointment = appointmentRepository.findByAppointmentCodeAndAppointmentState(reqDto.getAppointmentCode(), AppointmentState.UNCONFIRMED)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
