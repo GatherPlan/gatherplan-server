@@ -91,7 +91,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void updateAppointment(UpdateAppointmentReqDto reqDto, Long userId) {
         Appointment appointment = customAppointmentRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.HOST)
+                .findByAppointmentCodeAndUserSeqAndUserRoleAndAppointmentState(reqDto.getAppointmentCode(), userId, UserRole.HOST, AppointmentState.UNCONFIRMED)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         userAppointmentMappingRepository.deleteAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
