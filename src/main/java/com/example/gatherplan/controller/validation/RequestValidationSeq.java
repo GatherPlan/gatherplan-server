@@ -4,6 +4,6 @@ import jakarta.validation.GroupSequence;
 
 @GroupSequence({NotBlankEmail.class, PatternCheckEmail.class, NotBlankAuthcode.class, SizeCheckAuthcode.class
         , NotBlankNickName.class, SizeCheckNickName.class, NotBlankPassword.class, SizeCheckPassword.class,
-        PatternCheckPassword.class, NotBlankAppointmentName.class})
+        PatternCheckPassword.class, NotBlankAppointmentName.class, SizeCheckAppointmentName.class})
 public interface RequestValidationSeq {
 }

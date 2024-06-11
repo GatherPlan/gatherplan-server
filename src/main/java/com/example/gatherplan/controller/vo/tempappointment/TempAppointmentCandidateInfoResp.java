@@ -2,7 +2,6 @@ package com.example.gatherplan.controller.vo.tempappointment;
 
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -30,6 +29,5 @@ public class TempAppointmentCandidateInfoResp {
     private LocalTime endTime;
 
     @Schema(description = "참여 가능한 사용자 정보 리스트", example = "[{\"nickname\" : \"이재훈\", \"isAvailable\" : true, \"userAuthType\" : \"LOCAL\", \"userRole\" : \"GUEST\"}]")
-    @Nullable
     private List<UserParticipationInfo> userParticipationInfoList;
 }
