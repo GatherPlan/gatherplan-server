@@ -5,6 +5,7 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,17 +13,14 @@ public interface CustomAppointmentRepository {
 
     Optional<Appointment> findByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
 
-    Optional<Appointment> findByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode
-            , String nickname, String password, UserRole userRole);
+    Optional<Appointment> findByAppointmentCodeAndAppointmentStateAndTempUserInfoAndUserRoleIn(String appointmentCode, AppointmentState appointmentState
+            , String nickname, String password, Collection<UserRole> userRoles);
 
     Optional<Appointment> findByAppointmentCodeAndTempUserInfo(String appointmentCode
             , String nickname, String password);
-
-    Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode
-            , Long userId, UserRole userRole);
-
+    
     List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
             String keyword, Long userId, String name);
 
-    Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRoleAndAppointmentState(String appointmentCode, Long userId, UserRole userRole, AppointmentState appointmentState);
+    Optional<Appointment> findByAppointmentCodeAndUserSeqAndAppointmentStateAndUserRoleIn(String appointmentCode, Long userId, AppointmentState appointmentState, Collection<UserRole> userRoles);
 }

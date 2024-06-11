@@ -1,13 +1,11 @@
 package com.example.gatherplan.appointment.utils;
 
-import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.MathUtils;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,8 +17,7 @@ import java.util.Set;
 public class AppointmentUtils {
 
     public List<AppointmentCandidateInfo> retrieveCandidateInfoList(
-            List<LocalDate> candidateDateList, List<UserAppointmentMapping> userAppointmentMappingList, String hostNickname
-    ) {
+            List<LocalDate> candidateDateList, List<UserAppointmentMapping> userAppointmentMappingList) {
         List<String> participantsNicknames = userAppointmentMappingList.stream()
                 .map(UserAppointmentMapping::getNickname).toList();
 
@@ -32,18 +29,12 @@ public class AppointmentUtils {
                 combination -> {
                     List<UserParticipationInfo> userParticipationInfoList =
                             userAppointmentMappingList.stream()
-                                    .map(participationInfo -> {
-                                        UserRole userRole =
-                                                StringUtils.equals(participationInfo.getNickname(), hostNickname) ?
-                                                        UserRole.HOST : UserRole.GUEST;
-
-                                        return UserParticipationInfo.builder()
-                                                .nickname(participationInfo.getNickname())
-                                                .userRole(userRole)
-                                                .userAuthType(participationInfo.getUserAuthType())
-                                                .isAvailable(combination.contains(participationInfo.getNickname()))
-                                                .build();
-                                    })
+                                    .map(participationInfo -> UserParticipationInfo.builder()
+                                            .nickname(participationInfo.getNickname())
+                                            .userRole(participationInfo.getUserRole())
+                                            .userAuthType(participationInfo.getUserAuthType())
+                                            .isAvailable(combination.contains(participationInfo.getNickname()))
+                                            .build())
                                     .toList();
 
                     List<UserAppointmentMapping> filteredParticipationInfoList = userAppointmentMappingList.stream()

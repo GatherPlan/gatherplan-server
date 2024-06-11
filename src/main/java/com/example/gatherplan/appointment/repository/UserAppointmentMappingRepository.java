@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,20 +12,22 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
-    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
+    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRoleIn(String appointmentCode, Collection<UserRole> userRoles);
 
-    Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(String appointmentCode, String nickname, String tempPassword, UserRole userRole);
+    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRoleIn(String appointmentCode, Long userId, Collection<UserRole> userRoles);
 
-    List<UserAppointmentMapping> findAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
+    Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndTempPasswordAndUserRoleIn(String appointmentCode, String nickname, String tempPassword, Collection<UserRole> userRoles);
+
+    List<UserAppointmentMapping> findAllByAppointmentCodeAndUserRoleIn(String appointmentCode, Collection<UserRole> userRoles);
 
     void deleteAllByAppointmentCode(String appointmentCode);
 
     void deleteAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
-    boolean existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(String appointmentCode, String nickname, String tempPassword, UserRole userRole);
+    boolean existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRoleIn(String appointmentCode, String nickname, String tempPassword, Collection<UserRole> userRoles);
 
-    boolean existsByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
+    boolean existsByAppointmentCodeAndUserSeqAndUserRoleIn(String appointmentCode, Long userId, Collection<UserRole> userRoles);
 
-    Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentCodeAndNicknameAndUserRole(String appointmentCode, String nickname, UserRole userRole);
+    Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentCodeAndNicknameAndUserRoleIn(String appointmentCode, String nickname, Collection<UserRole> userRoles);
 
 }

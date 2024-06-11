@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,19 +38,6 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public Optional<Appointment> findByAppointmentCodeAndTempUserInfoAndUserRole(String appointmentCode
-            , String nickname, String password, UserRole userRole) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.nickname.eq(nickname))
-                        .and(userAppointmentMapping.tempPassword.eq(password))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchOne());
-    }
-
-    @Override
     public Optional<Appointment> findByAppointmentCodeAndTempUserInfo(String appointmentCode, String nickname, String password) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(appointment)
@@ -60,30 +48,6 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .fetchOne());
     }
 
-
-
-    @Override
-    public Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId))
-                        .and(userAppointmentMapping.userRole.eq(userRole)))
-                .fetchOne());
-    }
-
-    @Override
-    public Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRoleAndAppointmentState(String appointmentCode, Long userId, UserRole userRole, AppointmentState appointmentState) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
-                .where(appointment.appointmentCode.eq(appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId))
-                        .and(userAppointmentMapping.userRole.eq(userRole))
-                        .and(appointment.appointmentState.eq(appointmentState)))
-                .fetchOne());
-    }
 
     @Override
     public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
@@ -109,5 +73,30 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .where((keyword != null ? appointment.appointmentName.contains(keyword)
                                 .or(hostMapping.nickname.contains(keyword)) : Expressions.TRUE))
                 .fetch();
+    }
+
+    @Override
+    public Optional<Appointment> findByAppointmentCodeAndUserSeqAndAppointmentStateAndUserRoleIn(String appointmentCode, Long userId, AppointmentState appointmentState, Collection<UserRole> userRoles) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
+                .where(appointment.appointmentCode.eq(appointmentCode)
+                        .and(appointment.appointmentState.eq(appointmentState))
+                        .and(userAppointmentMapping.userSeq.eq(userId))
+                        .and(userAppointmentMapping.userRole.in(userRoles)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Appointment> findByAppointmentCodeAndAppointmentStateAndTempUserInfoAndUserRoleIn(String appointmentCode, AppointmentState appointmentState, String nickname, String password, Collection<UserRole> userRoles) {
+        return Optional.ofNullable(jpaQueryFactory
+                .selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
+                .where(appointment.appointmentCode.eq(appointmentCode)
+                        .and(appointment.appointmentState.eq(appointmentState))
+                        .and(userAppointmentMapping.nickname.eq(nickname))
+                        .and(userAppointmentMapping.tempPassword.eq(password))
+                        .and(userAppointmentMapping.userRole.in(userRoles)))
+                .fetchOne());
     }
 }

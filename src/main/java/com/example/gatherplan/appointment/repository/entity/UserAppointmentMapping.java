@@ -47,7 +47,16 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
         this.isAvailable = isAvailable;
     }
 
+    public void updateUserRoleAndSelectedDateTimeList(UserRole userRole, List<SelectedDateTime> selectedDateTimeList) {
+        this.userRole = userRole;
+        this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
+    }
+
     public void update(List<SelectedDateTime> selectedDateTimeList) {
         this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
+    }
+
+    public void updateUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }
