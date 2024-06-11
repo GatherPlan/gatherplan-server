@@ -105,7 +105,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/participants")
-    @Operation(summary = "회원의 약속 참여 정보 조회 요청", description = "회원이 약속 참여 정보를 조회할 때 사용됩니다. [figma #24,#41]")
+    @Operation(summary = "회원의 지정 약속의 모든 참여 정보 조회 요청", description = "회원이 지정 약속의 모든 참여 정보를 조회할 때 사용됩니다. [figma #24,#41]")
     public ResponseEntity<ListResponse<AppointmentParticipantsResp>> retrieveAppointmentParticipants(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
@@ -121,8 +121,8 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/participant")
-    @Operation(summary = "회원의 약속 참여 정보 단건 조회 요청", description = "회원이 약속 참여 정보 단건을 조회할 때 사용됩니다. [figma #29]")
+    @GetMapping("/participants/my")
+    @Operation(summary = "회원의 지정 약속의 나의 참여 정보 조히 요청", description = "회원이 지정 약속의 자신의 참여 정보를 조회할 때 사용됩니다. [figma #29]")
     public ResponseEntity<AppointmentParticipantResp> retrieveAppointmentParticipant(
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
