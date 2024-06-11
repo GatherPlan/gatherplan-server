@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
 
-    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
-
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRoleIn(String appointmentCode, Collection<UserRole> userRoles);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRoleIn(String appointmentCode, Long userId, Collection<UserRole> userRoles);
@@ -27,7 +25,5 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
     boolean existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRoleIn(String appointmentCode, String nickname, String tempPassword, Collection<UserRole> userRoles);
 
     boolean existsByAppointmentCodeAndUserSeqAndUserRoleIn(String appointmentCode, Long userId, Collection<UserRole> userRoles);
-
-    Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentCodeAndNicknameAndUserRoleIn(String appointmentCode, String nickname, Collection<UserRole> userRoles);
 
 }
