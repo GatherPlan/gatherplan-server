@@ -95,7 +95,7 @@ public class TempAppointmentController {
     }
 
     @GetMapping("/participants")
-    @Operation(summary = "비회원의 약속 참여 정보 조회 요청", description = "비회원이 약속 참여 정보를 조회할 때 사용됩니다. [figma #24,#29,#41]")
+    @Operation(summary = "회원의 지정 약속의 모든 참여 정보 조회 요청", description = "회원이 지정 약속의 모든 참여 정보를 조회할 때 사용됩니다.  [figma #24,#29,#41]")
     public ResponseEntity<ListResponse<TempAppointmentParticipantsResp>> retrieveAppointmentParticipants(
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipantsReq req) {
 
@@ -106,6 +106,20 @@ public class TempAppointmentController {
                 ListResponse.of(
                         respDtoList.stream().map(tempAppointmentVoMapper::to).toList()
                 )
+        );
+    }
+
+    @GetMapping("/participants/my")
+    @Operation(summary = "비회원의 지정 약속의 나의 참여 정보 조회 요청", description = "비회원이 지정 약속의 자신의 참여 정보를 조회할 때 사용됩니다. [figma #29]")
+    public ResponseEntity<TempAppointmentParticipantResp> retrieveAppointmentParticipant(
+            @Valid @ModelAttribute @ParameterObject TempAppointmentParticipantReq req) {
+
+        TempAppointmentParticipantReqDto reqDto = tempAppointmentVoMapper.to(req);
+        TempAppointmentParticipantRespDto respDto =
+                tempAppointmentService.retrieveAppointmentParticipant(reqDto);
+
+        return ResponseEntity.ok(
+                tempAppointmentVoMapper.to(respDto)
         );
     }
 

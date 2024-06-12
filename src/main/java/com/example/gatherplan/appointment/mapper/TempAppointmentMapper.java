@@ -33,4 +33,7 @@ public interface TempAppointmentMapper {
     TempAppointmentParticipantsRespDto to(UserAppointmentMapping userAppointmentMapping);
 
     TempAppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
+
+    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
+    TempAppointmentParticipantRespDto toTempAppointmentParticipantRespDto(UserAppointmentMapping userAppointmentMapping);
 }
