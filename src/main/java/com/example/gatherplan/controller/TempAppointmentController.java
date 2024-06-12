@@ -167,7 +167,7 @@ public class TempAppointmentController {
     @GetMapping("/host:check")
     @Operation(summary = "비회원의 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다. [figma #19,#27]")
     public ResponseEntity<BooleanResp> checkHost(
-            @RequestBody @Valid TempCheckHostReq req) {
+            @Valid @ModelAttribute @ParameterObject TempCheckHostReq req) {
 
         TempCheckHostReqDto reqDto = tempAppointmentVoMapper.to(req);
         boolean isValid = tempAppointmentService.checkHost(reqDto);
