@@ -167,6 +167,24 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
+    public TempAppointmentParticipantRespDto retrieveAppointmentParticipant(TempAppointmentParticipantReqDto reqDto) {
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        appointment.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        return tempAppointmentMapper.toTempAppointmentParticipantRespDto(userAppointmentMapping);
+    }
+
+    @Override
+    public boolean checkUser(TempCheckJoinReqDto reqDto) {
+        return false;
+    }
+
+    @Override
     @Transactional
     public void updateAppointmentJoin(UpdateTempAppointmentJoinReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
@@ -264,4 +282,5 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         return customUserRepository.findAllUserNameByAppointmentCode(reqDto.getAppointmentCode()).stream()
                 .noneMatch(findNickname -> StringUtils.equals(findNickname, reqDto.getTempUserInfo().getNickname()));
     }
+
 }
