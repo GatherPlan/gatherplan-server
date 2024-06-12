@@ -46,9 +46,19 @@ public class GlobalExceptionHandler {
                 .body(ErrorResp.of(errorCode.getCode(), exceptionMessage));
     }
 
-    @ExceptionHandler({BusinessException.class})
+    @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResp> handleBusinessException(BusinessException exception) {
         ErrorCode errorCode = exception.getErrorCode();
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ErrorResp.of(
+                        errorCode.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<ErrorResp> defaultException(RuntimeException exception) {
+        ErrorCode errorCode = ErrorCode.SEVER_NOT_SUPPORT;
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
