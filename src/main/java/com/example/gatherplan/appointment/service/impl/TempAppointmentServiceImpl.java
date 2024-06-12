@@ -277,6 +277,13 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
+    public boolean checkUser(TempCheckJoinReqDto reqDto) {
+        return userAppointmentMappingRepository
+                .existsByAppointmentCodeAndNicknameAndTempPassword(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword());
+    }
+
+    @Override
     @Transactional
     public boolean validJoin(CreateTempUserReqDto reqDto) {
         return customUserRepository.findAllUserNameByAppointmentCode(reqDto.getAppointmentCode()).stream()
