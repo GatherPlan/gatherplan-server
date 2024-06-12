@@ -8,13 +8,11 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice
@@ -25,21 +23,11 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.PARAMETER_VALIDATION_FAIL;
 
-        BindingResult bindingResult = exception.getBindingResult();
-
-        String exceptionMessage =
-                Optional.ofNullable(bindingResult.getFieldError())
-                        .orElseGet(() -> {
-                            log.error("Get Binding Result Error - Field Error is null.");
-                            throw new NullPointerException("Get Binding Result Error - Field Error is null.");
-                        })
-                        .getDefaultMessage();
-
         log.warn("MethodArgumentNotValidException occurred: {}", getDetailLog(exception, userInfo, request));
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ErrorResp.of(errorCode.getCode(), exceptionMessage));
+                .body(ErrorResp.of(errorCode, exception.getFieldErrors()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -47,13 +35,11 @@ public class GlobalExceptionHandler {
             ConstraintViolationException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.PARAMETER_VALIDATION_FAIL;
 
-        String exceptionMessage = exception.getMessage();
-
         log.warn("ConstraintViolationException occurred: {}", getDetailLog(exception, userInfo, request));
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ErrorResp.of(errorCode.getCode(), exceptionMessage));
+                .body(ErrorResp.of(errorCode, exception));
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -65,8 +51,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ErrorResp.of(
-                        errorCode.getCode(), exception.getMessage()));
+                .body(ErrorResp.of(errorCode));
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -78,8 +63,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ErrorResp.of(
-                        errorCode.getCode(), exception.getMessage()));
+                .body(ErrorResp.of(errorCode, exception.getMessage()));
     }
 
     private String getDetailLog(Exception e, UserInfo userInfo, HttpServletRequest request) {
