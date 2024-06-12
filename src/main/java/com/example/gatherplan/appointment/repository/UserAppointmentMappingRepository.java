@@ -27,4 +27,5 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     Optional<UserAppointmentMapping> findUserAppointmentMappingByAppointmentCodeAndNicknameAndUserRole(String appointmentCode, String nickname, UserRole userRole);
 
+    Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndUserRole(String appointmentCode, String nickname, UserRole userRole);
 }
