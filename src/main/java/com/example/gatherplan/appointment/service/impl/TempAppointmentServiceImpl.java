@@ -240,16 +240,22 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public boolean checkHost(TempCheckHostReqDto reqDto) {
-        return userAppointmentMappingRepository
-                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST);
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return userAppointmentMapping.getUserRole().equals(UserRole.HOST);
     }
 
     @Override
     public boolean checkJoin(TempCheckJoinReqDto reqDto) {
-        return userAppointmentMappingRepository
-                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return userAppointmentMapping.getUserRole().equals(UserRole.GUEST);
     }
 
     @Override
