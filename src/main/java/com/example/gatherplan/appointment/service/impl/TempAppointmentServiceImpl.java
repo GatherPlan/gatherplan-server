@@ -7,7 +7,10 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
-import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomUserRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
@@ -158,6 +161,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
+    @Transactional
     public void updateAppointmentJoin(UpdateTempAppointmentJoinReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
