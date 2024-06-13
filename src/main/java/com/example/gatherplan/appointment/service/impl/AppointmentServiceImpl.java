@@ -18,6 +18,7 @@ import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.utils.AppointmentUtils;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
@@ -143,8 +144,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<UserAppointmentMapping> participationInfoList =
+        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
+                .getNickname();
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
+
+        List<ParticipationInfo> participationInfoList = userAppointmentMappingList.stream()
+                .map(mapping -> {
+                    UserRole userRole = mapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST;
+                    return appointmentMapper.toParticipationInfo(mapping, userRole);
+                })
+                .toList();
 
         return participationInfoList.stream().map(appointmentMapper::to).toList();
     }
