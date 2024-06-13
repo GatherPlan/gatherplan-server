@@ -25,7 +25,7 @@ public class AppointmentUtils {
                 .map(UserAppointmentMapping::getNickname).toList();
 
         List<Set<String>> participantsCombination = MathUtils.combinations(participantsNicknames);
-        
+
         List<AppointmentCandidateInfo> candidateInfoList = new ArrayList<>();
 
         participantsCombination.forEach(
@@ -79,15 +79,14 @@ public class AppointmentUtils {
             List<UserAppointmentMapping> filteredParticipationInfoList
     ) {
         List<Integer> timeList = new ArrayList<>();
-        for (int nowHour = 0; nowHour < 24; nowHour++) {
+        for (int nowHour = 0; nowHour <= 24; nowHour++) {
 
             int includedCount = 0;
             for (List<SelectedDateTime> selectedDateTimes : filteredSelectedDatesList) {
                 for (SelectedDateTime selectedDateTime : selectedDateTimes) {
                     LocalDate date = selectedDateTime.getSelectedDate();
                     int startHour = selectedDateTime.getSelectedStartTime().getHour();
-                    int endHour = selectedDateTime.getSelectedEndTime().getHour();
-
+                    int endHour = getHourInLocalTime(selectedDateTime.getSelectedEndTime());
                     if (candidateDate.equals(date) && (startHour <= nowHour && nowHour <= endHour)) {
                         includedCount++;
                     }
@@ -101,11 +100,10 @@ public class AppointmentUtils {
         return timeList;
     }
 
-    // 시간 리스트에서 연속적인 시간 그룹 찾기 ex) [1,2,3,4,10,11,18] -> [[1,2,3,4],[10,11],[18]]
+    // 시간 리스트에서 연속적인 시간 그룹 찾기 ex) [1,2,3,4,10,11,18] -> [[1,2,3,4],[10,11]] // 18은 들어가면 안됨 -> start != end
     private static void findContinuousTimeAndAddResult(
             Set<String> combination, LocalDate candidateDate, List<Integer> timeList,
-            List<AppointmentCandidateInfo> candidateInfoList, List<UserParticipationInfo> userParticipationInfoList)
-    {
+            List<AppointmentCandidateInfo> candidateInfoList, List<UserParticipationInfo> userParticipationInfoList) {
         int start = timeList.get(0);
         int end = start;
 
@@ -156,5 +154,15 @@ public class AppointmentUtils {
                             return isEqualDateTime && isEqualParticipants;
                         }
                 );
+    }
+
+    /**
+     * LocalTIme 이 23시59분일경우 24시로 처리하여 시간을 반환
+     *
+     * @param localTime 시분
+     * @return 시
+     */
+    private int getHourInLocalTime(LocalTime localTime) {
+        return LocalTime.of(23, 59).equals(localTime) ? 24 : localTime.getHour();
     }
 }
