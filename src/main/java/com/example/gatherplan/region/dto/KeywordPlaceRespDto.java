@@ -1,5 +1,6 @@
 package com.example.gatherplan.region.dto;
 
+import com.example.gatherplan.common.enums.LocationType;
 import lombok.*;
 
 @Getter
@@ -10,4 +11,5 @@ public class KeywordPlaceRespDto {
     private String addressName;
     private String placeUrl;
     private String placeName;
+    private LocationType locationType;
 }
