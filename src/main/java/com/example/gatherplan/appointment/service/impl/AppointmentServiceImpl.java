@@ -166,10 +166,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
+        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
+                .getNickname();
+
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndUserSeqAndUserRole(appointment.getAppointmentCode(),userId,UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        return appointmentMapper.toAppointmentParticipantRespDto(userAppointmentMapping);
+        ParticipationInfo participationInfo = appointmentMapper.toParticipationInfo(
+                userAppointmentMapping, userAppointmentMapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST);
+
+        return appointmentMapper.toAppointmentParticipantRespDto(participationInfo);
     }
 
     @Override

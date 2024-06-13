@@ -29,9 +29,6 @@ public interface AppointmentMapper {
     @Mapping(target = "participationInfo", source = "userAppointmentMapping")
     AppointmentParticipantsRespDto to(UserAppointmentMapping userAppointmentMapping);
 
-    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
-    AppointmentParticipantRespDto toAppointmentParticipantRespDto(UserAppointmentMapping userAppointmentMapping);
-
     @Mapping(target = "isAvailable", source = "userAppointmentMapping.available")
     @Mapping(target = "userRole", source = "userRole")
     UserParticipationInfo to(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
@@ -45,4 +42,7 @@ public interface AppointmentMapper {
 
     @Mapping(target = "participationInfo", source = "participationInfo")
     AppointmentParticipantsRespDto to(ParticipationInfo participationInfo);
+
+    @Mapping(target = "participationInfo", source = "participationInfo")
+    AppointmentParticipantRespDto toAppointmentParticipantRespDto(ParticipationInfo participationInfo);
 }
