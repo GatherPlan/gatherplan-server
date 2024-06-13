@@ -245,7 +245,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        return userAppointmentMapping.getUserRole().equals(UserRole.HOST);
+        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
     }
 
     @Override
@@ -255,7 +255,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        return userAppointmentMapping.getUserRole().equals(UserRole.GUEST);
+        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
     }
 
     @Override
