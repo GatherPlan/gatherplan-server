@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
+import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
@@ -30,8 +31,9 @@ public interface AppointmentMapper {
     @Mapping(target = "participationInfo", source = "userAppointmentMapping")
     AppointmentParticipantRespDto toAppointmentParticipantRespDto(UserAppointmentMapping userAppointmentMapping);
 
-    @Mapping(target = "isAvailable", source = "available")
-    UserParticipationInfo toUserParticipationInfo(UserAppointmentMapping userAppointmentMapping);
+    @Mapping(target = "isAvailable", source = "userAppointmentMapping.available")
+    @Mapping(target = "userRole", source = "userRole")
+    UserParticipationInfo to(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
 
     AppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
 
