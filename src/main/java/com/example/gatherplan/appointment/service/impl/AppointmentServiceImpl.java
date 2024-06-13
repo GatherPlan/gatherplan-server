@@ -77,7 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
                 .map(mapping -> {
-                    UserRole userRole = mapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST;
+                    UserRole userRole = hostName.equals(mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST;
                     return appointmentMapper.to(mapping, userRole);
                 })
                 .toList();
@@ -153,7 +153,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<ParticipationInfo> participationInfoList = userAppointmentMappingList.stream()
                 .map(mapping -> {
-                    UserRole userRole = mapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST;
+                    UserRole userRole = hostName.equals(mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST;
                     return appointmentMapper.toParticipationInfo(mapping, userRole);
                 })
                 .toList();
@@ -174,7 +174,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         ParticipationInfo participationInfo = appointmentMapper.toParticipationInfo(
-                userAppointmentMapping, userAppointmentMapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST);
+                userAppointmentMapping, hostName.equals(userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
 
         return appointmentMapper.toAppointmentParticipantRespDto(participationInfo);
     }
