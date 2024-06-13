@@ -40,4 +40,6 @@ public interface AppointmentMapper {
                                                                        boolean isHost);
 
     AppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
+
+    AppointmentInfoRespDto to(Appointment appointment, List<UserParticipationInfo> userParticipationInfoList, String hostName, Boolean isHost, Boolean isParticipated);
 }

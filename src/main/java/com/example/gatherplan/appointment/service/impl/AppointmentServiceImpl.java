@@ -68,27 +68,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentInfoDto appointmentInfoDto = customAppointmentRepository.findAppointmentInfoDtoByAppointmentCodeAndUserSeq(appointmentCode, userId);
 
-        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
-                .getNickname();
+        List<UserParticipationInfo> userParticipationInfoList =
+                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST)
+                        .stream().map(appointmentMapper::toUserParticipationInfo).toList();
 
-        boolean isParticipated = userAppointmentMappingRepository
-                .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST);
-
-        boolean isHost = userAppointmentMappingRepository
-                .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST);
-
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST);
-
-        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .map(appointmentMapper::toUserParticipationInfo)
-                .toList();
-
-        return appointmentMapper.toAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost, userParticipationInfoList);
+        return appointmentMapper.to(appointmentInfoDto.getAppointment(), userParticipationInfoList, appointmentInfoDto.getHostName(), appointmentInfoDto.getIsHost(), appointmentInfoDto.getIsParticipated());
     }
 
     @Override
