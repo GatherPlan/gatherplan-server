@@ -52,7 +52,7 @@ public class RegionServiceImpl implements RegionService {
                         reqDto.getKeyword(), reqDto.getPage(), reqDto.getSize());
 
         return keywordPlaceClientResp.getDocuments().stream()
-                .map(regionMapper::to)
+                .map(r -> regionMapper.to(r, LocationType.DETAIL_ADDRESS))
                 .toList();
     }
 

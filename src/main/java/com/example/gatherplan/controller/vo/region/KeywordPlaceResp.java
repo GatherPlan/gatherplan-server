@@ -1,5 +1,6 @@
 package com.example.gatherplan.controller.vo.region;
 
+import com.example.gatherplan.common.enums.LocationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -17,4 +18,7 @@ public class KeywordPlaceResp {
 
     @Schema(description = "장소 이름", example = "세종대학교")
     private String placeName;
+
+    @Schema(description = "주소 타입", example = "DETAIL_ADDRESS")
+    private LocationType locationType;
 }

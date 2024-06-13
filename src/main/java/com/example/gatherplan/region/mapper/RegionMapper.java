@@ -19,7 +19,7 @@ import org.mapstruct.*;
 public interface RegionMapper {
     RegionDto to(Region entity, LocationType locationType);
 
-    KeywordPlaceRespDto to(KeywordPlaceClientResp.KeywordPlaceInfo clientResp);
+    KeywordPlaceRespDto to(KeywordPlaceClientResp.KeywordPlaceInfo clientResp, LocationType locationType);
 
     DailyWeatherRespDto to(DailyWeatherClientResp.DailyWeatherInfo clientResp);
 }
