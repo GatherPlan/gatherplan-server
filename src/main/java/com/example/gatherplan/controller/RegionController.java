@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/region")
-@Tag(name = "지역", description = "날씨, 상세주소, 행정구역과 관련된 검색 기능을 제공합니다.")
+@Tag(name = "부가 서비스", description = "날씨, 상세주소, 행정구역과 관련된 검색 기능을 제공합니다.")
 @Validated(value = RequestValidationSeq.class)
 public class RegionController {
 
@@ -36,7 +36,7 @@ public class RegionController {
     private final RegionVoMapper regionVoMapper;
 
     @GetMapping("/district")
-    @Operation(summary = "회원의 행정구역 검색 요청", description = "회원이 행정구역을 검색할 때 사용됩니다. [figma #6,#33]")
+    @Operation(summary = "행정구역 검색 요청", description = "행정구역을 검색할 때 사용됩니다. [figma #6,#33]")
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
             @RequestParam @NotBlank(message = "키워드는 공백이 될 수 없습니다.") String keyword) {
 
@@ -50,7 +50,7 @@ public class RegionController {
     }
 
     @GetMapping("/place")
-    @Operation(summary = "회원의 상세주소 검색 요청", description = "회원이 상세주소를 검색할 때 사용됩니다. [figma #6,#33]")
+    @Operation(summary = "상세주소 검색 요청", description = "상세주소를 검색할 때 사용됩니다. [figma #6,#33]")
     public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
             @Valid @ModelAttribute @ParameterObject KeywordPlaceReq req) {
 
@@ -64,7 +64,7 @@ public class RegionController {
     }
 
     @GetMapping("/weather")
-    @Operation(summary = "회원의 날씨 검색 요청", description = "회원이 날씨를 검색할 때 사용됩니다. [figma #7,#14,#34,#37]")
+    @Operation(summary = "날씨 검색 요청", description = "날씨를 검색할 때 사용됩니다. [figma #7,#14,#34,#37]")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
             @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") String addressName) throws JSONException {
 
