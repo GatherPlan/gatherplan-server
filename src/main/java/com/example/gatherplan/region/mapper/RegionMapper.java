@@ -1,5 +1,6 @@
 package com.example.gatherplan.region.mapper;
 
+import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.external.vo.DailyWeatherClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
@@ -16,7 +17,7 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface RegionMapper {
-    RegionDto to(Region entity);
+    RegionDto to(Region entity, LocationType locationType);
 
     KeywordPlaceRespDto to(KeywordPlaceClientResp.KeywordPlaceInfo clientResp);
 

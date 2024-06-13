@@ -1,5 +1,6 @@
 package com.example.gatherplan.region.dto;
 
+import com.example.gatherplan.common.enums.LocationType;
 import lombok.*;
 
 @Getter
@@ -8,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegionDto {
     private String address;
+    private LocationType locationType;
 }
