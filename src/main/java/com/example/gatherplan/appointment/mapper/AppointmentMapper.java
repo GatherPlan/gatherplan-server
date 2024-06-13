@@ -43,5 +43,6 @@ public interface AppointmentMapper {
     @Mapping(target = "userRole", source = "userRole")
     ParticipationInfo toParticipationInfo(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
 
+    @Mapping(target = "participationInfo", source = "participationInfo")
     AppointmentParticipantsRespDto to(ParticipationInfo participationInfo);
 }
