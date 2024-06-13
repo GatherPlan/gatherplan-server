@@ -1,7 +1,5 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
-import com.example.gatherplan.appointment.utils.AppointmentUtils;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserAuthType;
@@ -9,10 +7,15 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
-import com.example.gatherplan.appointment.repository.*;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomUserRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
+import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
+import com.example.gatherplan.appointment.utils.AppointmentUtils;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
@@ -24,7 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -257,8 +261,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId, String name) {
-        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(keyword, userId, name);
+    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId) {
+        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(keyword, userId);
     }
 
     @Override

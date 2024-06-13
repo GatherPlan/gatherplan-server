@@ -86,8 +86,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeqAndName(
-            String keyword, Long userId, String name) {
+    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeq(String keyword, Long userId) {
 
         QUserAppointmentMapping hostMapping = new QUserAppointmentMapping("hostMapping");
 
@@ -102,8 +101,7 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 ))
                 .from(appointment)
                 .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId)
-                                .and(userAppointmentMapping.userRole.eq(UserRole.GUEST))))
+                        .and(userAppointmentMapping.userSeq.eq(userId)))
                 .join(hostMapping).on(hostMapping.appointmentCode.eq(appointment.appointmentCode)
                         .and(hostMapping.userRole.eq(UserRole.HOST)))
                 .where((keyword != null ? appointment.appointmentName.contains(keyword)

@@ -257,7 +257,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         List<AppointmentSearchListRespDto> appointmentListInfoDtoSearchList =
-                appointmentService.retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
+                appointmentService.retrieveAppointmentSearchList(keyword, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(appointmentListInfoDtoSearchList.stream().map(appointmentVoMapper::to).toList())
