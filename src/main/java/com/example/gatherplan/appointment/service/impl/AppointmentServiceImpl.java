@@ -70,9 +70,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId) {
         AppointmentInfoDto appointmentInfoDto = customAppointmentRepository.findAppointmentInfoDtoByAppointmentCodeAndUserSeq(appointmentCode, userId);
 
-        List<UserParticipationInfo> userParticipationInfoList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST)
-                        .stream().map(appointmentMapper::toUserParticipationInfo).toList();
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST);
+
+        String hostName = appointmentInfoDto.getHostName();
+
+        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
+                .map(mapping -> {
+                    UserRole userRole = mapping.getNickname().equals(hostName) ? UserRole.HOST : UserRole.GUEST;
+                    return appointmentMapper.to(mapping, userRole);
+                })
+                .toList();
 
         return appointmentMapper.to(appointmentInfoDto.getAppointment(), userParticipationInfoList, appointmentInfoDto.getHostName(), appointmentInfoDto.getIsHost(), appointmentInfoDto.getIsParticipated());
     }
