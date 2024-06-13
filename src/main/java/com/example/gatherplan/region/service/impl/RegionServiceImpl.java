@@ -1,6 +1,7 @@
 package com.example.gatherplan.region.service.impl;
 
 import com.example.gatherplan.appointment.dto.CSVRowDto;
+import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.external.KakaoLocationClient;
 import com.example.gatherplan.external.WeatherNewsClient;
@@ -40,7 +41,7 @@ public class RegionServiceImpl implements RegionService {
         List<Region> regionList = regionRepository.findByAddressContaining(keyword);
 
         return regionList.stream()
-                .map(regionMapper::to)
+                .map(r -> regionMapper.to(r, LocationType.DISTRICT))
                 .toList();
     }
 
