@@ -21,7 +21,7 @@ public class AppointmentCandidateInfo {
         return AppointmentCandidateInfo.builder()
                 .candidateDate(candidateDate)
                 .startTime(LocalTime.of(start, 0))
-                .endTime(LocalTime.of(end, 0))
+                .endTime((end == 24) ? LocalTime.of(23, 59) : LocalTime.of(end, 0)) // 24시 일 경우 23:59로 처리
                 .userParticipationInfoList(userParticipationInfoList)
                 .build();
     }
