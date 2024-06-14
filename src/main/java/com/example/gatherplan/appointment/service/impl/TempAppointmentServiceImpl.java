@@ -283,7 +283,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public boolean checkUser(TempCheckJoinReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(
+                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         return UserRole.GUEST.equals(userAppointmentMapping.getUserRole()) ||
