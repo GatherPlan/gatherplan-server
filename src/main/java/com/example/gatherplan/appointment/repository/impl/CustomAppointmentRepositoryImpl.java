@@ -1,6 +1,5 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentInfoDto;
 import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -108,30 +107,5 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .where((keyword != null ? appointment.appointmentName.contains(keyword)
                                 .or(hostMapping.nickname.contains(keyword)) : Expressions.TRUE))
                 .fetch();
-    }
-
-    @Override
-    public AppointmentInfoDto findAppointmentInfoDtoByAppointmentCodeAndUserSeq(String appointmentCode, Long userId) {
-
-        QUserAppointmentMapping hostMapping = new QUserAppointmentMapping("hostMapping");
-
-        QUserAppointmentMapping guestMapping = new QUserAppointmentMapping("guestMapping");
-
-        return jpaQueryFactory
-                .selectDistinct(Projections.constructor(AppointmentInfoDto.class,
-                        appointment,
-                        hostMapping.nickname,
-                        guestMapping.userSeq.eq(userId),
-                        hostMapping.userSeq.eq(userId)
-                ))
-                .from(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId)))
-                .join(hostMapping).on(hostMapping.appointmentCode.eq(appointment.appointmentCode)
-                        .and(hostMapping.userRole.eq(UserRole.HOST)))
-                .leftJoin(guestMapping).on(guestMapping.appointmentCode.eq(appointment.appointmentCode)
-                        .and(guestMapping.userRole.eq(UserRole.GUEST)))
-                .where(userAppointmentMapping.appointmentCode.eq(appointmentCode))
-                .fetchFirst();
     }
 }
