@@ -38,5 +38,5 @@ public interface AppointmentService {
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
-    AppointmentParticipantRespDto retrieveAppointmentParticipant(String appointmentCode, Long userId);
+    AppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(String appointmentCode, Long userId);
 }
