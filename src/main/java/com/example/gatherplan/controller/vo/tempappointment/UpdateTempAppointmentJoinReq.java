@@ -5,6 +5,7 @@ import com.example.gatherplan.common.unit.TempUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class UpdateTempAppointmentJoinReq {
 
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
+    @NotNull
     private TempUserInfo tempUserInfo;
 
     @NotEmpty(message = "날짜 및 시간 정보는 비어 있을 수 없습니다.")

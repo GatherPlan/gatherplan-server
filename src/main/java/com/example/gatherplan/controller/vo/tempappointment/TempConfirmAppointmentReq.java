@@ -5,6 +5,7 @@ import com.example.gatherplan.common.unit.TempUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TempConfirmAppointmentReq {
 
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
+    @NotNull
     private TempUserInfo tempUserInfo;
 
     @Schema(description = "참여 가능 사용자 닉네임 리스트", example = "[\"이재훈\", \"박정빈\", \"박승일\"]")

@@ -7,6 +7,7 @@ import com.example.gatherplan.controller.validation.SizeCheckAppointmentName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -39,6 +40,7 @@ public class CreateTempAppointmentReq {
 
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
+    @NotNull
     private TempUserInfo tempUserInfo;
 
 }
