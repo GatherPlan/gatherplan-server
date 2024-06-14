@@ -78,6 +78,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
                 .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
+        String hostName = hostMapping.getNickname();
+
+        boolean isHost = StringUtils.equals(hostMapping.getNickname(), reqDto.getTempUserInfo().getNickname());
+
         boolean isParticipated = userAppointmentMappingList.stream()
                 .anyMatch(mapping -> StringUtils.equals(reqDto.getTempUserInfo().getNickname(), mapping.getNickname()) &&
                         StringUtils.equals(reqDto.getTempUserInfo().getPassword(), mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
@@ -88,7 +92,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
                 .toList();
 
-        return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostMapping.getNickname(), StringUtils.equals(hostMapping.getNickname(), reqDto.getTempUserInfo().getNickname()), isParticipated);
+        return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
 
     @Override
