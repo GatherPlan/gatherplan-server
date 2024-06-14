@@ -25,7 +25,7 @@ public class AppointmentUtils {
                 .map(UserAppointmentMapping::getNickname).toList();
 
         List<Set<String>> participantsCombination = MathUtils.combinations(participantsNicknames);
-
+        
         List<AppointmentCandidateInfo> candidateInfoList = new ArrayList<>();
 
         participantsCombination.forEach(
@@ -86,7 +86,8 @@ public class AppointmentUtils {
                 for (SelectedDateTime selectedDateTime : selectedDateTimes) {
                     LocalDate date = selectedDateTime.getSelectedDate();
                     int startHour = selectedDateTime.getSelectedStartTime().getHour();
-                    int endHour = getHourInLocalTime(selectedDateTime.getSelectedEndTime());
+                    int endHour = selectedDateTime.getSelectedEndTime().getHour();
+
                     if (candidateDate.equals(date) && (startHour <= nowHour && nowHour <= endHour)) {
                         includedCount++;
                     }
@@ -165,4 +166,18 @@ public class AppointmentUtils {
     private int getHourInLocalTime(LocalTime localTime) {
         return LocalTime.of(23, 59).equals(localTime) ? 24 : localTime.getHour();
     }
+
+    public List<UserParticipationInfo> retrieveuserParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName) {
+        return userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
+                .map(mapping -> UserParticipationInfo.builder()
+                        .nickname(mapping.getNickname())
+                        .userRole(StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST)
+                        .userAuthType(mapping.getUserAuthType())
+                        .isAvailable(mapping.isAvailable())
+                        .build())
+                .toList();
+    }
+
+
 }

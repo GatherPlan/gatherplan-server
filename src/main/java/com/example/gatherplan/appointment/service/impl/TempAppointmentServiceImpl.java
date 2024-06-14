@@ -86,11 +86,8 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .anyMatch(mapping -> StringUtils.equals(reqDto.getTempUserInfo().getNickname(), mapping.getNickname()) &&
                         StringUtils.equals(reqDto.getTempUserInfo().getPassword(), mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
-        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .map(mapping -> tempAppointmentMapper.to(mapping, StringUtils.equals(
-                        hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
-                .toList();
+        List<UserParticipationInfo> userParticipationInfoList =
+                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
