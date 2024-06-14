@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -17,8 +18,8 @@ import java.util.List;
 @Schema(description = "비회원의 약속 참여 요청 객체")
 public class CreateTempAppointmentParticipationReq {
 
-    @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
     @Schema(description = "약속 코드", example = "abcd1234efgh")
+    @NotBlank(message = "약속 코드는 비어 있을 수 없습니다.")
     private String appointmentCode;
 
     @NotEmpty(message = "날짜 및 시간 정보는 비어 있을 수 없습니다.")
@@ -31,7 +32,8 @@ public class CreateTempAppointmentParticipationReq {
                     "\"selectedEndTime\": \"21:00\"}]")
     private List<@Valid SelectedDateTime> selectedDateTimeList;
 
-    @Valid
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
+    @Valid
+    @NotNull
     private TempUserInfo tempUserInfo;
 }
