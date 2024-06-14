@@ -67,7 +67,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
+        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<UserAppointmentMapping> userAppointmentMappingList =
