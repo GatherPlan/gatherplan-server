@@ -30,7 +30,7 @@ public interface TempAppointmentMapper {
     TempAppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
 
     @Mapping(target = "participationInfo", source = "userAppointmentMapping")
-    TempAppointmentParticipantRespDto toTempAppointmentParticipantRespDto(ParticipationInfo userAppointmentMapping);
+    TempAppointmentMyParticipantRespDto toTempAppointmentParticipantRespDto(ParticipationInfo userAppointmentMapping);
 
     @Mapping(target = "isAvailable", source = "userAppointmentMapping.available")
     @Mapping(target = "userRole", source = "userRole")

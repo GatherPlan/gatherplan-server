@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempAppointmentParticipantRespDto {
+public class TempAppointmentMyParticipantRespDto {
 
     private ParticipationInfo participationInfo;
 }

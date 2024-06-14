@@ -48,9 +48,9 @@ public interface TempAppointmentVoMapper {
 
     TempAppointmentCandidateInfoResp to(TempAppointmentCandidateInfoRespDto respDto);
 
-    TempAppointmentParticipantReqDto to(TempAppointmentParticipantReq req);
+    TempAppointmentMyParticipantReqDto to(TempAppointmentMyParticipantReq req);
 
-    TempAppointmentParticipantResp to(TempAppointmentParticipantRespDto respDto);
+    TempAppointmentMyParticipantResp to(TempAppointmentMyParticipantRespDto respDto);
 
     TempCheckJoinReqDto to(TempCheckUserReq req);
 }
