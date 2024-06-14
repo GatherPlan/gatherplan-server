@@ -69,20 +69,26 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId) {
-        AppointmentInfoDto appointmentInfoDto = customAppointmentRepository.findAppointmentInfoDtoByAppointmentCodeAndUserSeq(appointmentCode, userId);
+        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointmentCode, UserRole.GUEST);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        String hostName = appointmentInfoDto.getHostName();
+        UserAppointmentMapping hostMapping = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
+
+        boolean isParticipated = userAppointmentMappingList.stream()
+                .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
         List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .map(mapping -> {
-                    UserRole userRole = StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST;
-                    return appointmentMapper.to(mapping, userRole);
-                })
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
+                .map(mapping -> appointmentMapper.to(mapping, StringUtils.equals(
+                        hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
                 .toList();
 
-        return appointmentMapper.to(appointmentInfoDto.getAppointment(), userParticipationInfoList, appointmentInfoDto.getHostName(), appointmentInfoDto.getIsHost(), appointmentInfoDto.getIsParticipated());
+        return appointmentMapper.to(appointment, userParticipationInfoList, hostMapping.getNickname(), userId.equals(hostMapping.getUserSeq()), isParticipated);
     }
 
     @Override

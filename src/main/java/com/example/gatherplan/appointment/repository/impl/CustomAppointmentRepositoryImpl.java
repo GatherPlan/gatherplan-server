@@ -132,7 +132,6 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .leftJoin(guestMapping).on(guestMapping.appointmentCode.eq(appointment.appointmentCode)
                         .and(guestMapping.userRole.eq(UserRole.GUEST)))
                 .where(userAppointmentMapping.appointmentCode.eq(appointmentCode))
-
                 .fetchFirst();
     }
 }

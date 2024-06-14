@@ -19,6 +19,10 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
 
     List<UserAppointmentMapping> findAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
+    List<UserAppointmentMapping> findAllByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
+
+    List<UserAppointmentMapping> findAllByAppointmentCode(String appointmentCode);
+
     void deleteAllByAppointmentCode(String appointmentCode);
 
     void deleteAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
