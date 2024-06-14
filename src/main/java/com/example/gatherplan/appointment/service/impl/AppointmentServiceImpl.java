@@ -77,6 +77,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
                 .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
+        String hostName = hostMapping.getNickname();
+        
+        boolean isHost = userId.equals(hostMapping.getUserSeq());
+
         boolean isParticipated = userAppointmentMappingList.stream()
                 .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
@@ -86,7 +90,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                         hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
                 .toList();
 
-        return appointmentMapper.to(appointment, userParticipationInfoList, hostMapping.getNickname(), userId.equals(hostMapping.getUserSeq()), isParticipated);
+        return appointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
 
     @Override
