@@ -52,5 +52,5 @@ public interface AppointmentMapper {
     AppointmentParticipantsRespDto to(ParticipationInfo participationInfo);
 
     @Mapping(target = "participationInfo", source = "participationInfo")
-    AppointmentParticipantRespDto toAppointmentParticipantRespDto(ParticipationInfo participationInfo);
+    AppointmentMyParticipantRespDto toAppointmentParticipantRespDto(ParticipationInfo participationInfo);
 }

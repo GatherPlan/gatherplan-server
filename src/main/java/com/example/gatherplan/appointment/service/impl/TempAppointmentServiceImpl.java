@@ -126,12 +126,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                     throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
                 });
 
-        userAppointmentMappingRepository
-                .findByAppointmentCodeAndNicknameAndUserRole(reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), UserRole.GUEST)
-                .ifPresent(mapping -> {
-                    throw new AppointmentException(ErrorCode.RESOURCE_CONFLICT);
-                });
-
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
@@ -177,11 +171,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         return tempAppointmentMapper.toTempAppointmentParticipantRespDto(userAppointmentMapping);
-    }
-
-    @Override
-    public boolean checkUser(TempCheckJoinReqDto reqDto) {
-        return false;
     }
 
     @Override
