@@ -68,30 +68,27 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND))
-                .getNickname();
-
-        boolean isParticipated = userAppointmentMappingRepository
-                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST);
-
-        boolean isHost = userAppointmentMappingRepository
-                .existsByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST);
-
         List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+
+        UserAppointmentMapping hostMapping = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
+
+        boolean isParticipated = userAppointmentMappingList.stream()
+                .anyMatch(mapping -> StringUtils.equals(reqDto.getTempUserInfo().getNickname(), mapping.getNickname()) &&
+                        StringUtils.equals(reqDto.getTempUserInfo().getPassword(), mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
         List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .map(tempAppointmentMapper::toUserParticipationInfo)
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
+                .map(mapping -> tempAppointmentMapper.to(mapping, StringUtils.equals(
+                        hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
                 .toList();
 
-        return tempAppointmentMapper.toTempAppointmentInfoDetailRespDto(appointment, hostName, isParticipated, isHost, userParticipationInfoList);
+        return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostMapping.getNickname(), StringUtils.equals(hostMapping.getNickname(), reqDto.getTempUserInfo().getNickname()), isParticipated);
     }
 
     @Override
