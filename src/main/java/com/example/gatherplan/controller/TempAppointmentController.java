@@ -217,10 +217,10 @@ public class TempAppointmentController {
         );
     }
 
-    @PostMapping("/join:valid")
+    @GetMapping("/join:valid")
     @Operation(summary = "비회원의 임시 회원가입 가능 여부 확인 요청", description = "지정 약속에 비회원으로 가입 및 참여가 가능한지 확인합니다. [figma #19]")
     public ResponseEntity<BooleanResp> validJoin(
-            @Valid @RequestBody CreateTempUserReq req) {
+            @Valid @ModelAttribute @ParameterObject CreateTempUserReq req) {
 
         CreateTempUserReqDto reqDto = tempAppointmentVoMapper.to(req);
         boolean isValid = tempAppointmentService.validJoin(reqDto);
