@@ -174,11 +174,19 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        appointment.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
+        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.HOST)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
+                .getNickname();
+
+        UserAppointmentMapping userAppointmentMapping =
+                userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(appointment.getAppointmentCode(),
+                                reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        return tempAppointmentMapper.toTempAppointmentParticipantRespDto(userAppointmentMapping);
+        ParticipationInfo participationInfo = tempAppointmentMapper.toParticipationInfo(
+                userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
+
+        return tempAppointmentMapper.toTempAppointmentParticipantRespDto(participationInfo);
     }
 
     @Override
