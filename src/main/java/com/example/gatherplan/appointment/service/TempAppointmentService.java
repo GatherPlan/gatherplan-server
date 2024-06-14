@@ -32,7 +32,7 @@ public interface TempAppointmentService {
 
     boolean validJoin(CreateTempUserReqDto reqDto);
 
-    TempAppointmentParticipantRespDto retrieveAppointmentParticipant(TempAppointmentParticipantReqDto reqDto);
+    TempAppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(TempAppointmentMyParticipantReqDto reqDto);
 
     boolean checkUser(TempCheckJoinReqDto reqDto);
 }

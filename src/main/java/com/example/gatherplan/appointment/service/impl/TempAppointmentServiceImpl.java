@@ -167,7 +167,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
-    public TempAppointmentParticipantRespDto retrieveAppointmentParticipant(TempAppointmentParticipantReqDto reqDto) {
+    public TempAppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(TempAppointmentMyParticipantReqDto reqDto) {
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
