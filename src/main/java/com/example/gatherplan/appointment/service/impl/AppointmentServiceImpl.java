@@ -9,7 +9,6 @@ import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
-import com.example.gatherplan.appointment.repository.CustomUserRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
@@ -42,7 +41,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
 
-    private final CustomUserRepository customUserRepository;
     private final CustomAppointmentRepository customAppointmentRepository;
 
     @Override
@@ -268,14 +266,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean checkName(String appointmentCode, String name) {
-        return customUserRepository.findAllUserNameByAppointmentCode(appointmentCode).stream()
-                .noneMatch(findNickname -> StringUtils.equals(findNickname, name));
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return userAppointmentMappingList.stream().noneMatch(
+                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name));
     }
 
     @Override
     public boolean checkNickname(String appointmentCode, String nickname) {
-        return customUserRepository.findAllUserNameByAppointmentCode(appointmentCode).stream()
-                .noneMatch(findNickname -> StringUtils.equals(findNickname, nickname));
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return userAppointmentMappingList.stream().noneMatch(
+                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), nickname));
     }
 
     @Override
