@@ -254,14 +254,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean checkHost(String appointmentCode, Long userId) {
-        return userAppointmentMappingRepository
-                .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST);
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
     }
 
     @Override
     public boolean checkJoin(String appointmentCode, Long userId) {
-        return userAppointmentMappingRepository
-                .existsByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST);
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
     }
 
     @Override
