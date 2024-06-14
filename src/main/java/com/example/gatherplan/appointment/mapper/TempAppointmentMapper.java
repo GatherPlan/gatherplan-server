@@ -6,6 +6,7 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
+import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import org.mapstruct.*;
 
@@ -35,5 +36,11 @@ public interface TempAppointmentMapper {
     @Mapping(target = "userRole", source = "userRole")
     UserParticipationInfo to(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
 
+    @Mapping(target = "userRole", source = "userRole")
+    ParticipationInfo toParticipationInfo(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
+
     TempAppointmentInfoRespDto to(Appointment appointment, List<UserParticipationInfo> userParticipationInfoList, String hostName, boolean isHost, boolean isParticipated);
+
+    @Mapping(target = "participationInfo", source = "participationInfo")
+    TempAppointmentParticipantsRespDto to(ParticipationInfo participationInfo);
 }
