@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 참여 정보 단건 조회 응답 객체")
-public class AppointmentParticipantResp {
+public class AppointmentMyParticipantResp {
 
     @Schema(description = "약속 참여 정보", example = "{ \"nickname\": \"박승일\", " +
             "\"userAuthType\": \"USER\", " +

@@ -35,5 +35,5 @@ public interface AppointmentVoMapper {
 
     UpdateAppointmentJoinReqDto to(UpdateAppointmentJoinReq req);
 
-    AppointmentParticipantResp to(AppointmentParticipantRespDto appointmentParticipantRespDto);
+    AppointmentMyParticipantResp to(AppointmentMyParticipantRespDto appointmentMyParticipantRespDto);
 }
