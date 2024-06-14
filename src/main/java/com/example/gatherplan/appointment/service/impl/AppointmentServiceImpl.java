@@ -84,11 +84,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean isParticipated = userAppointmentMappingList.stream()
                 .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
-        List<UserParticipationInfo> userParticipationInfoList = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .map(mapping -> appointmentMapper.to(mapping, StringUtils.equals(
-                        hostMapping.getNickname(), mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
-                .toList();
+        List<UserParticipationInfo> userParticipationInfoList =
+                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return appointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
