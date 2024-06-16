@@ -1,6 +1,5 @@
 package com.example.gatherplan.region.service;
 
-import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
 import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
 import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
@@ -14,6 +13,4 @@ public interface RegionService {
     List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
 
     List<DailyWeatherRespDto> searchDailyWeather(String addressName);
-
-    void saveFromCSV(List<CSVRowDto> rows);
 }

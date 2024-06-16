@@ -1,6 +1,5 @@
 package com.example.gatherplan.region.service.impl;
 
-import com.example.gatherplan.appointment.dto.CSVRowDto;
 import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.external.KakaoLocationClient;
@@ -16,11 +15,9 @@ import com.example.gatherplan.region.repository.CustomRegionRepository;
 import com.example.gatherplan.region.repository.RegionRepository;
 import com.example.gatherplan.region.repository.entity.Region;
 import com.example.gatherplan.region.service.RegionService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,20 +61,5 @@ public class RegionServiceImpl implements RegionService {
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(regionMapper::to)
                 .toList();
-    }
-
-    @Override
-    @Transactional
-    public void saveFromCSV(List<CSVRowDto> rows) {
-        List<Region> entities = new ArrayList<>();
-        for (CSVRowDto row : rows) {
-            Region entity = Region.builder()
-                    .code(row.getCode())
-                    .address(row.getAddress())
-                    .build();
-            entities.add(entity);
-        }
-
-        regionRepository.saveAll(entities);
     }
 }
