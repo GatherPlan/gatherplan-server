@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.utils;
 
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
+import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.MathUtils;
@@ -71,6 +72,17 @@ public class AppointmentUtils {
         );
 
         return candidateInfoList;
+    }
+
+    public List<UserAppointmentMapping> retrieveAvailableUserList(ConfirmedDateTime confirmedDateTime, List<UserAppointmentMapping> userGuestList) {
+        LocalTime confirmedStartTime = confirmedDateTime.getConfirmedStartTime();
+        LocalTime confirmedEndTime = confirmedDateTime.getConfirmedEndTime();
+
+        return userGuestList.stream()
+                .filter(u ->
+                        u.getSelectedDateTimeList().stream()
+                                .anyMatch(s -> !confirmedStartTime.isBefore(s.getSelectedStartTime()) && !confirmedEndTime.isAfter(s.getSelectedEndTime())))
+                .toList();
     }
 
     // 24시간 동안 1시간 단위로 해당 조합의 멤버 모두 참여 가능한 시간 리스트 구하기 ex) [1,2,3,5,6,10, ...]
