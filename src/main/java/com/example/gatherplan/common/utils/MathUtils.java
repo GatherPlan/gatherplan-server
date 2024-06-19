@@ -2,10 +2,7 @@ package com.example.gatherplan.common.utils;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @UtilityClass
 public class MathUtils {
@@ -17,7 +14,9 @@ public class MathUtils {
             recursionCombinations(elements, visited, 0, r, result);
         }
 
-        return result.reversed();
+        Collections.reverse(result);
+
+        return result;
     }
 
 
