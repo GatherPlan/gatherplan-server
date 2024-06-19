@@ -16,12 +16,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:8080 # HTTP 포트 연결
+      - 8080:8080 # HTTP 포트 연결
     environment:
       SPRING_DATASOURCE_URL: jdbc:h2:tcp://h2:1521/demo # h2 db url
       SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD:
-      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on: # app 서비스 시작 전 실행되어야 하는 서비스
       - db
     restart: always # depends on은 실행 순서만 컨트롤 할뿐,

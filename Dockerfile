@@ -1,6 +1,8 @@
 # OpenJDK 이미지를 베이스로 사용
 FROM openjdk:17-oracle
 
+CMD ["./gradlew", "clean", "build"]
+
 # 애플리케이션 JAR 파일 이름 설정
 ARG JAR_FILE=build/libs/GatherPlan-0.0.1-SNAPSHOT.jar
 
