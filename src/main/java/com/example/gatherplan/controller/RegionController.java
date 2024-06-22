@@ -1,7 +1,6 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
-import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.region.DailyWeatherResp;
 import com.example.gatherplan.controller.vo.region.KeywordPlaceReq;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/region")
 @Tag(name = "부가 서비스", description = "날씨, 상세주소, 행정구역과 관련된 검색 기능을 제공합니다.")
-@Validated(value = RequestValidationSeq.class)
 public class RegionController {
 
     private final RegionService regionService;

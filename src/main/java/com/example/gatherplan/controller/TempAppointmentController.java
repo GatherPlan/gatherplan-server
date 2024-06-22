@@ -3,7 +3,6 @@ package com.example.gatherplan.controller;
 import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
-import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.tempappointment.*;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/temporary/appointments")
 @Tag(name = "약속 with 비회원", description = "비회원의 약속 관련된 기능을 제공합니다.")
-@Validated(value = RequestValidationSeq.class)
 public class TempAppointmentController {
 
     private final TempAppointmentService tempAppointmentService;

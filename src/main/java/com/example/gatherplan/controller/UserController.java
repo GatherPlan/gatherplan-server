@@ -3,7 +3,6 @@ package com.example.gatherplan.controller;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
-import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.CreateUserReq;
 import com.example.gatherplan.controller.vo.appointment.EmailAuthReq;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
@@ -12,15 +11,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 @Tag(name = "회원", description = "회원과 관련된 기능을 제공합니다.")
-@Validated(value = RequestValidationSeq.class)
 public class UserController {
 
     private final UserService userService;

@@ -1,9 +1,5 @@
 package com.example.gatherplan.common.unit;
 
-import com.example.gatherplan.controller.validation.NotBlankNickName;
-import com.example.gatherplan.controller.validation.NotBlankPassword;
-import com.example.gatherplan.controller.validation.SizeCheckNickName;
-import com.example.gatherplan.controller.validation.SizeCheckPassword;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -18,12 +14,12 @@ import org.hibernate.annotations.Comment;
 public class TempUserInfo {
 
     @Comment("비회원 닉네임")
-    @NotBlank(message = "이름은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
-    @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
+    @NotBlank(message = "이름은 공백이 될 수 없습니다.")
+    @Size(min = 2, max = 6, message = "이름은 2자 이상 6자 이하여야 합니다.")
     private String nickname;
 
     @Comment("비회원 비밀번호")
-    @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.", groups = NotBlankPassword.class)
-    @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.", groups = SizeCheckPassword.class)
+    @NotBlank(message = "비밀번호는 공백이 될 수 없습니다.")
+    @Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하여야 합니다.")
     private String password;
 }

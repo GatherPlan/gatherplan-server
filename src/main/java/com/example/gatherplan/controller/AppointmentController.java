@@ -4,7 +4,6 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
-import com.example.gatherplan.controller.validation.RequestValidationSeq;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/appointments")
 @Tag(name = "약속 with 회원", description = "회원의 약속 관련된 기능을 제공합니다.")
-@Validated(value = RequestValidationSeq.class)
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
