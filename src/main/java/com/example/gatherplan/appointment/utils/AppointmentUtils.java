@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.utils;
 
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
+import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.unit.UserParticipationInfo;

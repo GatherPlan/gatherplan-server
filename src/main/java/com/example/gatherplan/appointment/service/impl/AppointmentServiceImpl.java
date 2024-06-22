@@ -13,8 +13,8 @@ import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepos
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
-import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.utils.AppointmentUtils;
+import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
@@ -78,7 +78,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
         String hostName = hostMapping.getNickname();
-        
+
         boolean isHost = userId.equals(hostMapping.getUserSeq());
 
         boolean isParticipated = userAppointmentMappingList.stream()

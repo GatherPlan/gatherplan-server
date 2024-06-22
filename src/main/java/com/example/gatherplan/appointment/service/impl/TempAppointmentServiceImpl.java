@@ -13,8 +13,8 @@ import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepos
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
-import com.example.gatherplan.appointment.utils.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.utils.AppointmentUtils;
+import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
@@ -180,7 +180,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         UserAppointmentMapping userAppointmentMapping =
                 userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(appointment.getAppointmentCode(),
                                 reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+                        .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         ParticipationInfo participationInfo = tempAppointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);

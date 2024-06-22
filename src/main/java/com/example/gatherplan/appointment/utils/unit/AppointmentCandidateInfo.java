@@ -1,4 +1,4 @@
-package com.example.gatherplan.appointment.utils;
+package com.example.gatherplan.appointment.utils.unit;
 
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import lombok.*;
@@ -8,16 +8,17 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppointmentCandidateInfo {
     private LocalDate candidateDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private List<UserParticipationInfo> userParticipationInfoList;
 
-    protected static AppointmentCandidateInfo of(LocalDate candidateDate, int start, int end, List<UserParticipationInfo> userParticipationInfoList) {
+    // util 에서 사용 시 of 로만 생성할 수 있도록
+    public static AppointmentCandidateInfo of(LocalDate candidateDate, int start, int end, List<UserParticipationInfo> userParticipationInfoList) {
         return AppointmentCandidateInfo.builder()
                 .candidateDate(candidateDate)
                 .startTime(LocalTime.of(start, 0))
