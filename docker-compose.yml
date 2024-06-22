@@ -5,14 +5,9 @@ services:
     image: mariadb:latest
     ports:
       - "3306:3306" # TCP 포트 : 데이터베이스 연결 포트
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-    volumes:
-      - ./database/config:/etc/mysql/conf.d
-      - ./database/data:/var/lib/mysql
+    env_file:
+      - mariadb.env
+
   app: # spring app 서비스
     container_name: app
     build:
@@ -20,15 +15,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080" # HTTP 포트 연결
-    environment:
-      SPRING_DATASOURCE_URL: ${DB_SERVER}
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on: # app 서비스 시작 전 실행되어야 하는 서비스
       - db
     restart: always # depends on은 실행 순서만 컨트롤 할뿐,
     # 컨테이너 안의 서비스가 실행가능한 상태인지까지는 확인 하지 않기 때문에
     # DB가 아직 실행가능한 상태가 아니여서 실패하는 경우 재시작 하도록 설정
     env_file:
-      - gatherpaln-server.env
+      - app.env
