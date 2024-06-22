@@ -1,8 +1,6 @@
 package com.example.gatherplan.controller.vo.appointment;
 
 import com.example.gatherplan.common.unit.SelectedDateTime;
-import com.example.gatherplan.controller.validation.NotBlankNickName;
-import com.example.gatherplan.controller.validation.SizeCheckNickName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -34,7 +32,7 @@ public class CreateAppointmentJoinReq {
     private List<@Valid SelectedDateTime> selectedDateTimeList;
 
     @Schema(description = "닉네임", example = "이재훈")
-    @NotBlank(message = "닉네임은 공백이 될 수 없습니다.", groups = NotBlankNickName.class)
-    @Size(min = 2, max = 6, message = "닉네임은 2자 이상 6자 이하여야 합니다.", groups = SizeCheckNickName.class)
+    @NotBlank(message = "닉네임은 공백이 될 수 없습니다.")
+    @Size(min = 2, max = 6, message = "닉네임은 2자 이상 6자 이하여야 합니다.")
     private String nickname;
 }
