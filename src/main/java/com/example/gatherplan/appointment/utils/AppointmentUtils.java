@@ -26,7 +26,7 @@ public class AppointmentUtils {
                 .map(UserAppointmentMapping::getNickname).toList();
 
         List<Set<String>> participantsCombination = MathUtils.combinations(participantsNicknames);
-        
+
         List<AppointmentCandidateInfo> candidateInfoList = new ArrayList<>();
 
         participantsCombination.forEach(
@@ -75,13 +75,19 @@ public class AppointmentUtils {
     }
 
     public List<UserAppointmentMapping> retrieveAvailableUserList(ConfirmedDateTime confirmedDateTime, List<UserAppointmentMapping> userGuestList) {
+        LocalDate confirmedDate = confirmedDateTime.getConfirmedDate();
         LocalTime confirmedStartTime = confirmedDateTime.getConfirmedStartTime();
         LocalTime confirmedEndTime = confirmedDateTime.getConfirmedEndTime();
 
         return userGuestList.stream()
                 .filter(u ->
                         u.getSelectedDateTimeList().stream()
-                                .anyMatch(s -> !confirmedStartTime.isBefore(s.getSelectedStartTime()) && !confirmedEndTime.isAfter(s.getSelectedEndTime())))
+                                .anyMatch(s -> {
+                                    boolean isAvailableDate = confirmedDate.isEqual(s.getSelectedDate());
+                                    boolean isAvailableTime = !confirmedStartTime.isBefore(s.getSelectedStartTime())
+                                            && !confirmedEndTime.isAfter(s.getSelectedEndTime());
+                                    return isAvailableDate && isAvailableTime;
+                                }))
                 .toList();
     }
 
@@ -167,16 +173,6 @@ public class AppointmentUtils {
                             return isEqualDateTime && isEqualParticipants;
                         }
                 );
-    }
-
-    /**
-     * LocalTIme 이 23시59분일경우 24시로 처리하여 시간을 반환
-     *
-     * @param localTime 시분
-     * @return 시
-     */
-    private int getHourInLocalTime(LocalTime localTime) {
-        return LocalTime.of(23, 59).equals(localTime) ? 24 : localTime.getHour();
     }
 
     public List<UserParticipationInfo> retrieveuserParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName) {
