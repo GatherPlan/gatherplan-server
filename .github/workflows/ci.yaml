@@ -65,10 +65,10 @@ jobs:
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
-#      # Push the Docker image to Google Artifact Registry
-#      - name: Publish
-#        run: |-
-#          docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ env.IMG_TAG }}"
+      # Push the Docker image to Google Artifact Registry
+      - name: Publish
+        run: |-
+          docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ env.IMG_TAG }}"
 #
 #      - name: Create GITHUB_SHA_SHORT
 #        id: meta
