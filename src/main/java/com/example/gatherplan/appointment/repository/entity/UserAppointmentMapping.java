@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "USER_APPOINTMENT_MAPPING", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"appointmentCode", "userRole", "nickname"})
+        @UniqueConstraint(name = "unique_appointment_mapping_user_key", columnNames = {"appointmentCode", "userRole", "nickname"})
 })
 public class UserAppointmentMapping extends BaseAuditableEntity {
     @Id
