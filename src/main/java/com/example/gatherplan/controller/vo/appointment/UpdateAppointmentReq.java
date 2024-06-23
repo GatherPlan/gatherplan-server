@@ -33,5 +33,6 @@ public class UpdateAppointmentReq {
     private Address address;
 
     @Schema(description = "약속 후보 날짜", example = "[\"2024-03-18\",\"2024-03-20\"]")
+    @Size(max = 10, message = "약속 후보 날짜는 10개 이하여야 합니다.")
     private List<LocalDate> candidateDateList;
 }
