@@ -48,16 +48,16 @@ public class SecurityConfig {
         httpSecurity
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        httpSecurity
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/**").permitAll() // swagger 관련
-                        .requestMatchers("/api/v1/users/**").permitAll()
-                        .requestMatchers("/api/v1/region/**").permitAll()
-                        .requestMatchers("/api/v1/temporary/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/v1/appointments/preview").permitAll()
-                        .anyRequest().authenticated());
+//
+//        httpSecurity
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/**").permitAll() // swagger 관련
+//                        .requestMatchers("/api/v1/users/**").permitAll()
+//                        .requestMatchers("/api/v1/region/**").permitAll()
+//                        .requestMatchers("/api/v1/temporary/**").permitAll()
+//                        .requestMatchers("/error").permitAll()
+//                        .requestMatchers("/api/v1/appointments/preview").permitAll()
+//                        .anyRequest().authenticated());
 
         httpSecurity
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
