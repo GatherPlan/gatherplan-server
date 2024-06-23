@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/v1/temporary/appointments")
 @Tag(name = "약속 with 비회원", description = "비회원의 약속 관련된 기능을 제공합니다.")
 public class TempAppointmentController {

@@ -44,7 +44,6 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-
         httpSecurity
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -58,11 +57,6 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/v1/appointments/preview").permitAll()
                         .anyRequest().authenticated());
-
-        httpSecurity
-                .authorizeRequests(auth -> auth
-                        .requestMatchers("/**")
-                        .hasIpAddress("0.0.0.0"));
 
         httpSecurity
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
