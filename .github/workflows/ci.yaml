@@ -50,6 +50,7 @@ jobs:
 
       - name: Build
         run: |-
+          ./gradlew --version
           
           ./gradlew build
           
