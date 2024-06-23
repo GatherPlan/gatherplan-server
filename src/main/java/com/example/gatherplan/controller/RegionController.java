@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
@@ -35,7 +36,7 @@ public class RegionController {
     @GetMapping("/district")
     @Operation(summary = "행정구역 검색 요청", description = "행정구역을 검색할 때 사용됩니다. [figma #6,#33]")
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
-            @RequestParam @NotBlank(message = "키워드는 공백이 될 수 없습니다.") String keyword) {
+            @RequestParam @NotBlank(message = "키워드는 공백이 될 수 없습니다.") @Size(min = 2, message = "키워드는 2자 이상이어야합니다.") String keyword) {
 
         List<RegionDto> regionDtos = regionService.searchRegion(keyword);
 
@@ -63,7 +64,7 @@ public class RegionController {
     @GetMapping("/weather")
     @Operation(summary = "날씨 검색 요청", description = "날씨를 검색할 때 사용됩니다. [figma #7,#14,#34,#37]")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
-            @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") String addressName) throws JSONException {
+            @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") @Size(min = 2, message = "주소는 2자 이상이어야합니다.") String addressName) throws JSONException {
 
         List<DailyWeatherRespDto> dailyWeatherRespDtos = regionService.searchDailyWeather(addressName);
 

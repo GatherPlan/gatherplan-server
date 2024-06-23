@@ -3,6 +3,7 @@ package com.example.gatherplan.controller.vo.region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import lombok.Getter;
 public class KeywordPlaceReq {
 
     @NotBlank(message = "키워드는 공백일 수 없습니다")
+    @Size(min = 2, message = "키워드는 2자 이상이어야합니다.")
     @Schema(description = "약속 장소 검색 키워드", example = "뱃놈")
     private String keyword;
 
