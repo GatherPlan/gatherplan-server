@@ -2,6 +2,7 @@ package com.example.gatherplan.controller.vo.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -28,6 +29,17 @@ public class ListResponse<T> {
                 .metaData(metaData)
                 .data(data)
                 .build();
+    }
+
+    public static <T> ListResponse<T> of(List<T> data, MetaData metaData) {
+        return ListResponse.<T>builder()
+                .data(data)
+                .metaData(metaData)
+                .build();
+    }
+
+    public static <T> ListResponse<T> of(Page<T> page) {
+        return of(page.getContent(), MetaData.of(page));
     }
 
 }
