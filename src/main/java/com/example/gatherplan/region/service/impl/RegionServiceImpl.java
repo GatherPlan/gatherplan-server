@@ -16,10 +16,12 @@ import com.example.gatherplan.region.repository.RegionRepository;
 import com.example.gatherplan.region.repository.entity.Region;
 import com.example.gatherplan.region.service.RegionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RegionServiceImpl implements RegionService {
@@ -57,6 +59,8 @@ public class RegionServiceImpl implements RegionService {
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(w -> {
+                    leaveWeatherCodeWithText(w.getWeatherCode(), w.getWeatherState());
+
                     String weatherImagePath = generateWeatherImagePath(w.getWeatherCode());
                     return regionMapper.to(w, weatherImagePath);
                 })
@@ -66,5 +70,16 @@ public class RegionServiceImpl implements RegionService {
     private String generateWeatherImagePath(String weatherCode) {
         String baseUrl = "https://www.kr-weathernews.com/mv4/html/assets/images/weather-icon-set/icon1/dark/night/%s.svg";
         return String.format(baseUrl, weatherCode);
+    }
+
+    /**
+     * weather code 및 weather state 매핑 추적을 위한 로그 기록
+     * 모든 날씨 추적 완료 후 삭제 예정
+     *
+     * @param weatherCode  날씨 코드 ex)200
+     * @param weatherState 날씨 코드 텍스트 ex)흐림
+     */
+    private void leaveWeatherCodeWithText(String weatherCode, String weatherState) {
+        log.info("WEATHER CODE WITH STATE : {}-{}", weatherCode, weatherState);
     }
 }
