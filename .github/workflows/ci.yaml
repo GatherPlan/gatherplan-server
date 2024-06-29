@@ -1,16 +1,8 @@
 name: Build and Deploy to GKE
 
 on:
-  workflow_dispatch:
-    inputs:
-      tags:
-        description: "test"
-        required: false
-        type: string
-
-#on:
-#  push:
-#    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
