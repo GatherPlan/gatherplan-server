@@ -2,13 +2,11 @@ package com.example.gatherplan.region.service.impl;
 
 import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.CustomPageRequest;
 import com.example.gatherplan.external.KakaoLocationClient;
 import com.example.gatherplan.external.WeatherNewsClient;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
-import com.example.gatherplan.region.dto.DailyWeatherRespDto;
-import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
-import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
-import com.example.gatherplan.region.dto.RegionDto;
+import com.example.gatherplan.region.dto.*;
 import com.example.gatherplan.region.exception.RegionException;
 import com.example.gatherplan.region.mapper.RegionMapper;
 import com.example.gatherplan.region.repository.CustomRegionRepository;
@@ -17,6 +15,8 @@ import com.example.gatherplan.region.repository.entity.Region;
 import com.example.gatherplan.region.service.RegionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,12 +33,15 @@ public class RegionServiceImpl implements RegionService {
     private RegionRepository regionRepository;
 
     @Override
-    public List<RegionDto> searchRegion(String keyword) {
-        List<Region> regionList = regionRepository.findByAddressContaining(keyword);
+    public Page<RegionDto> searchRegion(DistrictSearchReqDto reqDto) {
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
+        Page<Region> regionList = regionRepository.findByAddressContaining(reqDto.getKeyword(), customPageRequest);
 
-        return regionList.stream()
+        List<RegionDto> result = regionList.stream()
                 .map(r -> regionMapper.to(r, LocationType.DISTRICT))
                 .toList();
+
+        return new PageImpl<>(result, customPageRequest, regionList.getTotalElements());
     }
 
     @Override
