@@ -2,14 +2,8 @@ package com.example.gatherplan.controller;
 
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
 import com.example.gatherplan.controller.vo.common.ListResponse;
-import com.example.gatherplan.controller.vo.region.DailyWeatherResp;
-import com.example.gatherplan.controller.vo.region.KeywordPlaceReq;
-import com.example.gatherplan.controller.vo.region.KeywordPlaceResp;
-import com.example.gatherplan.controller.vo.region.RegionResp;
-import com.example.gatherplan.region.dto.DailyWeatherRespDto;
-import com.example.gatherplan.region.dto.KeywordPlaceReqDto;
-import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
-import com.example.gatherplan.region.dto.RegionDto;
+import com.example.gatherplan.controller.vo.region.*;
+import com.example.gatherplan.region.dto.*;
 import com.example.gatherplan.region.service.RegionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,13 +31,14 @@ public class RegionController {
     @GetMapping("/district")
     @Operation(summary = "행정구역 검색 요청", description = "행정구역을 검색할 때 사용됩니다. [figma #6,#33]")
     public ResponseEntity<ListResponse<RegionResp>> searchRegion(
-            @RequestParam @NotBlank(message = "키워드는 공백이 될 수 없습니다.") @Size(min = 2, message = "키워드는 2자 이상이어야합니다.") String keyword) {
+            @Valid @ModelAttribute @ParameterObject DistrictSearchReq req) {
 
-        List<RegionDto> regionDtos = regionService.searchRegion(keyword);
+        DistrictSearchReqDto reqDto = regionVoMapper.to(req);
+        Page<RegionDto> regionDtos = regionService.searchRegion(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        regionDtos.stream().map(regionVoMapper::to).toList()
+                        regionDtos.map(regionVoMapper::to)
                 )
         );
     }
