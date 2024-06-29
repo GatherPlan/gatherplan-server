@@ -21,5 +21,5 @@ public interface RegionMapper {
 
     KeywordPlaceRespDto to(KeywordPlaceClientResp.KeywordPlaceInfo clientResp, LocationType locationType);
 
-    DailyWeatherRespDto to(DailyWeatherClientResp.DailyWeatherInfo clientResp);
+    DailyWeatherRespDto to(DailyWeatherClientResp.DailyWeatherInfo clientResp, String weatherImagePath);
 }

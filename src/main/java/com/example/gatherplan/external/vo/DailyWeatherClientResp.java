@@ -20,6 +20,8 @@ public class DailyWeatherClientResp {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DailyWeatherInfo {
+        @JsonProperty("wx")
+        private String weatherCode;
         @JsonProperty("wx_text")
         private String weatherState;
         @JsonProperty("mon")
