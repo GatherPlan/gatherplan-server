@@ -9,6 +9,10 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "약속 장소 날씨 검색 응답 객체")
 public class DailyWeatherResp {
+    @Schema(description = "날씨 이미지 경로",
+            example = "https://www.kr-weathernews.com/mv4/html/assets/images/weather-icon-set/icon1/dark/night/302.svg")
+    private String weatherImagePath;
+
     @Schema(description = "월", example = "3")
     private String month;
 

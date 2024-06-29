@@ -56,7 +56,15 @@ public class RegionServiceImpl implements RegionService {
                 .orElseThrow(() -> new RegionException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
-                .map(regionMapper::to)
+                .map(w -> {
+                    String weatherImagePath = generateWeatherImagePath(w.getWeatherCode());
+                    return regionMapper.to(w, weatherImagePath);
+                })
                 .toList();
+    }
+
+    private String generateWeatherImagePath(String weatherCode) {
+        String baseUrl = "https://www.kr-weathernews.com/mv4/html/assets/images/weather-icon-set/icon1/dark/night/%s.svg";
+        return String.format(baseUrl, weatherCode);
     }
 }

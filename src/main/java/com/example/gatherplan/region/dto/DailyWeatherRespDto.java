@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyWeatherRespDto {
+    private String weatherImagePath;
     private String month;
     private String day;
     private String weatherState;
