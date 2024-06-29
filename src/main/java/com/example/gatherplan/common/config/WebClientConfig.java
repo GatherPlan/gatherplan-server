@@ -23,22 +23,24 @@ public class WebClientConfig {
                 .filter(
                         ExchangeFilterFunction.ofRequestProcessor(
                                 clientRequest -> {
-                                    log.info("================= REQUEST INFO =================");
+                                    log.info("================= REQUEST INFO START =================");
                                     log.info("Base Info : {} {}", clientRequest.method(), clientRequest.url());
                                     clientRequest.headers().forEach(
                                             (name, values) -> values.forEach(value -> log.info("{} : {}", name, value))
                                     );
+                                    log.info("================== REQUEST INFO END ==================");
                                     return Mono.just(clientRequest);
                                 }
                         )
                 ).filter(
                         ExchangeFilterFunction.ofResponseProcessor(
                                 clientResponse -> {
-                                    log.info("================= RESPONSE INFO =================");
+                                    log.info("================= RESPONSE INFO START =================");
                                     log.info("Result Status : {}", clientResponse.statusCode());
                                     clientResponse.headers().asHttpHeaders().forEach(
                                             (name, values) -> values.forEach(value -> log.info("{} : {}", name, value))
                                     );
+                                    log.info("================== RESPONSE INFO END ==================");
                                     return Mono.just(clientResponse);
                                 }
                         )
