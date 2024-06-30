@@ -34,26 +34,26 @@ public class RegionController {
             @Valid @ModelAttribute @ParameterObject DistrictSearchReq req) {
 
         DistrictSearchReqDto reqDto = regionVoMapper.to(req);
-        Page<DistrictSearchRespDto> regionDtos = regionService.searchRegion(reqDto);
+        Page<DistrictSearchRespDto> respDtos = regionService.searchRegion(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        regionDtos.map(regionVoMapper::to)
+                        respDtos.map(regionVoMapper::to)
                 )
         );
     }
 
     @GetMapping("/place")
     @Operation(summary = "상세주소 검색 요청", description = "상세주소를 검색할 때 사용됩니다. [figma #6,#33]")
-    public ResponseEntity<ListResponse<KeywordPlaceResp>> searchPlace(
-            @Valid @ModelAttribute @ParameterObject KeywordPlaceReq req) {
+    public ResponseEntity<ListResponse<PlaceSearchResp>> searchPlace(
+            @Valid @ModelAttribute @ParameterObject PlaceSearchReq req) {
 
         KeywordPlaceReqDto keywordPlaceReqDto = regionVoMapper.to(req);
-        List<KeywordPlaceRespDto> keywordPlaceRespDtos = regionService.searchKeywordPlace(keywordPlaceReqDto);
+        Page<PlaceSearchRespDto> respDtos = regionService.searchKeywordPlace(keywordPlaceReqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        keywordPlaceRespDtos.stream().map(regionVoMapper::to).toList())
+                        respDtos.map(regionVoMapper::to))
         );
     }
 
@@ -62,11 +62,11 @@ public class RegionController {
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
             @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") @Size(min = 2, message = "주소는 2자 이상이어야합니다.") String addressName) throws JSONException {
 
-        List<DailyWeatherRespDto> dailyWeatherRespDtos = regionService.searchDailyWeather(addressName);
+        List<DailyWeatherRespDto> respDtos = regionService.searchDailyWeather(addressName);
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        dailyWeatherRespDtos.stream().map(regionVoMapper::to).toList())
+                        respDtos.stream().map(regionVoMapper::to).toList())
         );
     }
 }

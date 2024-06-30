@@ -19,7 +19,7 @@ public interface RegionVoMapper {
 
     DailyWeatherResp to(DailyWeatherRespDto respDto);
 
-    KeywordPlaceReqDto to(KeywordPlaceReq req);
+    KeywordPlaceReqDto to(PlaceSearchReq req);
 
-    KeywordPlaceResp to(KeywordPlaceRespDto respDto);
+    PlaceSearchResp to(PlaceSearchRespDto respDto);
 }
