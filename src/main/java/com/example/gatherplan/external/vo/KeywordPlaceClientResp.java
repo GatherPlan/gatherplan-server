@@ -11,15 +11,15 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KeywordPlaceClientResp {
-    private List<KeywordPlaceInfo> documents;
-    private MetaData meta;
+    private List<PlaceSearchInfo> documents;
+    private KakaoMetaData meta;
 
     @Getter
     @Builder
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class KeywordPlaceInfo {
+    public static class PlaceSearchInfo {
         private String placeName;
         private String addressName;
         private String placeUrl;
@@ -30,8 +30,9 @@ public class KeywordPlaceClientResp {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class MetaData {
-        private String totalCount;
-        private String pageableCount;
+    public static class KakaoMetaData {
+        private int totalCount;
+        private int pageableCount;
+        private boolean isEnd;
     }
 }

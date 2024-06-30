@@ -5,7 +5,7 @@ import com.example.gatherplan.external.vo.DailyWeatherClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.DailyWeatherRespDto;
 import com.example.gatherplan.region.dto.DistrictSearchRespDto;
-import com.example.gatherplan.region.dto.KeywordPlaceRespDto;
+import com.example.gatherplan.region.dto.PlaceSearchRespDto;
 import com.example.gatherplan.region.repository.entity.Region;
 import org.mapstruct.*;
 
@@ -19,7 +19,7 @@ import org.mapstruct.*;
 public interface RegionMapper {
     DistrictSearchRespDto to(Region entity, LocationType locationType);
 
-    KeywordPlaceRespDto to(KeywordPlaceClientResp.KeywordPlaceInfo clientResp, LocationType locationType);
+    PlaceSearchRespDto to(KeywordPlaceClientResp.PlaceSearchInfo clientResp, LocationType locationType);
 
     DailyWeatherRespDto to(DailyWeatherClientResp.DailyWeatherInfo clientResp, String weatherImagePath);
 }

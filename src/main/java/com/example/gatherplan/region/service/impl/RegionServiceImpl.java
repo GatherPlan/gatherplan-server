@@ -45,14 +45,17 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto) {
+    public Page<PlaceSearchRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto) {
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
         KeywordPlaceClientResp keywordPlaceClientResp =
                 kakaoLocationClient.searchLocationByKeyword(
                         reqDto.getKeyword(), reqDto.getPage(), reqDto.getSize());
 
-        return keywordPlaceClientResp.getDocuments().stream()
+        List<PlaceSearchRespDto> dataList = keywordPlaceClientResp.getDocuments().stream()
                 .map(r -> regionMapper.to(r, LocationType.DETAIL_ADDRESS))
                 .toList();
+
+        return new PageImpl<>(dataList, customPageRequest, keywordPlaceClientResp.getMeta().getPageableCount());
     }
 
     @Override

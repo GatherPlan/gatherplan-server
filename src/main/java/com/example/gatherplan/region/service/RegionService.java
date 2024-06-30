@@ -8,7 +8,7 @@ import java.util.List;
 public interface RegionService {
     Page<DistrictSearchRespDto> searchRegion(DistrictSearchReqDto reqDto);
 
-    List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
+    Page<PlaceSearchRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
 
     List<DailyWeatherRespDto> searchDailyWeather(String addressName);
 }
