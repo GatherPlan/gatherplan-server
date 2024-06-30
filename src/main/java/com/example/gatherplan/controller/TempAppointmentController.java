@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -152,12 +153,12 @@ public class TempAppointmentController {
             @Valid @ModelAttribute @ParameterObject TempAppointmentCandidateDatesReq req) {
         TempAppointmentCandidateInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
 
-        List<TempAppointmentCandidateInfoRespDto> respDtos
+        Page<TempAppointmentCandidateInfoRespDto> respDtos
                 = tempAppointmentFacadeService.retrieveCandidateInfo(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        respDtos.stream().map(tempAppointmentVoMapper::to).toList()
+                        respDtos.map(tempAppointmentVoMapper::to)
                 )
         );
     }

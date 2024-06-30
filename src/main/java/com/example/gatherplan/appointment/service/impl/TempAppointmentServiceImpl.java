@@ -18,12 +18,15 @@ import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
+import com.example.gatherplan.common.unit.CustomPageRequest;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -220,7 +223,9 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     }
 
     @Override
-    public List<TempAppointmentCandidateInfoRespDto> retrieveCandidateInfo(TempAppointmentCandidateInfoReqDto reqDto) {
+    public Page<TempAppointmentCandidateInfoRespDto> retrieveCandidateInfo(TempAppointmentCandidateInfoReqDto reqDto) {
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
+
         Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
                         reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
@@ -238,9 +243,13 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
                 AppointmentUtils.retrieveCandidateInfoList(candidateDateList, participationInfoList, hostNickname);
 
-        return appointmentCandidateInfos.stream()
+        List<TempAppointmentCandidateInfoRespDto> dataList = appointmentCandidateInfos.stream()
+                .skip(Integer.toUnsignedLong((reqDto.getPage() - 1) * reqDto.getSize()))
+                .limit(reqDto.getSize())
                 .map(tempAppointmentMapper::to)
                 .toList();
+
+        return new PageImpl<>(dataList, customPageRequest, appointmentCandidateInfos.size());
     }
 
     @Override

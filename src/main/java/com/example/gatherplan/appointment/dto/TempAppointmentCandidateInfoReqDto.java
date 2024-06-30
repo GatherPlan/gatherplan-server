@@ -10,4 +10,6 @@ import lombok.*;
 public class TempAppointmentCandidateInfoReqDto {
     private String appointmentCode;
     private TempUserInfo tempUserInfo;
+    private int page;
+    private int size;
 }
