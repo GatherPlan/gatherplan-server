@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.common.unit.Address;
 
 import java.util.List;
 
@@ -39,4 +40,6 @@ public interface AppointmentService {
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
     AppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(String appointmentCode, Long userId);
+
+    Address retrieveAddress(String appointmentCode);
 }

@@ -17,6 +17,7 @@ import com.example.gatherplan.appointment.utils.AppointmentUtils;
 import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.unit.Address;
 import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
@@ -307,4 +308,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentMapper.to(appointment, hostName);
     }
 
+    @Override
+    public Address retrieveAddress(String appointmentCode) {
+        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode).orElseThrow(()
+                -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        return appointment.getAddress();
+    }
 }
