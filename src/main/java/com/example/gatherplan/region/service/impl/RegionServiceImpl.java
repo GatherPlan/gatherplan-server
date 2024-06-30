@@ -33,15 +33,15 @@ public class RegionServiceImpl implements RegionService {
     private RegionRepository regionRepository;
 
     @Override
-    public Page<RegionDto> searchRegion(DistrictSearchReqDto reqDto) {
+    public Page<DistrictSearchRespDto> searchRegion(DistrictSearchReqDto reqDto) {
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
         Page<Region> regionList = regionRepository.findByAddressContaining(reqDto.getKeyword(), customPageRequest);
 
-        List<RegionDto> result = regionList.stream()
+        List<DistrictSearchRespDto> dataList = regionList.stream()
                 .map(r -> regionMapper.to(r, LocationType.DISTRICT))
                 .toList();
 
-        return new PageImpl<>(result, customPageRequest, regionList.getTotalElements());
+        return new PageImpl<>(dataList, customPageRequest, regionList.getTotalElements());
     }
 
     @Override

@@ -30,11 +30,11 @@ public class RegionController {
 
     @GetMapping("/district")
     @Operation(summary = "행정구역 검색 요청", description = "행정구역을 검색할 때 사용됩니다. [figma #6,#33]")
-    public ResponseEntity<ListResponse<RegionResp>> searchRegion(
+    public ResponseEntity<ListResponse<DistrictSearchResp>> searchRegion(
             @Valid @ModelAttribute @ParameterObject DistrictSearchReq req) {
 
         DistrictSearchReqDto reqDto = regionVoMapper.to(req);
-        Page<RegionDto> regionDtos = regionService.searchRegion(reqDto);
+        Page<DistrictSearchRespDto> regionDtos = regionService.searchRegion(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(

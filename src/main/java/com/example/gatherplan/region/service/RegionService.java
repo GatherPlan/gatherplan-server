@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface RegionService {
-    Page<RegionDto> searchRegion(DistrictSearchReqDto reqDto);
+    Page<DistrictSearchRespDto> searchRegion(DistrictSearchReqDto reqDto);
 
     List<KeywordPlaceRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
 

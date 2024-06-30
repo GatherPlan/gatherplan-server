@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RegionDto {
+public class DistrictSearchRespDto {
     private String address;
     private LocationType locationType;
 }
