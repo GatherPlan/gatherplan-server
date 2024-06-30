@@ -8,11 +8,13 @@ import org.springframework.validation.FieldError;
 
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(NON_NULL)
 public class ErrorResp {
     private int code;
     private String message;
@@ -42,7 +44,8 @@ public class ErrorResp {
                 .map(f -> ErrorDetail.builder()
                         .object(f.getObjectName())
                         .field(f.getField())
-                        .reason(f.getCode() == null ? f.getDefaultMessage() : f.getCode())
+                        .validation(f.getCode())
+                        .reason(f.getDefaultMessage())
                         .build()
                 )
                 .toList();
@@ -70,11 +73,12 @@ public class ErrorResp {
                 .build();
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(NON_NULL)
     @Builder
     public record ErrorDetail(
             String object,
             String field,
+            String validation,
             String reason) {
     }
 }
