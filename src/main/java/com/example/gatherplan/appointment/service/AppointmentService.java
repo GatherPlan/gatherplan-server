@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface AppointmentService {
 
     void deleteAppointmentJoin(String appointmentCode, Long userId);
 
-    List<AppointmentCandidateInfoRespDto> retrieveCandidateInfo(String appointmentCode, Long userId);
+    Page<AppointmentCandidateInfoRespDto> retrieveCandidateInfo(AppointmentCandidateInfoReqDto reqDto, Long userId);
 
     void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId);
 
