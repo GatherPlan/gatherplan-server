@@ -50,7 +50,7 @@ public class SecurityConfig {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/**").permitAll() // swagger 관련
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // swagger 관련
                         .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers("/api/v1/region/**").permitAll()
                         .requestMatchers("/api/v1/temporary/**").permitAll()
