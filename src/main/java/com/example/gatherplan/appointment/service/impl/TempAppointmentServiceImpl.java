@@ -90,7 +90,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                         StringUtils.equals(reqDto.getTempUserInfo().getPassword(), mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
         List<UserParticipationInfo> userParticipationInfoList =
-                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
+                AppointmentUtils.retrieveUserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
