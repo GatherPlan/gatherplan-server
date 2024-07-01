@@ -10,7 +10,9 @@ import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.UserRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.utils.AppointmentUtils;
@@ -45,6 +47,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
 
     private final CustomAppointmentRepository customAppointmentRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
