@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
 
+    List<UserAppointmentMapping> findAllByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
+
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
