@@ -88,7 +88,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
 
         List<UserParticipationInfo> userParticipationInfoList =
-                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
+                AppointmentUtils.retrieveUserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return appointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
     }
