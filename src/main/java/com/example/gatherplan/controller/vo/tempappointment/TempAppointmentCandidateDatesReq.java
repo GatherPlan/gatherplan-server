@@ -28,11 +28,11 @@ public class TempAppointmentCandidateDatesReq {
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     private TempUserInfo tempUserInfo;
 
-    @Min(1)
+    @Min(value = 1, message = "페이지 수는 1 이상이어야 합니다.")
     @Schema(description = "약속 장소 검색 페이지 수", example = "1", type = "integer", requiredMode = REQUIRED)
     private int page;
 
-    @Min(1)
+    @Min(value = 1, message = "데이터 사이즈는 1 이상이어야 합니다.")
     @Schema(description = "약속 장소 검색 페이지 당 데이터 수", example = "10", type = "integer", requiredMode = REQUIRED)
     private int size;
 }
