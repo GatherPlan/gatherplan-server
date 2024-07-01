@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.dto.*;
 import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.region.service.RegionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class TempAppointmentFacadeService {
         tempAppointmentService.deleteAppointmentJoin(reqDto);
     }
 
-    public List<TempAppointmentCandidateInfoRespDto> retrieveCandidateInfo(TempAppointmentCandidateInfoReqDto reqDto) {
+    public Page<TempAppointmentCandidateInfoRespDto> retrieveCandidateInfo(TempAppointmentCandidateInfoReqDto reqDto) {
         return tempAppointmentService.retrieveCandidateInfo(reqDto);
     }
 
