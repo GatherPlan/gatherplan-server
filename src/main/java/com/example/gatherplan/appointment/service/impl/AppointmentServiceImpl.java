@@ -341,11 +341,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean checkJoin(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
+        userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointment.getAppointmentCode(), userId)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+
+        return userAppointmentMappingRepository.findAllByAppointmentCodeAndUserSeq(appointmentCode, userId)
+                .stream()
+                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()));
     }
 
     @Override
