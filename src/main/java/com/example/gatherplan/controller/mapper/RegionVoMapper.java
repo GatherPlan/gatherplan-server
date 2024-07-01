@@ -15,7 +15,7 @@ public interface RegionVoMapper {
 
     DistrictSearchReqDto to(DistrictSearchReq req);
 
-    DistrictSearchResp to(DistrictSearchRespDto districtSearchRespDto);
+    DistrictSearchResp to(DistrictSearchRespDto respDto);
 
     DailyWeatherResp to(DailyWeatherRespDto respDto);
 
