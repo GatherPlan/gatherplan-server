@@ -118,9 +118,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void deleteAppointment(String appointmentCode, Long userId) {
-        Appointment appointment = customAppointmentRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST)
+        Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
+        }
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+
+        if (!userAppointmentMapping.getUserRole().equals(UserRole.HOST)) {
+            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
+        }
 
         userAppointmentMappingRepository.deleteAllByAppointmentCode(appointmentCode);
         appointmentRepository.deleteById(appointment.getId());
