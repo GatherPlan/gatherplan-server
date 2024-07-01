@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
+
     PARAMETER_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, 2201, "파라미터 값이 조건에 맞지 않습니다."),
 
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, 2202, "리소스를 찾을 수 없습니다."),
@@ -17,6 +18,7 @@ public enum ErrorCode {
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, 2206, "서비스가 일시적으로 중단되었습니다."),
     SEVER_NOT_SUPPORT(HttpStatus.INTERNAL_SERVER_ERROR, 9999, "알 수 없는 예외입니다."),
 
+
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, 3000, "회원을 찾을 수 없습니다."),
     USER_NOT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 유저는 호스트가 아닙니다."),
     TEMP_USER_CONFLICT(HttpStatus.CONFLICT, 3004, "이미 존재하는 임시회원입니다."),
@@ -24,7 +26,9 @@ public enum ErrorCode {
     APPOINTMENT_NOT_PARTICIPATE(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
     APPOINTMENT_ALREADY_PARTICIPATE(HttpStatus.BAD_REQUEST, 4001, "이미 참여한 약속입니다."),
     NOT_FOUND_APPOINTMENT(HttpStatus.NOT_FOUND, 4002, "약속을 찾을 수 없습니다."),
-    NOT_FOUND_HOST(HttpStatus.NOT_FOUND,4003,"약속의 호스트를 찾을 수 없습니다.");
+    NOT_FOUND_HOST(HttpStatus.NOT_FOUND, 4003, "약속의 호스트를 찾을 수 없습니다."),
+    APPOINTMENT_ALREADY_CONFIRMED(HttpStatus.CONFLICT, 4004, "이미 확정된 약속입니다."),
+    NOT_FOUND_USER_APPOINTMENT_MAPPING(HttpStatus.NOT_FOUND, 4005, "해당 약속에 매핑되지 않은 사용자입니다.");
 
 
     private final HttpStatus httpStatus;
