@@ -176,7 +176,7 @@ public class AppointmentUtils {
                 );
     }
 
-    public List<UserParticipationInfo> retrieveuserParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName) {
+    public List<UserParticipationInfo> retrieveUserParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName) {
         return userAppointmentMappingList.stream()
                 .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
                 .map(mapping -> UserParticipationInfo.builder()
