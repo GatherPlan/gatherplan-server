@@ -219,12 +219,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId) {
-        Appointment appointment = appointmentRepository.findByAppointmentCodeAndAppointmentState(reqDto.getAppointmentCode(), AppointmentState.UNCONFIRMED)
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(reqDto.getAppointmentCode(), userId, UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_PARTICIPATE));
+        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
+        }
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findAllByAppointmentCodeAndUserSeq(reqDto.getAppointmentCode(), userId)
+                .stream()
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
+                .findFirst()
+                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_GUEST));
 
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
