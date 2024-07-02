@@ -186,17 +186,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
+        userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointment.getAppointmentCode(), userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
-        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
-                .getNickname();
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
+        String hostName = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst()
+                .map(UserAppointmentMapping::getNickname)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
 
         List<ParticipationInfo> participationInfoList = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
                 .map(mapping -> {
                     UserRole userRole = StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST;
                     return appointmentMapper.toParticipationInfo(mapping, userRole);
