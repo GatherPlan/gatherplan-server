@@ -213,15 +213,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
+        userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointment.getAppointmentCode(), userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
-        String hostName = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(appointmentCode, UserRole.HOST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST))
-                .getNickname();
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndUserSeqAndUserRole(appointment.getAppointmentCode(), userId, UserRole.GUEST)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        String hostName = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst()
+                .map(UserAppointmentMapping::getNickname)
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
+
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingList.stream()
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()))
+                .findFirst()
+                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
         ParticipationInfo participationInfo = appointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
