@@ -105,14 +105,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(reqDto.getAppointmentCode(), userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
-        if (!userAppointmentMapping.getUserRole().equals(UserRole.HOST)) {
+        if (!UserRole.HOST.equals(userAppointmentMapping.getUserRole())) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
@@ -127,14 +127,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndUserSeq(appointmentCode, userId)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
-        if (!userAppointmentMapping.getUserRole().equals(UserRole.HOST)) {
+        if (!UserRole.HOST.equals(userAppointmentMapping.getUserRole())) {
             throw new AppointmentException(ErrorCode.USER_NOT_HOST);
         }
 
@@ -225,7 +225,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
@@ -250,7 +250,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
@@ -268,7 +268,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
@@ -308,7 +308,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        if (appointment.getAppointmentState().equals(AppointmentState.CONFIRMED)) {
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
 
