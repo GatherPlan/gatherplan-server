@@ -26,4 +26,8 @@ public class AppointmentCandidateInfo {
                 .userParticipationInfoList(userParticipationInfoList)
                 .build();
     }
+
+    public int getEndTimeHour() {
+        return this.endTime.getHour() == 23 && this.endTime.getMinute() == 59 ? 24 : this.endTime.getHour();
+    }
 }
