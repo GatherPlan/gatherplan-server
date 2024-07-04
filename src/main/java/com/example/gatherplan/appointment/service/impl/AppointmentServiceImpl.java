@@ -79,11 +79,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        boolean isUserAppointmentMapping = userAppointmentMappingList.stream()
+        boolean isNotExists = userAppointmentMappingList.stream()
                 .noneMatch(mapping -> mapping.getAppointmentCode().equals(appointmentCode) && mapping.getUserSeq().equals(userId));
 
-        if (!isUserAppointmentMapping) {
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+        if (isNotExists) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
         }
 
         UserAppointmentMapping hostMapping = userAppointmentMappingList.stream()
