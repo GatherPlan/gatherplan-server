@@ -105,7 +105,7 @@ public class AppointmentUtils {
                 for (SelectedDateTime selectedDateTime : selectedDateTimes) {
                     LocalDate date = selectedDateTime.getSelectedDate();
                     int startHour = selectedDateTime.getSelectedStartTime().getHour();
-                    int endHour = selectedDateTime.getSelectedEndTime().getHour();
+                    int endHour = getEndTimeHour(selectedDateTime.getSelectedEndTime());
 
                     if (candidateDate.equals(date) && (startHour <= nowHour && nowHour <= endHour)) {
                         includedCount++;
@@ -158,13 +158,13 @@ public class AppointmentUtils {
                 .anyMatch(
                         candidateDateInfo -> {
                             LocalDate date = candidateDateInfo.getCandidateDate();
-                            LocalTime startTime = candidateDateInfo.getStartTime();
-                            LocalTime endTime = candidateDateInfo.getEndTime();
+                            int startTimeHour = candidateDateInfo.getStartTime().getHour();
+                            int endTimeHour = candidateDateInfo.getEndTimeHour();
 
                             // 날짜 및 시간 동일한지 확인
                             boolean isEqualDateTime =
                                     date.equals(candidateDate) &&
-                                            startTime.getHour() == start && endTime.getHour() == end;
+                                            (startTimeHour == start && endTimeHour == end);
                             // 참여 가능 멤버가 동일한지 확인
                             boolean isEqualParticipants =
                                     candidateDateInfo.getUserParticipationInfoList().stream()
@@ -174,6 +174,12 @@ public class AppointmentUtils {
                             return isEqualDateTime && isEqualParticipants;
                         }
                 );
+    }
+
+    private int getEndTimeHour(LocalTime endTime) {
+        int hour = endTime.getHour();
+        int minute = endTime.getMinute();
+        return (hour == 23 && minute == 59) ? 24 : hour;
     }
 
     public List<UserParticipationInfo> retrieveUserParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName) {
