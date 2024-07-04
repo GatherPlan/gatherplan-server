@@ -70,12 +70,20 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public TempAppointmentInfoRespDto retrieveAppointmentInfo(TempAppointmentInfoReqDto reqDto) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfo(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+
+        boolean isNotExists = userAppointmentMappingList.stream()
+                .noneMatch(mapping -> mapping.getAppointmentCode().equals(reqDto.getAppointmentCode())
+                        && mapping.getNickname().equals(reqDto.getTempUserInfo().getNickname())
+                        && mapping.getTempPassword().equals(reqDto.getTempUserInfo().getPassword()));
+
+        if (isNotExists) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
+        }
 
         UserAppointmentMapping hostMapping = userAppointmentMappingList.stream()
                 .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
