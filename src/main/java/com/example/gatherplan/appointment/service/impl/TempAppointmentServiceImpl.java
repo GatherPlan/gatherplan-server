@@ -340,9 +340,19 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Override
     @Transactional
     public void confirmAppointment(TempConfirmAppointmentReqDto reqDto) {
-        Appointment appointment = customAppointmentRepository.findByAppointmentCodeAndTempUserInfoAndUserRole(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
+        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+
+        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
+            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
+        }
+
+        userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(reqDto.getAppointmentCode(),
+                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
+                .stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst()
+                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_HOST));
 
         List<UserAppointmentMapping> userGuestList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
