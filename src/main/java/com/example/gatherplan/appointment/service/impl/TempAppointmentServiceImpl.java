@@ -8,7 +8,6 @@ import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
-import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
@@ -43,8 +42,6 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
-
-    private final CustomAppointmentRepository customAppointmentRepository;
 
     @Override
     @Transactional
