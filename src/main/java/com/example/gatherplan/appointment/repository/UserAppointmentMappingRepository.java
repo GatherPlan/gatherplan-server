@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
+    
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
 
     List<UserAppointmentMapping> findAllByAppointmentCodeAndUserSeq(String appointmentCode, Long userId);
@@ -17,8 +18,6 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
     Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndAndTempPassword(String appointmentCode, String nickname, String tempPassword);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
-
-    Optional<UserAppointmentMapping> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(String appointmentCode, String nickname, String tempPassword, UserRole userRole);
 
@@ -31,4 +30,8 @@ public interface UserAppointmentMappingRepository extends JpaRepository<UserAppo
     void deleteAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
     Optional<UserAppointmentMapping> findByAppointmentCodeAndNicknameAndTempPassword(String appointmentCode, String nickname, String tempPassword);
+
+    List<UserAppointmentMapping> findAllByUserSeq(Long userId);
+
+    List<UserAppointmentMapping> findByAppointmentCodeInAndUserRole(List<String> appointmentCodeList, UserRole userRole);
 }

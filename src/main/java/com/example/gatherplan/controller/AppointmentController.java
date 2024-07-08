@@ -204,6 +204,8 @@ public class AppointmentController {
 
         Page<AppointmentSearchRespDto> respDtoList =
                 appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId());
+        List<AppointmentSearchListRespDto> appointmentListInfoDtoSearchList =
+                appointmentFacadeService.retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
