@@ -159,7 +159,7 @@ public class AppointmentUtils {
                         candidateDateInfo -> {
                             LocalDate date = candidateDateInfo.getCandidateDate();
                             int startTimeHour = candidateDateInfo.getStartTime().getHour();
-                            int endTimeHour = candidateDateInfo.getEndTimeHour();
+                            int endTimeHour = localEndTimeToHour(candidateDateInfo.getEndTime());
 
                             // 날짜 및 시간 동일한지 확인
                             boolean isEqualDateTime =
