@@ -1,5 +1,6 @@
 package com.example.gatherplan.appointment.utils.unit;
 
+import com.example.gatherplan.appointment.utils.AppointmentUtils;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class AppointmentCandidateInfo {
         return AppointmentCandidateInfo.builder()
                 .candidateDate(candidateDate)
                 .startTime(LocalTime.of(start, 0))
-                .endTime((end == 24) ? LocalTime.of(23, 59) : LocalTime.of(end, 0)) // 24시 일 경우 23:59로 처리
+                .endTime(AppointmentUtils.hourToLocalEndTime(end)) // 24시 일 경우 23:59로 처리
                 .userParticipationInfoList(userParticipationInfoList)
                 .build();
     }
