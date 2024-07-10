@@ -13,7 +13,7 @@ import com.example.gatherplan.region.repository.CustomRegionRepository;
 import com.example.gatherplan.region.repository.RegionRepository;
 import com.example.gatherplan.region.repository.entity.Region;
 import com.example.gatherplan.region.service.RegionService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +23,14 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RegionServiceImpl implements RegionService {
 
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
     private final CustomRegionRepository customRegionRepository;
     private final RegionMapper regionMapper;
-    private RegionRepository regionRepository;
+    private final RegionRepository regionRepository;
 
     @Override
     public Page<DistrictSearchRespDto> searchRegion(DistrictSearchReqDto reqDto) {

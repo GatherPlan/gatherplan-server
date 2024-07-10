@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +59,9 @@ public class RegionController {
     @GetMapping("/weather")
     @Operation(summary = "날씨 검색 요청", description = "날씨를 검색할 때 사용됩니다. [figma #7,#14,#34,#37]")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
-            @RequestParam @NotBlank(message = "주소는 공백이 될 수 없습니다.") @Size(min = 2, message = "주소는 2자 이상이어야합니다.") String addressName) throws JSONException {
+            @RequestParam
+            @NotBlank(message = "주소는 공백이 될 수 없습니다.") @Size(min = 2, message = "주소는 2자 이상이어야합니다.")
+            String addressName) {
 
         List<DailyWeatherRespDto> respDtos = regionService.searchDailyWeather(addressName);
 
