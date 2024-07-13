@@ -10,6 +10,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Optional<Appointment> findByAppointmentCode(String appointmentCode);
 
+    boolean existsByAppointmentCode(String appointmentCode);
+
     List<Appointment> findAllByAppointmentCodeInAndAppointmentNameContaining(List<String> appointmentCodeList, String keyword);
 
     List<Appointment> findAllByAppointmentCodeIn(List<String> appointmentCodeList);

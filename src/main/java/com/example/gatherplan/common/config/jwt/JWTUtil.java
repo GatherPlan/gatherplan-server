@@ -1,5 +1,6 @@
 package com.example.gatherplan.common.config.jwt;
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(Long id, String nickname, String email, String userAuthType, String role, Long expiredMs) {
+    public String createJwt(Long id, String nickname, String email, UserAuthType userAuthType, String role, Long expiredMs) {
         return Jwts.builder()
                 .claim("id", id)
                 .claim("nickname", nickname)

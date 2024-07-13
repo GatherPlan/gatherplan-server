@@ -1,6 +1,7 @@
 package com.example.gatherplan.common.config.jwt;
 
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,8 +31,8 @@ public class UserInfo implements UserDetails {
         return user.getId();
     }
 
-    public String getUserAuthType() {
-        return user.getUserAuthType().name();
+    public UserAuthType getUserAuthType() {
+        return user.getUserAuthType();
     }
 
     @Override

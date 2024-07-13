@@ -1,5 +1,6 @@
 package com.example.gatherplan.common.config.jwt;
 
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,7 +72,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Long id = userInfo.getId();
         String name = userInfo.getUsername();
         String email = userInfo.getEmail();
-        String userAuthType = userInfo.getUserAuthType();
+        UserAuthType userAuthType = userInfo.getUserAuthType();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
