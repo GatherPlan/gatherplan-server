@@ -116,6 +116,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 });
 
         UserAppointmentMapping userAppointmentMapping = createUserAppointmentMapping(reqDto.getAppointmentCode(), userId, reqDto.getNickname(), UserRole.GUEST, UserAuthType.LOCAL);
+        userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
+
         userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
