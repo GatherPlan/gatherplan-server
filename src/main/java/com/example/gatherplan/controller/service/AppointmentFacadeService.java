@@ -1,6 +1,7 @@
 package com.example.gatherplan.controller.service;
 
 import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.region.service.RegionService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ public class AppointmentFacadeService {
     public final AppointmentService appointmentService;
     public final RegionService regionService;
 
-    public String registerAppointment(CreateAppointmentReqDto reqDto, Long id, String username) {
-        return appointmentService.registerAppointment(reqDto, id, username);
+    public String registerAppointment(CreateAppointmentReqDto reqDto, Long id, String username, UserAuthType userAuthType) {
+        return appointmentService.registerAppointment(reqDto, id, username, userAuthType);
     }
 
     public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long id) {

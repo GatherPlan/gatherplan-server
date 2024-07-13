@@ -1,13 +1,14 @@
 package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.enums.UserAuthType;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface AppointmentService {
 
-    String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name);
+    String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name, UserAuthType userAuthType);
 
     AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId);
 
