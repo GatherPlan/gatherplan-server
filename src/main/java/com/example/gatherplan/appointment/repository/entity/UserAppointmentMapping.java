@@ -53,7 +53,7 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
         this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
     }
 
-    public static UserAppointmentMapping of(String appointmentCode, Long userId, UserRole userRole, String name, UserAuthType userAuthType) {
+    public static UserAppointmentMapping of(String appointmentCode, Long userId, UserRole userRole, String name, String tempPassword, UserAuthType userAuthType) {
         return UserAppointmentMapping.builder()
                 .appointmentCode(appointmentCode)
                 .userSeq(userId)
@@ -61,6 +61,7 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
                 .userAuthType(userAuthType)
                 .isAvailable(false)
                 .nickname(name)
+                .tempPassword(tempPassword)
                 .build();
     }
 }
