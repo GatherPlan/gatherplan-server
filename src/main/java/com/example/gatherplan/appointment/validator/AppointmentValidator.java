@@ -46,7 +46,7 @@ public class AppointmentValidator {
 
     public void validateIsUserHost(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
         boolean isHost = mappingList.stream()
-                .anyMatch(mapping -> UserRole.HOST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()));
+                .anyMatch(mapping -> UserRole.HOST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()));
         if (!isHost) {
             throw new UserException(ErrorCode.USER_NOT_HOST);
         }
@@ -60,7 +60,7 @@ public class AppointmentValidator {
     }
 
     public void validateUserAppointmentMappingExistence(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
-        boolean isExists = mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()));
+        boolean isExists = mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()));
         if (!isExists) {
             throw new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
         }
@@ -90,7 +90,7 @@ public class AppointmentValidator {
 
     public void validateIsUserHostOrGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
         boolean isHostOrGuest = mappings.stream()
-                .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
+                .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
         if (!isHostOrGuest) {
             throw new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
         }
@@ -98,12 +98,12 @@ public class AppointmentValidator {
 
     public boolean isUserHostOrGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
         return mappings.stream()
-                .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
+                .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
     }
 
     public void validateIsUserNotGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
         boolean isGuest = mappings.stream()
-                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()));
+                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()));
         if (isGuest) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
@@ -128,7 +128,7 @@ public class AppointmentValidator {
     }
 
     public boolean isUserHost(TempUserInfo tempUserInfo, String hostName, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()) && hostName.equals(mapping.getNickname()));
+        return mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && hostName.equals(mapping.getNickname()));
     }
 
     public boolean isUserGuest(Long userId, List<UserAppointmentMapping> mappingList) {
@@ -136,7 +136,7 @@ public class AppointmentValidator {
     }
 
     public boolean isUserGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
+        return mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
     }
 
     public boolean isNotDuplicatedName(String name, List<UserAppointmentMapping> userAppointmentMappingList) {
@@ -153,7 +153,7 @@ public class AppointmentValidator {
 
     public UserAppointmentMapping findGuestMapping(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
         return mappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && mapping.getTempPassword().equals(tempUserInfo.getPassword()))
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()))
                 .findFirst()
                 .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
     }
