@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface UserAppointmentMappingRepository extends JpaRepository<UserAppointmentMapping, Long> {
 
-    List<UserAppointmentMapping> findAllByAppointmentCodeAndNicknameAndAndTempPassword(String appointmentCode, String nickname, String tempPassword);
-
     List<UserAppointmentMapping> findAllByAppointmentCodeAndUserRole(String appointmentCode, UserRole userRole);
 
     List<UserAppointmentMapping> findAllByAppointmentCode(String appointmentCode);
