@@ -52,4 +52,15 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
     public void update(List<SelectedDateTime> selectedDateTimeList) {
         this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
     }
+
+    public static UserAppointmentMapping of(String appointmentCode, Long userId, UserRole userRole, String name, UserAuthType userAuthType) {
+        return UserAppointmentMapping.builder()
+                .appointmentCode(appointmentCode)
+                .userSeq(userId)
+                .userRole(userRole)
+                .userAuthType(userAuthType)
+                .isAvailable(false)
+                .nickname(name)
+                .build();
+    }
 }
