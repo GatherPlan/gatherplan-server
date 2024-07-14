@@ -5,7 +5,6 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
-import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
@@ -29,7 +28,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -128,9 +126,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId) {
-        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
+        validateAppointmentExistence(appointmentCode);
 
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         AppointmentValidator.validateIsUserHostOrGuest(userId, userAppointmentMappingList);
@@ -144,9 +140,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(String appointmentCode, Long userId) {
-        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
+        validateAppointmentExistence(appointmentCode);
 
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         AppointmentValidator.validateIsUserHostOrGuest(userId, userAppointmentMappingList);
@@ -207,17 +201,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
-        List<LocalDate> candidateDateList = appointment.getCandidateDateList();
-
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
 
-        String hostNickname = userAppointmentMappingRepository.findByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND))
-                .getNickname();
+        String hostName = AppointmentValidator.findHostName(participationInfoList);
 
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
-                AppointmentUtils.retrieveCandidateInfoList(candidateDateList, participationInfoList, hostNickname);
+                AppointmentUtils.retrieveCandidateInfoList(appointment.getCandidateDateList(), participationInfoList, hostName);
 
         List<AppointmentCandidateInfoRespDto> dataList = appointmentCandidateInfos.stream()
                 .skip(Integer.toUnsignedLong((reqDto.getPage() - 1) * reqDto.getSize()))
@@ -266,4 +256,5 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentMapper.to(appointment, hostName);
     }
+
 }
