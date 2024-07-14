@@ -63,7 +63,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         AppointmentValidator.validateUserAppointmentMappingExistence(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
-        boolean isHost = AppointmentValidator.isUserHost(reqDto.getTempUserInfo(), hostName, userAppointmentMappingList);
+        boolean isHost = StringUtils.equals(reqDto.getTempUserInfo().getNickname(), hostName);
         boolean isGuest = AppointmentValidator.isUserGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
@@ -109,12 +109,14 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserNotGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
+        if (!AppointmentValidator.isUserHost(reqDto.getTempUserInfo(), userAppointmentMappingList)) {
+            AppointmentValidator.validateNotDuplicatedName(reqDto.getTempUserInfo().getNickname(), userAppointmentMappingList);
+        }
+
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
                     throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL, String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
-
-        AppointmentValidator.isNotDuplicatedName(reqDto.getTempUserInfo().getNickname(), userAppointmentMappingList);
 
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserAuthType.TEMPORARY);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());

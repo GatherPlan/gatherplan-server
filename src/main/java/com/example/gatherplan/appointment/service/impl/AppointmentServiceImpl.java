@@ -57,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId) {
+    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId, String name) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
@@ -65,7 +65,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentValidator.validateUserAppointmentMappingExistence(userId, userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
-        boolean isHost = AppointmentValidator.isUserHost(userId, hostName, userAppointmentMappingList);
+        boolean isHost = StringUtils.equals(hostName, name);
         boolean isGuest = AppointmentValidator.isUserGuest(userId, userAppointmentMappingList);
 
         List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
@@ -103,7 +103,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId) {
+    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId, String name) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
         AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
@@ -111,12 +111,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserNotGuest(userId, userAppointmentMappingList);
 
+        if (!AppointmentValidator.isUserHost(userId, userAppointmentMappingList)) {
+            AppointmentValidator.validateNotDuplicatedName(reqDto.getNickname(), userAppointmentMappingList);
+        }
+
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
                     throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL, String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
-
-        AppointmentValidator.isNotDuplicatedName(reqDto.getNickname(), userAppointmentMappingList);
 
         UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), null, UserAuthType.LOCAL);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());

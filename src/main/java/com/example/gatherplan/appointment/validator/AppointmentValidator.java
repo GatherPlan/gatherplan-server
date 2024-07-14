@@ -96,6 +96,16 @@ public class AppointmentValidator {
         }
     }
 
+    public boolean isUserHost(Long userId, List<UserAppointmentMapping> mappings) {
+        return mappings.stream()
+                .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.HOST.equals(mapping.getUserRole()));
+    }
+
+    public boolean isUserHost(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
+        return mappings.stream()
+                .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && UserRole.HOST.equals(mapping.getUserRole()));
+    }
+
     public boolean isUserHostOrGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
         return mappings.stream()
                 .anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
@@ -123,14 +133,6 @@ public class AppointmentValidator {
                 .toList();
     }
 
-    public boolean isUserHost(Long userId, String hostName, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && hostName.equals(mapping.getNickname()));
-    }
-
-    public boolean isUserHost(TempUserInfo tempUserInfo, String hostName, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()) && hostName.equals(mapping.getNickname()));
-    }
-
     public boolean isUserGuest(Long userId, List<UserAppointmentMapping> mappingList) {
         return mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
     }
@@ -142,6 +144,13 @@ public class AppointmentValidator {
     public boolean isNotDuplicatedName(String name, List<UserAppointmentMapping> userAppointmentMappingList) {
         return userAppointmentMappingList.stream().noneMatch(
                 userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name));
+    }
+
+    public void validateNotDuplicatedName(String name, List<UserAppointmentMapping> userAppointmentMappingList) {
+        if (userAppointmentMappingList.stream().anyMatch(
+                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name))) {
+            throw new UserException(ErrorCode.RESOURCE_CONFLICT);
+        }
     }
 
     public UserAppointmentMapping findGuestMapping(Long userId, List<UserAppointmentMapping> mappingList) {

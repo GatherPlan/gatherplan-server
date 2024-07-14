@@ -10,13 +10,13 @@ public interface AppointmentService {
 
     String registerAppointment(CreateAppointmentReqDto reqDto, Long userId, String name, UserAuthType userAuthType);
 
-    AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId);
+    AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long userId, String name);
 
     void updateAppointment(UpdateAppointmentReqDto reqDto, Long userId);
 
     void deleteAppointment(String appointmentCode, Long userId);
 
-    void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId);
+    void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId, String name);
 
     List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId);
 
