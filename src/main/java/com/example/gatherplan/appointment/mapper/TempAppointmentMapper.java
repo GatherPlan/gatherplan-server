@@ -29,9 +29,6 @@ public interface TempAppointmentMapper {
 
     TempAppointmentCandidateInfoRespDto to(AppointmentCandidateInfo candidateInfo);
 
-    @Mapping(target = "participationInfo", source = "userAppointmentMapping")
-    TempAppointmentMyParticipantRespDto toTempAppointmentParticipantRespDto(ParticipationInfo userAppointmentMapping);
-
     @Mapping(target = "isAvailable", source = "userAppointmentMapping.available")
     @Mapping(target = "userRole", source = "userRole")
     UserParticipationInfo to(UserAppointmentMapping userAppointmentMapping, UserRole userRole);
