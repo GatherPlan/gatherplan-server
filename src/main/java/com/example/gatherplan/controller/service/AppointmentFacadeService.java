@@ -20,8 +20,8 @@ public class AppointmentFacadeService {
         return appointmentService.registerAppointment(reqDto, id, username, userAuthType);
     }
 
-    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long id) {
-        return appointmentService.retrieveAppointmentInfo(appointmentCode, id);
+    public AppointmentInfoRespDto retrieveAppointmentInfo(String appointmentCode, Long id, String name) {
+        return appointmentService.retrieveAppointmentInfo(appointmentCode, id, name);
     }
 
     public void updateAppointment(UpdateAppointmentReqDto reqDto, Long id) {
@@ -32,8 +32,8 @@ public class AppointmentFacadeService {
         appointmentService.deleteAppointment(appointmentCode, id);
     }
 
-    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long id) {
-        appointmentService.registerAppointmentJoin(reqDto, id);
+    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long id, String name) {
+        appointmentService.registerAppointmentJoin(reqDto, id, name);
     }
 
     public List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long id) {

@@ -52,7 +52,7 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentInfoRespDto respDto = appointmentFacadeService.retrieveAppointmentInfo(appointmentCode, userInfo.getId());
+        AppointmentInfoRespDto respDto = appointmentFacadeService.retrieveAppointmentInfo(appointmentCode, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
@@ -94,7 +94,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentFacadeService.registerAppointmentJoin(reqDto, userInfo.getId());
+        appointmentFacadeService.registerAppointmentJoin(reqDto, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
