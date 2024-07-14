@@ -116,7 +116,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         AppointmentValidator.isNotDuplicatedName(reqDto.getTempUserInfo().getNickname(), userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), null, UserAuthType.TEMPORARY);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserAuthType.TEMPORARY);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
