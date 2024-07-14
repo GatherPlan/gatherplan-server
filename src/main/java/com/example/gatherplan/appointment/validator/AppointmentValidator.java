@@ -38,7 +38,7 @@ public class AppointmentValidator {
     // validate
     public void validateIsUserHost(Long userId, List<UserAppointmentMapping> mappingList) {
         boolean isHost = mappingList.stream()
-                .anyMatch(mapping -> UserRole.HOST.equals(mapping.getUserRole()) && mapping.getUserSeq().equals(userId));
+                .anyMatch(mapping -> UserRole.HOST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()));
         if (!isHost) {
             throw new UserException(ErrorCode.USER_NOT_HOST);
         }
@@ -53,7 +53,7 @@ public class AppointmentValidator {
     }
 
     public void validateUserAppointmentMappingExistence(Long userId, List<UserAppointmentMapping> mappingList) {
-        boolean isExists = mappingList.stream().anyMatch(mapping -> mapping.getUserSeq().equals(userId));
+        boolean isExists = mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()));
         if (!isExists) {
             throw new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
         }
@@ -82,7 +82,7 @@ public class AppointmentValidator {
 
     public void validateIsUserHostOrGuest(Long userId, List<UserAppointmentMapping> mappings) {
         boolean isHostOrGuest = mappings.stream()
-                .anyMatch(mapping -> mapping.getUserSeq().equals(userId) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
+                .anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && (mapping.getUserRole().equals(UserRole.GUEST) || mapping.getUserRole().equals(UserRole.HOST)));
         if (!isHostOrGuest) {
             throw new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
         }
@@ -111,7 +111,7 @@ public class AppointmentValidator {
 
     public void validateIsUserNotGuest(Long userId, List<UserAppointmentMapping> mappings) {
         boolean isGuest = mappings.stream()
-                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getUserSeq().equals(userId));
+                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()));
         if (isGuest) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
@@ -124,7 +124,7 @@ public class AppointmentValidator {
     }
 
     public boolean isUserHost(Long userId, String hostName, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> mapping.getUserSeq().equals(userId) && hostName.equals(mapping.getNickname()));
+        return mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && hostName.equals(mapping.getNickname()));
     }
 
     public boolean isUserHost(TempUserInfo tempUserInfo, String hostName, List<UserAppointmentMapping> mappingList) {
@@ -132,7 +132,7 @@ public class AppointmentValidator {
     }
 
     public boolean isUserGuest(Long userId, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream().anyMatch(mapping -> mapping.getUserSeq().equals(userId) && UserRole.GUEST.equals(mapping.getUserRole()));
+        return mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
     }
 
     public boolean isUserGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
@@ -146,7 +146,7 @@ public class AppointmentValidator {
 
     public UserAppointmentMapping findGuestMapping(Long userId, List<UserAppointmentMapping> mappingList) {
         return mappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getUserSeq().equals(userId))
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()))
                 .findFirst()
                 .orElseThrow(() -> new UserException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
     }
