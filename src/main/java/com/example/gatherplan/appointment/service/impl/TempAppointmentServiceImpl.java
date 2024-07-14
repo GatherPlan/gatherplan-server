@@ -48,7 +48,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
         appointmentRepository.save(appointment);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, null, UserRole.HOST, reqDto.getTempUserInfo().getNickname(), UserAuthType.TEMPORARY);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, null, UserRole.HOST, reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserAuthType.TEMPORARY);
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
@@ -116,7 +116,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         AppointmentValidator.isNotDuplicatedName(reqDto.getTempUserInfo().getNickname(), userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), UserAuthType.TEMPORARY);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), null, UserAuthType.TEMPORARY);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);

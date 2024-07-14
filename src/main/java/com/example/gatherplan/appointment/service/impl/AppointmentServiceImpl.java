@@ -50,7 +50,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
         appointmentRepository.save(appointment);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, userId, UserRole.HOST, name, userAuthType);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, userId, UserRole.HOST, name, null, userAuthType);
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
@@ -118,7 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentValidator.isNotDuplicatedName(reqDto.getNickname(), userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), UserAuthType.LOCAL);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), null, UserAuthType.LOCAL);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
