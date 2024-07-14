@@ -103,7 +103,7 @@ public class AppointmentValidator {
 
     public void validateIsUserNotGuest(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
         boolean isGuest = mappings.stream()
-                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()));
+                .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()));
         if (isGuest) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
