@@ -47,19 +47,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     @Transactional
     public String registerAppointment(CreateTempAppointmentReqDto reqDto) {
         String appointmentCode = UuidUtils.generateRandomString(12);
-
         Appointment appointment = tempAppointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
-
         appointmentRepository.save(appointment);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
-                .appointmentCode(appointmentCode)
-                .userRole(UserRole.HOST)
-                .nickname(reqDto.getTempUserInfo().getNickname())
-                .tempPassword(reqDto.getTempUserInfo().getPassword())
-                .userAuthType(UserAuthType.TEMPORARY)
-                .build();
-
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, null, UserRole.HOST, reqDto.getTempUserInfo().getNickname(), UserAuthType.TEMPORARY);
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
@@ -70,34 +61,16 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateUserAppointmentMappingExistence(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        boolean isNotExists = userAppointmentMappingList.stream()
-                .noneMatch(mapping -> mapping.getAppointmentCode().equals(reqDto.getAppointmentCode())
-                        && mapping.getNickname().equals(reqDto.getTempUserInfo().getNickname())
-                        && mapping.getTempPassword().equals(reqDto.getTempUserInfo().getPassword()));
+        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        boolean isHost = AppointmentValidator.isUserHost(reqDto.getTempUserInfo(), hostName, userAppointmentMappingList);
+        boolean isGuest = AppointmentValidator.isUserGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        if (isNotExists) {
-            throw new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
-        }
+        List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
 
-        UserAppointmentMapping hostMapping = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .findFirst().orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
-
-        String hostName = hostMapping.getNickname();
-
-        boolean isHost = StringUtils.equals(hostMapping.getNickname(), reqDto.getTempUserInfo().getNickname());
-
-        boolean isParticipated = userAppointmentMappingList.stream()
-                .anyMatch(mapping -> StringUtils.equals(reqDto.getTempUserInfo().getNickname(), mapping.getNickname()) &&
-                        StringUtils.equals(reqDto.getTempUserInfo().getPassword(), mapping.getTempPassword()) && UserRole.GUEST.equals(mapping.getUserRole()));
-
-        List<UserParticipationInfo> userParticipationInfoList =
-                AppointmentUtils.retrieveUserParticipationInfoList(userAppointmentMappingList, hostName);
-
-        return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isParticipated);
+        return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isGuest);
     }
 
     @Override
@@ -105,22 +78,12 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void updateAppointment(UpdateTempAppointmentReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
-
-        UserAppointmentMapping userAppointmentMapping =
-                userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(
-                                reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                        .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
-
-        if (!UserRole.HOST.equals(userAppointmentMapping.getUserRole())) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHost(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
-
         appointment.update(reqDto.getAppointmentName(), reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
     }
 
@@ -129,19 +92,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void deleteAppointment(DeleteTempAppointmentReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
-
-        UserAppointmentMapping userAppointmentMapping =
-                userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(
-                                reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                        .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
-
-        if (!UserRole.HOST.equals(userAppointmentMapping.getUserRole())) {
-            throw new AppointmentException(ErrorCode.USER_NOT_HOST);
-        }
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHost(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteAllByAppointmentCode(reqDto.getAppointmentCode());
         appointmentRepository.deleteById(appointment.getId());
@@ -152,101 +106,59 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void registerAppointmentJoin(CreateTempAppointmentJoinReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
-
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword());
-
-        userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .findFirst()
-                .ifPresent(mapping -> {
-                    throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
-                });
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserNotGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
-                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
-                            String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL, String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.builder()
-                .appointmentCode(reqDto.getAppointmentCode())
-                .userRole(UserRole.GUEST)
-                .userAuthType(UserAuthType.TEMPORARY)
-                .isAvailable(false)
-                .selectedDateTimeList(List.copyOf(reqDto.getSelectedDateTimeList()))
-                .nickname(reqDto.getTempUserInfo().getNickname())
-                .tempPassword(reqDto.getTempUserInfo().getPassword())
-                .build();
+        AppointmentValidator.isNotDuplicatedName(reqDto.getTempUserInfo().getNickname(), userAppointmentMappingList);
+
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), null, UserRole.GUEST, reqDto.getTempUserInfo().getNickname(), UserAuthType.TEMPORARY);
+        userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
     }
 
     @Override
     public List<TempAppointmentParticipantsRespDto> retrieveAppointmentParticipants(TempAppointmentParticipantsReqDto reqDto) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode())) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+        }
 
-        userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(appointment.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHostOrGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword());
+        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
-        String hostName = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .findFirst()
-                .map(UserAppointmentMapping::getNickname)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
-
-        List<ParticipationInfo> participationInfoList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST).stream()
-                        .map(mapping -> {
-                            UserRole userRole = StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST;
-                            return tempAppointmentMapper.toParticipationInfo(mapping, userRole);
-                        })
-                        .toList();
-
+        List<ParticipationInfo> participationInfoList = AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, tempAppointmentMapper);
         return participationInfoList.stream().map(tempAppointmentMapper::to).toList();
     }
 
     @Override
     public TempAppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(TempAppointmentMyParticipantReqDto reqDto) {
-        Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode())) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+        }
 
-        userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(appointment.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHostOrGuest(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword());
-
-        String hostName = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .findFirst()
-                .map(UserAppointmentMapping::getNickname)
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_HOST));
+        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole())
-                        && reqDto.getTempUserInfo().getNickname().equals(mapping.getNickname())
-                        && reqDto.getTempUserInfo().getPassword().equals(mapping.getTempPassword()))
+                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && reqDto.getTempUserInfo().getNickname().equals(mapping.getNickname()) && reqDto.getTempUserInfo().getPassword().equals(mapping.getTempPassword()))
                 .findFirst()
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
 
         ParticipationInfo participationInfo = tempAppointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
 
-        return tempAppointmentMapper.toTempAppointmentParticipantRespDto(participationInfo);
+        return tempAppointmentMapper.toAppointmentParticipantRespDto(participationInfo);
     }
 
     @Override
@@ -254,17 +166,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void updateAppointmentJoin(UpdateTempAppointmentJoinReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
-
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_GUEST));
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
                 .ifPresent(result -> {
@@ -272,7 +177,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                             String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
 
-        userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
+        mapping.update(reqDto.getSelectedDateTimeList());
     }
 
     @Override
@@ -280,38 +185,24 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void deleteAppointmentJoin(DeleteTempAppointmentJoinReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndAndTempPassword(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_GUEST));
-
-        userAppointmentMappingRepository.deleteById(userAppointmentMapping.getId());
+        userAppointmentMappingRepository.deleteById(mapping.getId());
     }
 
     @Override
     public Page<TempAppointmentCandidateInfoRespDto> retrieveCandidateInfo(TempAppointmentCandidateInfoReqDto reqDto) {
-        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
-
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHost(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_HOST));
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
         List<LocalDate> candidateDateList = appointment.getCandidateDateList();
 
@@ -339,17 +230,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
     public void confirmAppointment(TempConfirmAppointmentReqDto reqDto) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
+        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        if (AppointmentState.CONFIRMED.equals(appointment.getAppointmentState())) {
-            throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
-        }
-
-        userAppointmentMappingRepository.findAllByAppointmentCodeAndNicknameAndAndTempPassword(reqDto.getAppointmentCode(),
-                        reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.USER_NOT_HOST));
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHost(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         List<UserAppointmentMapping> userGuestList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
