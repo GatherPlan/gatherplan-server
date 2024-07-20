@@ -265,42 +265,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean checkHost(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
-    }
-
-    @Override
-    public boolean checkJoin(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
-    }
-
-    @Override
-    public boolean checkName(String appointmentCode, String name) {
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-
-        return userAppointmentMappingList.stream().noneMatch(
-                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name));
-    }
-
-    @Override
-    public boolean checkNickname(String appointmentCode, String nickname) {
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-
-        return userAppointmentMappingList.stream().noneMatch(
-                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), nickname));
-    }
-
-    @Override
     public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId) {
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
         return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(reqDto.getKeyword(), userId, customPageRequest);

@@ -2,12 +2,15 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.UserMapper;
 import com.example.gatherplan.appointment.repository.EmailAuthRepository;
+import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.UserRepository;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.User;
+import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.config.jwt.RoleType;
 import com.example.gatherplan.common.config.jwt.UserInfo;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import static java.time.LocalDateTime.now;
@@ -35,6 +39,7 @@ import static java.time.LocalDateTime.now;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final EmailAuthRepository emailAuthRepository;
     private final UserMapper userMapper;
     private final Random random = new Random();
@@ -122,6 +127,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
 
         return new UserInfo(user);
+    }
+
+
+    @Override
+    public boolean checkHost(String appointmentCode, Long userId) {
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
+    }
+
+    @Override
+    public boolean checkJoin(String appointmentCode, Long userId) {
+        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
+                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
+                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
+    }
+
+    @Override
+    public boolean checkName(String appointmentCode, String name) {
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return userAppointmentMappingList.stream().noneMatch(
+                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name));
+    }
+
+    @Override
+    public boolean checkNickname(String appointmentCode, String nickname) {
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return userAppointmentMappingList.stream().noneMatch(
+                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), nickname));
     }
 
 }
