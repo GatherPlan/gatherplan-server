@@ -25,7 +25,7 @@ public interface AppointmentVoMapper {
     CreateAppointmentJoinReqDto to(CreateAppointmentJoinReq req);
 
     @Mapping(target = "isHost", source = "host")
-    AppointmentSearchListResp to(AppointmentSearchListRespDto respDto);
+    AppointmentSearchResp to(AppointmentSearchRespDto respDto);
 
     ConfirmAppointmentReqDto to(ConfirmAppointmentReq req);
 
@@ -38,4 +38,6 @@ public interface AppointmentVoMapper {
     AppointmentMyParticipantResp to(AppointmentMyParticipantRespDto respDto);
 
     AppointmentCandidateInfoReqDto to(AppointmentCandidateInfoReq req);
+
+    AppointmentSearchReqDto to(AppointmentSearchReq req);
 }

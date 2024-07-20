@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -251,16 +250,19 @@ public class AppointmentController {
 
     @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다. [figma #22]")
-    public ResponseEntity<ListResponse<AppointmentSearchListResp>> retrieveAppointmentSearchList(
-            @Schema(description = "약속 이름 검색 키워드", example = "세 얼간이")
-            @RequestParam(required = false) @Size(min = 2, message = "키워드는 2자 이상이어야합니다.") String keyword,
+    public ResponseEntity<ListResponse<AppointmentSearchResp>> retrieveAppointmentSearchList(
+            @Valid @ModelAttribute @ParameterObject AppointmentSearchReq req,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentSearchListRespDto> appointmentListInfoDtoSearchList =
-                appointmentFacadeService.retrieveAppointmentSearchList(keyword, userInfo.getId());
+        AppointmentSearchReqDto reqDto = appointmentVoMapper.to(req);
+
+        Page<AppointmentSearchRespDto> respDtoList =
+                appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
-                ListResponse.of(appointmentListInfoDtoSearchList.stream().map(appointmentVoMapper::to).toList())
+                ListResponse.of(
+                        respDtoList.map(appointmentVoMapper::to)
+                )
         );
     }
 

@@ -301,8 +301,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId) {
-        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(keyword, userId);
+    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId) {
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
+        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(reqDto.getKeyword(), userId, customPageRequest);
     }
 
     @Override

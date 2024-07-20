@@ -75,8 +75,8 @@ public class AppointmentFacadeService {
         return appointmentService.checkNickname(appointmentCode, nickname);
     }
 
-    public List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long id) {
-        return appointmentService.retrieveAppointmentSearchList(keyword, id);
+    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long id) {
+        return appointmentService.retrieveAppointmentSearchList(reqDto, id);
     }
 
     public AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode) {

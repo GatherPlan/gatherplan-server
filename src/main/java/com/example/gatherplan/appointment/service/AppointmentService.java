@@ -35,7 +35,7 @@ public interface AppointmentService {
 
     boolean checkNickname(String appointmentCode, String nickname);
 
-    List<AppointmentSearchListRespDto> retrieveAppointmentSearchList(String keyword, Long userId);
+    Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId);
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
