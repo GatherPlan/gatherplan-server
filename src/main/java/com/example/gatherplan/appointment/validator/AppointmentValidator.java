@@ -112,17 +112,17 @@ public class AppointmentValidator {
     }
 
     public void validateIsUserParticipated(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappings) {
-        boolean isGuest = mappings.stream()
+        boolean isParticipated = mappings.stream()
                 .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()));
-        if (isGuest) {
+        if (isParticipated) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
     }
 
     public void validateIsUserParticipated(Long userId, List<UserAppointmentMapping> mappings) {
-        boolean isGuest = mappings.stream()
+        boolean isParticipated = mappings.stream()
                 .anyMatch(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()));
-        if (isGuest) {
+        if (isParticipated) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
     }
