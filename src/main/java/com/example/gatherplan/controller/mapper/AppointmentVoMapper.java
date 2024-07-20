@@ -20,6 +20,8 @@ public interface AppointmentVoMapper {
 
     AppointmentParticipantsResp to(AppointmentParticipantsRespDto respDto);
 
+    AppointmentSearchResp to(AppointmentSearchResp respDto);
+
     UpdateAppointmentReqDto to(UpdateAppointmentReq req);
 
     CreateAppointmentJoinReqDto to(CreateAppointmentJoinReq req);

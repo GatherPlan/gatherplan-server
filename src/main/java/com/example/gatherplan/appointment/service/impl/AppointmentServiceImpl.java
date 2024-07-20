@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -251,11 +253,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.confirmed(confirmedDateTime);
     }
 
-//    @Override
-//    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId) {
-//        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
-//        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(reqDto.getKeyword(), userId, customPageRequest);
-//    }
+    @Override
+    public List<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
+        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByUserSeq(userId);
+        List<String> appointmentCodeList = AppointmentValidator.findAppointmentCodeList(userAppointmentMappingList);
+
+        List<Appointment> appointmentList = Optional.ofNullable(reqDto.getKeyword())
+                .filter(k -> !k.isEmpty())
+                .map(k -> appointmentRepository.findAllByAppointmentCodeInAndAppointmentNameContaining(appointmentCodeList, k))
+                .orElseGet(() -> appointmentRepository.findAllByAppointmentCodeIn(appointmentCodeList));
+
+        List<UserAppointmentMapping> hostMappingList =
+                userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(appointmentCodeList, UserRole.HOST);
+        Map<String, String> hostNames = AppointmentValidator.findHostNameList(hostMappingList);
+
+        return appointmentList.stream().map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
+                hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode())))).toList();
+    }
 
     @Override
     public AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode) {
