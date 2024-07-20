@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(description = "회원의 약속 목록 키워드 조회 응답 객체")
-public class AppointmentSearchListResp {
+public class AppointmentSearchResp {
 
     @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     @NotBlank
@@ -35,7 +35,7 @@ public class AppointmentSearchListResp {
     @Schema(description = "공지사항", example = "점심약속입니다.")
     private String notice;
 
-    public boolean getIsHost(){
+    public boolean getIsHost() {
         return this.isHost;
     }
 }

@@ -1,18 +1,24 @@
 package com.example.gatherplan.appointment.repository.impl;
 
-import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentSearchRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.QUserAppointmentMapping;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.example.gatherplan.appointment.repository.entity.QAppointment.appointment;
@@ -61,7 +67,6 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
 
-
     @Override
     public Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode, Long userId, UserRole userRole) {
         return Optional.ofNullable(jpaQueryFactory
@@ -86,12 +91,24 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
     }
 
     @Override
-    public List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeq(String keyword, Long userId) {
+    public Page<AppointmentSearchRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeq(String keyword, Long userId, PageRequest pageable) {
 
         QUserAppointmentMapping hostMapping = new QUserAppointmentMapping("hostMapping");
 
-        return jpaQueryFactory
-                .selectDistinct(Projections.constructor(AppointmentSearchListRespDto.class,
+        Predicate[] whereConditions = {
+                Objects.nonNull(keyword) ? appointment.appointmentName.contains(keyword)
+                        .or(hostMapping.nickname.contains(keyword)) : Expressions.TRUE,
+                userAppointmentMapping.userSeq.eq(userId),
+                hostMapping.userRole.eq(UserRole.HOST)
+        };
+
+        JPAQuery<Appointment> countQuery = jpaQueryFactory.selectFrom(appointment)
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
+                .join(hostMapping).on(hostMapping.appointmentCode.eq(appointment.appointmentCode))
+                .where(whereConditions);
+
+        List<AppointmentSearchRespDto> result = jpaQueryFactory
+                .selectDistinct(Projections.constructor(AppointmentSearchRespDto.class,
                         appointment.appointmentCode,
                         appointment.appointmentName,
                         appointment.appointmentState,
@@ -100,12 +117,13 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                         hostMapping.userSeq.eq(userId)
                 ))
                 .from(appointment)
-                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode)
-                        .and(userAppointmentMapping.userSeq.eq(userId)))
-                .join(hostMapping).on(hostMapping.appointmentCode.eq(appointment.appointmentCode)
-                        .and(hostMapping.userRole.eq(UserRole.HOST)))
-                .where((keyword != null ? appointment.appointmentName.contains(keyword)
-                                .or(hostMapping.nickname.contains(keyword)) : Expressions.TRUE))
+                .join(userAppointmentMapping).on(appointment.appointmentCode.eq(userAppointmentMapping.appointmentCode))
+                .join(hostMapping).on(hostMapping.appointmentCode.eq(appointment.appointmentCode))
+                .where(whereConditions)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> countQuery.fetch().size());
     }
 }

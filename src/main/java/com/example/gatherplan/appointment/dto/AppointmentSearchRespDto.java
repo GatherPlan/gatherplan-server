@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class AppointmentSearchListRespDto {
+public class AppointmentSearchRespDto {
 
     private String appointmentCode;
 

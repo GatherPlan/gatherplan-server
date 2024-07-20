@@ -1,11 +1,12 @@
 package com.example.gatherplan.appointment.repository;
 
-import com.example.gatherplan.appointment.dto.AppointmentSearchListRespDto;
+import com.example.gatherplan.appointment.dto.AppointmentSearchRespDto;
 import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CustomAppointmentRepository {
@@ -21,7 +22,7 @@ public interface CustomAppointmentRepository {
     Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRole(String appointmentCode
             , Long userId, UserRole userRole);
 
-    List<AppointmentSearchListRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeq(String keyword, Long userId);
+    Page<AppointmentSearchRespDto> findAppointmentSearchListRespDtoListByKeywordAndUserSeq(String keyword, Long userId, PageRequest pageable);
 
     Optional<Appointment> findByAppointmentCodeAndUserSeqAndUserRoleAndAppointmentState(String appointmentCode, Long userId, UserRole userRole, AppointmentState appointmentState);
 }
