@@ -4,6 +4,7 @@ import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.common.audit.BaseAuditableEntity;
 import com.example.gatherplan.common.unit.SelectedDateTime;
+import com.example.gatherplan.common.unit.TempUserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -53,7 +54,7 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
         this.selectedDateTimeList = List.copyOf(selectedDateTimeList);
     }
 
-    public static UserAppointmentMapping of(String appointmentCode, Long userId, UserRole userRole, String name, String tempPassword, UserAuthType userAuthType) {
+    public static UserAppointmentMapping ofUser(String appointmentCode, Long userId, UserRole userRole, String name, UserAuthType userAuthType) {
         return UserAppointmentMapping.builder()
                 .appointmentCode(appointmentCode)
                 .userSeq(userId)
@@ -61,7 +62,17 @@ public class UserAppointmentMapping extends BaseAuditableEntity {
                 .userAuthType(userAuthType)
                 .isAvailable(false)
                 .nickname(name)
-                .tempPassword(tempPassword)
+                .build();
+    }
+
+    public static UserAppointmentMapping ofTempUser(String appointmentCode, UserRole userRole, TempUserInfo tempUserInfo, UserAuthType userAuthType) {
+        return UserAppointmentMapping.builder()
+                .appointmentCode(appointmentCode)
+                .userRole(userRole)
+                .userAuthType(userAuthType)
+                .isAvailable(false)
+                .nickname(tempUserInfo.getNickname())
+                .tempPassword(tempUserInfo.getPassword())
                 .build();
     }
 }

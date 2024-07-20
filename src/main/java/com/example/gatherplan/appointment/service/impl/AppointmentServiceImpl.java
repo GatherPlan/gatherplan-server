@@ -50,7 +50,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentMapper.to(reqDto, AppointmentState.UNCONFIRMED, appointmentCode);
         appointmentRepository.save(appointment);
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(appointmentCode, userId, UserRole.HOST, name, null, userAuthType);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.ofUser(appointmentCode, userId, UserRole.HOST, name, userAuthType);
         userAppointmentMappingRepository.save(userAppointmentMapping);
 
         return appointmentCode;
@@ -61,14 +61,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        AppointmentValidator.validateUserAppointmentMappingExistence(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        AppointmentValidator.validateUserExistenceAndThrow(userId, userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
         boolean isHost = StringUtils.equals(hostName, name);
-        boolean isGuest = AppointmentValidator.isUserGuest(userId, userAppointmentMappingList);
+        boolean isGuest = AppointmentValidator.isUserParticipated(userId, userAppointmentMappingList);
 
-        List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
+        List<UserParticipationInfo> userParticipationInfoList =
+                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return appointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isGuest);
     }
@@ -78,10 +80,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void updateAppointment(UpdateAppointmentReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        AppointmentValidator.validateIsUserHost(userId, userAppointmentMappingList);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHostAndThrow(userId, userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
         appointment.update(reqDto.getAppointmentName(), reqDto.getAddress(), reqDto.getCandidateDateList(), reqDto.getNotice());
@@ -92,10 +96,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void deleteAppointment(String appointmentCode, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        AppointmentValidator.validateIsUserHost(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        AppointmentValidator.validateIsUserHostAndThrow(userId, userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteAllByAppointmentCode(appointmentCode);
         appointmentRepository.deleteById(appointment.getId());
@@ -106,10 +111,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId, String name) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        AppointmentValidator.validateIsUserNotGuest(userId, userAppointmentMappingList);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserParticipated(userId, userAppointmentMappingList);
 
         if (!AppointmentValidator.isUserHost(userId, userAppointmentMappingList)) {
             AppointmentValidator.validateNotDuplicatedName(reqDto.getNickname(), userAppointmentMappingList);
@@ -120,7 +127,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL, String.format("후보 날짜에서 벗어난 입력 값 입니다. %s", result));
                 });
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.of(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), null, UserAuthType.LOCAL);
+        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.ofUser(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), UserAuthType.LOCAL);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
@@ -128,10 +135,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId) {
-        validateAppointmentExistence(appointmentCode);
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+        }
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        AppointmentValidator.validateIsUserHostOrGuest(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        AppointmentValidator.validateIsUserHostOrParticipatedAndThrow(userId, userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
@@ -142,10 +152,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(String appointmentCode, Long userId) {
-        validateAppointmentExistence(appointmentCode);
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+        }
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        AppointmentValidator.validateIsUserHostOrGuest(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        AppointmentValidator.validateIsUserHostOrParticipatedAndThrow(userId, userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
@@ -162,9 +175,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void updateAppointmentJoin(UpdateAppointmentJoinReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
 
         AppointmentValidator.retrieveInvalidSelectedDateTime(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList())
@@ -181,9 +195,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void deleteAppointmentJoin(String appointmentCode, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteById(mapping.getId());
@@ -193,10 +208,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Page<AppointmentCandidateInfoRespDto> retrieveCandidateInfo(AppointmentCandidateInfoReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        AppointmentValidator.validateIsUserHost(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHostAndThrow(userId, userAppointmentMappingList);
 
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
@@ -222,10 +238,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
-        AppointmentValidator.validateAppointmentStateUnconfirmed(appointment);
+        AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        AppointmentValidator.validateIsUserHost(userId, userAppointmentMappingList);
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        AppointmentValidator.validateIsUserHostAndThrow(userId, userAppointmentMappingList);
 
         List<UserAppointmentMapping> userGuestList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(appointment.getAppointmentCode(), UserRole.GUEST);
@@ -249,7 +266,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findByAppointmentCode(appointmentCode)
                 .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT));
 
-        List<UserAppointmentMapping> mappingList = userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+        List<UserAppointmentMapping> mappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
         String hostName = AppointmentValidator.findHostName(mappingList);
 
