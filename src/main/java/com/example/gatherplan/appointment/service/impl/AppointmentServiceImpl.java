@@ -29,9 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +67,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean isGuest = AppointmentValidator.isUserParticipated(userId, userAppointmentMappingList);
 
         List<UserParticipationInfo> userParticipationInfoList =
-                AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
+                AppointmentUtils.retrieveUserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return appointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isGuest);
     }
@@ -254,11 +251,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.confirmed(confirmedDateTime);
     }
 
-    @Override
-    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId) {
-        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
-        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(reqDto.getKeyword(), userId, customPageRequest);
-    }
+//    @Override
+//    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId) {
+//        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
+//        return customAppointmentRepository.findAppointmentSearchListRespDtoListByKeywordAndUserSeq(reqDto.getKeyword(), userId, customPageRequest);
+//    }
 
     @Override
     public AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode) {

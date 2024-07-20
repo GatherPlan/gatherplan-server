@@ -66,7 +66,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         boolean isHost = StringUtils.equals(reqDto.getTempUserInfo().getNickname(), hostName);
         boolean isGuest = AppointmentValidator.isUserParticipated(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveuserParticipationInfoList(userAppointmentMappingList, hostName);
+        List<UserParticipationInfo> userParticipationInfoList = AppointmentUtils.retrieveUserParticipationInfoList(userAppointmentMappingList, hostName);
 
         return tempAppointmentMapper.to(appointment, userParticipationInfoList, hostName, isHost, isGuest);
     }
