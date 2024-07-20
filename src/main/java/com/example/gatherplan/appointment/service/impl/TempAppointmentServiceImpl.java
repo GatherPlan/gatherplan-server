@@ -146,10 +146,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && reqDto.getTempUserInfo().getNickname().equals(mapping.getNickname()) && reqDto.getTempUserInfo().getPassword().equals(mapping.getTempPassword()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+        UserAppointmentMapping userAppointmentMapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         ParticipationInfo participationInfo = tempAppointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);

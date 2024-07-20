@@ -149,10 +149,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()))
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING));
+        UserAppointmentMapping userAppointmentMapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
 
         ParticipationInfo participationInfo = appointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
