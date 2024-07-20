@@ -28,12 +28,6 @@ public interface TempAppointmentVoMapper {
 
     TempConfirmAppointmentReqDto to(TempConfirmAppointmentReq req);
 
-    TempCheckHostReqDto to(TempCheckHostReq req);
-
-    CreateTempUserReqDto to(CreateTempUserReq req);
-
-    TempCheckJoinReqDto to(TempCheckJoinReq req);
-
     TempAppointmentInfoReqDto to(TempAppointmentInfoReq req);
 
     @Mapping(target = "isParticipated", source = "participated")
@@ -52,5 +46,4 @@ public interface TempAppointmentVoMapper {
 
     TempAppointmentMyParticipantResp to(TempAppointmentMyParticipantRespDto respDto);
 
-    TempCheckJoinReqDto to(TempCheckUserReq req);
 }

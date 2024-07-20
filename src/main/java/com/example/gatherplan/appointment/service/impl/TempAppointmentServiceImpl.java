@@ -270,42 +270,4 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         appointment.confirmed(confirmedDateTime);
     }
 
-    @Override
-    public boolean checkHost(TempCheckHostReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
-    }
-
-    @Override
-    public boolean checkJoin(TempCheckJoinReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
-    }
-
-    @Override
-    public boolean checkUser(TempCheckJoinReqDto reqDto) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(
-                        reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
-
-        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole()) ||
-                UserRole.HOST.equals(userAppointmentMapping.getUserRole());
-    }
-
-    @Override
-    public boolean validJoin(CreateTempUserReqDto reqDto) {
-        List<UserAppointmentMapping> userAppointmentMappingList =
-                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-
-        return userAppointmentMappingList.stream().noneMatch(mapping -> StringUtils.equals(mapping.getNickname(), reqDto.getTempUserInfo().getNickname()));
-    }
-
 }
