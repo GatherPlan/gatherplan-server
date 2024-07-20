@@ -1,4 +1,4 @@
-package com.example.gatherplan.controller.vo.tempappointment;
+package com.example.gatherplan.controller.vo.tempuser;
 
 import com.example.gatherplan.common.unit.TempUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,8 +13,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "임시 회원가입 가능 여부 확인 요청 객체")
-public class CreateTempUserReq {
+@Schema(description = " 비회원의 호스트 확인 요청 객체")
+public class TempCheckHostReq {
 
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid

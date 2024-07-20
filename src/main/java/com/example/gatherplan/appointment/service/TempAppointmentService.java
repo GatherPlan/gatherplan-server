@@ -27,13 +27,5 @@ public interface TempAppointmentService {
 
     void confirmAppointment(TempConfirmAppointmentReqDto reqDto);
 
-    boolean checkHost(TempCheckHostReqDto reqDto);
-
-    boolean checkJoin(TempCheckJoinReqDto reqDto);
-
-    boolean validJoin(CreateTempUserReqDto reqDto);
-
     TempAppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(TempAppointmentMyParticipantReqDto reqDto);
-
-    boolean checkUser(TempCheckJoinReqDto reqDto);
 }

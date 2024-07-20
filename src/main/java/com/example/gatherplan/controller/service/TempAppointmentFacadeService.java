@@ -59,20 +59,4 @@ public class TempAppointmentFacadeService {
     public void confirmAppointment(TempConfirmAppointmentReqDto reqDto) {
         tempAppointmentService.confirmAppointment(reqDto);
     }
-
-    public boolean checkHost(TempCheckHostReqDto reqDto) {
-        return tempAppointmentService.checkHost(reqDto);
-    }
-
-    public boolean checkJoin(TempCheckJoinReqDto reqDto) {
-        return tempAppointmentService.checkJoin(reqDto);
-    }
-
-    public boolean checkUser(TempCheckJoinReqDto reqDto) {
-        return tempAppointmentService.checkUser(reqDto);
-    }
-
-    public boolean validJoin(CreateTempUserReqDto reqDto) {
-        return tempAppointmentService.validJoin(reqDto);
-    }
 }
