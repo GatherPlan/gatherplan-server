@@ -135,9 +135,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId) {
-        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
             throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
@@ -145,16 +144,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
-        List<ParticipationInfo> participationInfoList = AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, appointmentMapper);
+        List<ParticipationInfo> participationInfoList =
+                AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, appointmentMapper);
 
         return participationInfoList.stream().map(appointmentMapper::to).toList();
     }
 
     @Override
     public AppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(String appointmentCode, Long userId) {
-        if (!appointmentRepository.existsByAppointmentCode(appointmentCode)) {
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
             throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);

@@ -126,26 +126,28 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
 
     @Override
     public List<TempAppointmentParticipantsRespDto> retrieveAppointmentParticipants(TempAppointmentParticipantsReqDto reqDto) {
-        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode())) {
+        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
             throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserHostOrParticipatedAndThrow(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
 
-        List<ParticipationInfo> participationInfoList = AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, tempAppointmentMapper);
+        List<ParticipationInfo> participationInfoList =
+                AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, tempAppointmentMapper);
+
         return participationInfoList.stream().map(tempAppointmentMapper::to).toList();
     }
 
     @Override
     public TempAppointmentMyParticipantRespDto retrieveAppointmentMyParticipant(TempAppointmentMyParticipantReqDto reqDto) {
-        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode())) {
+        if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
             throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
-        }
 
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserHostOrParticipatedAndThrow(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
