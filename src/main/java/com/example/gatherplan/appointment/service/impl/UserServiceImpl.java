@@ -2,9 +2,10 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserRole;
+import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.UserMapper;
+import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.EmailAuthRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.UserRepository;
@@ -12,6 +13,7 @@ import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.UserService;
+import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.config.jwt.RoleType;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${spring.mail.username}")
     private String adminEmail;
+    private final AppointmentRepository appointmentRepository;
 
     @Override
     @Transactional
@@ -132,38 +135,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean checkHost(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.HOST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
 
-        return UserRole.HOST.equals(userAppointmentMapping.getUserRole());
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return AppointmentValidator.isUserHost(userId, userAppointmentMappingList);
     }
 
     @Override
     public boolean checkJoin(String appointmentCode, Long userId) {
-        UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
-                .findByAppointmentCodeAndUserSeqAndUserRole(appointmentCode, userId, UserRole.GUEST)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
 
-        return UserRole.GUEST.equals(userAppointmentMapping.getUserRole());
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
+
+        return AppointmentValidator.isUserParticipated(userId, userAppointmentMappingList);
     }
 
     @Override
     public boolean checkName(String appointmentCode, String name) {
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        return userAppointmentMappingList.stream().noneMatch(
-                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name));
+        return AppointmentValidator.isNotDuplicatedName(name, userAppointmentMappingList);
     }
 
     @Override
     public boolean checkNickname(String appointmentCode, String nickname) {
+        if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
+            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        return userAppointmentMappingList.stream().noneMatch(
-                userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), nickname));
+        return AppointmentValidator.isNotDuplicatedName(nickname, userAppointmentMappingList);
     }
 
 }
