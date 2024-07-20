@@ -59,22 +59,6 @@ public class AppointmentFacadeService {
         appointmentService.confirmAppointment(reqDto, id);
     }
 
-    public boolean checkHost(String appointmentCode, Long id) {
-        return appointmentService.checkHost(appointmentCode, id);
-    }
-
-    public boolean checkJoin(String appointmentCode, Long id) {
-        return appointmentService.checkJoin(appointmentCode, id);
-    }
-
-    public boolean checkName(String appointmentCode, String username) {
-        return appointmentService.checkName(appointmentCode, username);
-    }
-
-    public boolean checkNickname(String appointmentCode, String nickname) {
-        return appointmentService.checkNickname(appointmentCode, nickname);
-    }
-
     public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long id) {
         return appointmentService.retrieveAppointmentSearchList(reqDto, id);
     }

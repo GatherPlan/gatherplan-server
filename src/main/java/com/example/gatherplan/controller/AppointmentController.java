@@ -194,60 +194,6 @@ public class AppointmentController {
         );
     }
 
-    @GetMapping("/host:check")
-    @Operation(summary = "회원의 호스트 여부 조회 요청", description = "회원의 호스트 여부를 판단할 때 사용됩니다. [figma #12]")
-    public ResponseEntity<BooleanResp> checkHost(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        boolean isHost = appointmentFacadeService.checkHost(appointmentCode, userInfo.getId());
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isHost)
-        );
-    }
-
-    @GetMapping("/join:check")
-    @Operation(summary = "회원의 약속 참여 여부 조회 요청", description = "회원의 약속 참여 여부를 조회할 때 사용됩니다. [figma #12,#18]")
-    public ResponseEntity<BooleanResp> checkJoin(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        boolean isParticipated = appointmentFacadeService.checkJoin(appointmentCode, userInfo.getId());
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isParticipated)
-        );
-    }
-
-    @GetMapping("/name:check")
-    @Operation(summary = "회원의 이름 중복 여부 확인 요청", description = "회원의 이름이 참여하려는 약속에 중복되지 않는지 확인할 때 사용됩니다. [figma #12]")
-    public ResponseEntity<BooleanResp> checkName(
-            @Schema(description = "약속 코드", example = "985a61f6f636")
-            @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
-            @AuthenticationPrincipal UserInfo userInfo) {
-
-        boolean isValid = appointmentFacadeService.checkName(appointmentCode, userInfo.getUsername());
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isValid)
-        );
-    }
-
-    @GetMapping("/nickname:check")
-    @Operation(summary = "회원의 닉네임 중복 여부 확인 요청", description = "회원이 입력한 닉네임이 참여하려는 약속에 중복되지 않는지 확인할 때 사용됩니다. [figma #20]")
-    public ResponseEntity<BooleanResp> checkNickname(
-            @Valid @ModelAttribute @ParameterObject ValidationNicknameReq req) {
-
-        boolean isValid = appointmentFacadeService.checkNickname(req.getAppointmentCode(), req.getNickname());
-
-        return ResponseEntity.ok(
-                BooleanResp.of(isValid)
-        );
-    }
-
     @GetMapping("/list:search")
     @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다. [figma #22]")
     public ResponseEntity<ListResponse<AppointmentSearchResp>> retrieveAppointmentSearchList(

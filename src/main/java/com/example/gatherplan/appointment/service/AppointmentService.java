@@ -27,14 +27,6 @@ public interface AppointmentService {
 
     void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId);
 
-    boolean checkHost(String appointmentCode, Long userId);
-
-    boolean checkJoin(String appointmentCode, Long userId);
-
-    boolean checkName(String appointmentCode, String name);
-
-    boolean checkNickname(String appointmentCode, String nickname);
-
     Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId);
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
