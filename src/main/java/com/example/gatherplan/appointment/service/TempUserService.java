@@ -1,16 +1,17 @@
 package com.example.gatherplan.appointment.service;
 
-import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckHostReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckJoinReqDto;
+import com.example.gatherplan.appointment.dto.TempUserCreateValidReqDto;
+import com.example.gatherplan.appointment.dto.TempUserExistCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserHostCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserJoinCheckReqDto;
 
 public interface TempUserService {
 
-    boolean checkHost(TempCheckHostReqDto reqDto);
+    boolean checkHost(TempUserHostCheckReqDto reqDto);
 
-    boolean checkJoin(TempCheckJoinReqDto reqDto);
+    boolean checkJoin(TempUserJoinCheckReqDto reqDto);
 
-    boolean validJoin(CreateTempUserReqDto reqDto);
+    boolean validJoin(TempUserCreateValidReqDto reqDto);
 
-    boolean checkUser(TempCheckJoinReqDto reqDto);
+    boolean checkUser(TempUserExistCheckReqDto reqDto);
 }

@@ -1,7 +1,7 @@
 package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
-import com.example.gatherplan.controller.vo.appointment.CreateUserReq;
+import com.example.gatherplan.controller.vo.user.CreateUserReq;
 import org.mapstruct.*;
 
 @Mapper(

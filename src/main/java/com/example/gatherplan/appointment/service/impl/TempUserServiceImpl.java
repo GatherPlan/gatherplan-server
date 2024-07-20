@@ -1,8 +1,9 @@
 package com.example.gatherplan.appointment.service.impl;
 
-import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckHostReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckJoinReqDto;
+import com.example.gatherplan.appointment.dto.TempUserCreateValidReqDto;
+import com.example.gatherplan.appointment.dto.TempUserExistCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserHostCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserJoinCheckReqDto;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
@@ -26,7 +27,7 @@ public class TempUserServiceImpl implements TempUserService {
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
 
     @Override
-    public boolean checkHost(TempCheckHostReqDto reqDto) {
+    public boolean checkHost(TempUserHostCheckReqDto reqDto) {
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
                 .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
                         reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.HOST)
@@ -36,7 +37,7 @@ public class TempUserServiceImpl implements TempUserService {
     }
 
     @Override
-    public boolean checkJoin(TempCheckJoinReqDto reqDto) {
+    public boolean checkJoin(TempUserJoinCheckReqDto reqDto) {
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository
                 .findByAppointmentCodeAndNicknameAndTempPasswordAndUserRole(
                         reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword(), UserRole.GUEST)
@@ -46,7 +47,7 @@ public class TempUserServiceImpl implements TempUserService {
     }
 
     @Override
-    public boolean checkUser(TempCheckJoinReqDto reqDto) {
+    public boolean checkUser(TempUserExistCheckReqDto reqDto) {
         UserAppointmentMapping userAppointmentMapping = userAppointmentMappingRepository.findByAppointmentCodeAndNicknameAndTempPassword(
                         reqDto.getAppointmentCode(), reqDto.getTempUserInfo().getNickname(), reqDto.getTempUserInfo().getPassword())
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
@@ -56,7 +57,7 @@ public class TempUserServiceImpl implements TempUserService {
     }
 
     @Override
-    public boolean validJoin(CreateTempUserReqDto reqDto) {
+    public boolean validJoin(TempUserCreateValidReqDto reqDto) {
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
 

@@ -5,9 +5,9 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TempCheckHostReqDto {
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class TempUserJoinCheckReqDto {
 
     private TempUserInfo tempUserInfo;
 
