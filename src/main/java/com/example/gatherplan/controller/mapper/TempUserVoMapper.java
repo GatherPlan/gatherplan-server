@@ -1,12 +1,13 @@
 package com.example.gatherplan.controller.mapper;
 
-import com.example.gatherplan.appointment.dto.CreateTempUserReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckHostReqDto;
-import com.example.gatherplan.appointment.dto.TempCheckJoinReqDto;
-import com.example.gatherplan.controller.vo.tempuser.CreateTempUserReq;
-import com.example.gatherplan.controller.vo.tempuser.TempCheckHostReq;
-import com.example.gatherplan.controller.vo.tempuser.TempCheckJoinReq;
-import com.example.gatherplan.controller.vo.tempuser.TempCheckUserReq;
+import com.example.gatherplan.appointment.dto.TempUserCreateValidReqDto;
+import com.example.gatherplan.appointment.dto.TempUserExistCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserHostCheckReqDto;
+import com.example.gatherplan.appointment.dto.TempUserJoinCheckReqDto;
+import com.example.gatherplan.controller.vo.tempuser.TempUserCheckHostReq;
+import com.example.gatherplan.controller.vo.tempuser.TempUserCreateValidReq;
+import com.example.gatherplan.controller.vo.tempuser.TempUserExistCheckReq;
+import com.example.gatherplan.controller.vo.tempuser.TempUserJoinCheckReq;
 import org.mapstruct.*;
 
 @Mapper(
@@ -18,12 +19,12 @@ import org.mapstruct.*;
 )
 public interface TempUserVoMapper {
 
-    TempCheckJoinReqDto to(TempCheckUserReq req);
+    TempUserExistCheckReqDto to(TempUserExistCheckReq req);
 
-    TempCheckJoinReqDto to(TempCheckJoinReq req);
+    TempUserJoinCheckReqDto to(TempUserJoinCheckReq req);
 
-    CreateTempUserReqDto to(CreateTempUserReq req);
+    TempUserCreateValidReqDto to(TempUserCreateValidReq req);
 
-    TempCheckHostReqDto to(TempCheckHostReq req);
+    TempUserHostCheckReqDto to(TempUserCheckHostReq req);
 
 }

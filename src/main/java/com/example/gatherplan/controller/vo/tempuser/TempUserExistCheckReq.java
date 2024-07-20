@@ -13,8 +13,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "임시 회원가입 가능 여부 확인 요청 객체")
-public class CreateTempUserReq {
+@Schema(description = "비회원의 특정 약속 포함 여부 확인 요청 객체")
+public class TempUserExistCheckReq {
 
     @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
