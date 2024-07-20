@@ -194,25 +194,23 @@ public class AppointmentController {
         );
     }
 
-//    @GetMapping("/list:search")
-//    @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다. [figma #22]")
-//    public ResponseEntity<ListResponse<AppointmentSearchResp>> retrieveAppointmentSearchList(
-//            @Valid @ModelAttribute @ParameterObject AppointmentSearchReq req,
-//            @AuthenticationPrincipal UserInfo userInfo) {
-//
-//        AppointmentSearchReqDto reqDto = appointmentVoMapper.to(req);
-//
-//        Page<AppointmentSearchRespDto> respDtoList =
-//                appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId());
-//        List<AppointmentSearchListRespDto> appointmentListInfoDtoSearchList =
-//                appointmentFacadeService.retrieveAppointmentSearchList(keyword, userInfo.getId(), userInfo.getUsername());
-//
-//        return ResponseEntity.ok(
-//                ListResponse.of(
-//                        respDtoList.map(appointmentVoMapper::to)
-//                )
-//        );
-//    }
+    @GetMapping("/list:search")
+    @Operation(summary = "회원의 약속 목록 키워드 조회 요청", description = "회원이 약속 목록을 키워드로 조회할 때 사용됩니다. [figma #22]")
+    public ResponseEntity<ListResponse<AppointmentSearchResp>> retrieveAppointmentSearchList(
+            @Valid @ModelAttribute @ParameterObject AppointmentSearchReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        AppointmentSearchReqDto reqDto = appointmentVoMapper.to(req);
+
+        List<AppointmentSearchRespDto> respDtoList =
+                appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId(), userInfo.getUsername());
+
+        return ResponseEntity.ok(
+                ListResponse.of(
+                        respDtoList.stream().map(appointmentVoMapper::to).toList()
+                )
+        );
+    }
 
     @GetMapping("/preview")
     @Operation(summary = "회원의 약속 미리보기 조회 요청", description = "회원이 약속 미리보기를 조회할 때 사용됩니다. [figma #11,#17,#18,#26]")
