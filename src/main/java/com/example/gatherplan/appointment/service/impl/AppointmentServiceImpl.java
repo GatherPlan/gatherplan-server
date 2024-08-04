@@ -254,7 +254,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
+    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByUserSeq(userId);
         List<String> appointmentCodeList = AppointmentValidator.findAppointmentCodeList(userAppointmentMappingList);
 
@@ -263,12 +263,21 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .map(k -> appointmentRepository.findAllByAppointmentCodeInAndAppointmentNameContaining(appointmentCodeList, k))
                 .orElseGet(() -> appointmentRepository.findAllByAppointmentCodeIn(appointmentCodeList));
 
+        List<String> filteredAppointmentCodeList = AppointmentValidator.findAppointmentCodeListByAppointmentList(appointmentList);
+
         List<UserAppointmentMapping> hostMappingList =
-                userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(appointmentCodeList, UserRole.HOST);
+                userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(filteredAppointmentCodeList, UserRole.HOST);
         Map<String, String> hostNames = AppointmentValidator.findHostNameList(hostMappingList);
 
-        return appointmentList.stream().map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
-                hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode())))).toList();
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
+
+        List<AppointmentSearchRespDto> dataList = appointmentList.stream().map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
+                hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode()))))
+                .skip(Integer.toUnsignedLong((reqDto.getPage() - 1) * reqDto.getSize()))
+                .limit(reqDto.getSize())
+                .toList();
+
+        return new PageImpl<>(dataList, customPageRequest, filteredAppointmentCodeList.size());
     }
 
     @Override
