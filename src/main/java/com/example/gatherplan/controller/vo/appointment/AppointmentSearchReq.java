@@ -3,7 +3,6 @@ package com.example.gatherplan.controller.vo.appointment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "약속 키워드 검색 요청 객체")
 public class AppointmentSearchReq {
 
-    @NotBlank(message = "키워드는 공백일 수 없습니다")
+    // @NotBlank(message = "키워드는 공백일 수 없습니다")
     @Size(min = 2, message = "키워드는 2자 이상이어야합니다.")
     @Schema(description = "약속 이름 검색 키워드", example = "세 얼간이")
     private String keyword;

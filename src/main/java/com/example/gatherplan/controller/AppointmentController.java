@@ -202,12 +202,12 @@ public class AppointmentController {
 
         AppointmentSearchReqDto reqDto = appointmentVoMapper.to(req);
 
-        List<AppointmentSearchRespDto> respDtoList =
+        Page<AppointmentSearchRespDto> respDtoList =
                 appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
-                        respDtoList.stream().map(appointmentVoMapper::to).toList()
+                       respDtoList.map(appointmentVoMapper::to)
                 )
         );
     }

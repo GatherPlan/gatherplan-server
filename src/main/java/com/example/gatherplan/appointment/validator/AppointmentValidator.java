@@ -133,6 +133,12 @@ public class AppointmentValidator {
                 .toList();
     }
 
+    public List<String> findAppointmentCodeListByAppointmentList(List<Appointment> appointmentList) {
+        return appointmentList.stream()
+                .map(Appointment::getAppointmentCode)
+                .toList();
+    }
+
     public boolean isUserParticipated(Long userId, List<UserAppointmentMapping> mappingList) {
         return mappingList.stream().anyMatch(mapping -> userId.equals(mapping.getUserSeq()) && UserRole.GUEST.equals(mapping.getUserRole()));
     }

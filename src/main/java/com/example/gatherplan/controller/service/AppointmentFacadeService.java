@@ -60,7 +60,7 @@ public class AppointmentFacadeService {
         appointmentService.confirmAppointment(reqDto, id);
     }
 
-    public List<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long id, String name) {
+    public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long id, String name) {
         return appointmentService.retrieveAppointmentSearchList(reqDto, id, name);
     }
 

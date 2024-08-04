@@ -28,7 +28,7 @@ public interface AppointmentService {
 
     void confirmAppointment(ConfirmAppointmentReqDto reqDto, Long userId);
 
-    List<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name);
+    Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name);
 
     AppointmentPreviewRespDto retrieveAppointmentPreview(String appointmentCode);
 
