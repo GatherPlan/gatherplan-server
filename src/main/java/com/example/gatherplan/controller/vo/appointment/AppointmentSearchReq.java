@@ -18,7 +18,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "약속 목록 키워드 조회 요청")
 public class AppointmentSearchReq {
 
-    @NotBlank(message = "키워드는 공백일 수 없습니다")
+    // @NotBlank(message = "키워드는 공백일 수 없습니다")
     @Size(min = 2, message = "키워드는 2자 이상이어야합니다.")
     @Schema(description = "약속 이름 검색 키워드", example = "세 얼간이")
     private String keyword;
