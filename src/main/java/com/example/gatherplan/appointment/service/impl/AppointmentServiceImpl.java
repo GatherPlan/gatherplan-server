@@ -251,11 +251,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
-        Page<Appointment> filteredAppointmentList = customAppointmentRepository.findAllByUserIdAndKeywordContaining(userId, reqDto.getKeyword(),customPageRequest);
+        Page<Appointment> filteredAppointmentList = customAppointmentRepository.findAllByUserIdAndKeywordContaining(userId, reqDto.getKeyword(), customPageRequest);
 
         List<Appointment> appointmentList = filteredAppointmentList.getContent();
 
-        List<String> filteredAppointmentCodeList = AppointmentValidator.findAppointmentCodeListByAppointmentList(appointmentList);
+        List<String> filteredAppointmentCodeList = AppointmentUtils.findAppointmentCodeListByAppointmentList(appointmentList);
 
         List<UserAppointmentMapping> hostMappingList =
                 userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(filteredAppointmentCodeList, UserRole.HOST);
