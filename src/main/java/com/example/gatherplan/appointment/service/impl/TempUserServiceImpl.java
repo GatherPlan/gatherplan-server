@@ -31,7 +31,7 @@ public class TempUserServiceImpl implements TempUserService {
     @Override
     public boolean checkHost(TempUserHostCheckReqDto reqDto) {
         if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
@@ -42,7 +42,7 @@ public class TempUserServiceImpl implements TempUserService {
     @Override
     public boolean checkJoin(TempUserJoinCheckReqDto reqDto) {
         if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
@@ -53,7 +53,7 @@ public class TempUserServiceImpl implements TempUserService {
     @Override
     public boolean checkUser(TempUserExistCheckReqDto reqDto) {
         if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
@@ -64,13 +64,13 @@ public class TempUserServiceImpl implements TempUserService {
     @Override
     public boolean validJoin(TempUserCreateValidReqDto reqDto) {
         if (!appointmentRepository.existsByAppointmentCode(reqDto.getAppointmentCode()))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
 
         if (userAppointmentMappingList.isEmpty()) {
-            throw new AppointmentException(ErrorCode.NOT_FOUND_USER_APPOINTMENT_MAPPING);
+            throw new AppointmentException(ErrorCode.USER_NOT_RELATED_TO_APPOINTMENT);
         }
 
         return userAppointmentMappingList.stream().noneMatch(mapping -> StringUtils.equals(mapping.getNickname(), reqDto.getTempUserInfo().getNickname()));
