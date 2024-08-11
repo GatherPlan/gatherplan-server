@@ -47,9 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final Random random = new Random();
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AppointmentRepository appointmentRepository;
     @Value("${spring.mail.username}")
     private String adminEmail;
-    private final AppointmentRepository appointmentRepository;
 
     @Override
     @Transactional
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean checkHost(String appointmentCode, Long userId) {
         if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean checkJoin(String appointmentCode, Long userId) {
         if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean checkName(String appointmentCode, String name) {
         if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean checkNickname(String appointmentCode, String nickname) {
         if (!appointmentRepository.existsByAppointmentCode(appointmentCode))
-            throw new AppointmentException(ErrorCode.NOT_FOUND_APPOINTMENT);
+            throw new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
