@@ -30,7 +30,10 @@ public enum ErrorCode {
     HOST_NOT_FOUND_IN_APPOINTMENT(HttpStatus.NOT_FOUND, 4003, "약속의 호스트를 찾을 수 없습니다."),
     APPOINTMENT_ALREADY_CONFIRMED(HttpStatus.CONFLICT, 4004, "이미 확정된 약속입니다."),
     USER_NOT_RELATED_TO_APPOINTMENT(HttpStatus.NOT_FOUND, 4005, "해당 약속과 관련되지 않은 사용자입니다."),
-    USER_NAME_DUPLICATED_IN_APPOINTMENT(HttpStatus.CONFLICT, 4006, "해당 약속의 기존 회원과 이름이 중복됩니다.");
+    USER_NAME_DUPLICATED_IN_APPOINTMENT(HttpStatus.CONFLICT, 4006, "해당 약속의 기존 회원과 이름이 중복됩니다."),
+
+    // REGION ERROR
+    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, 5000, "존재하지 않는 지역입니다.");
 
 
     private final HttpStatus httpStatus;
