@@ -7,6 +7,7 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
+import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
+
+    private final CustomAppointmentRepository customAppointmentRepository;
 
     @Override
     @Transactional
@@ -255,29 +259,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
-        List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByUserSeq(userId);
-        List<String> appointmentCodeList = AppointmentValidator.findAppointmentCodeList(userAppointmentMappingList);
+        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
-        List<Appointment> appointmentList = Optional.ofNullable(reqDto.getKeyword())
-                .filter(k -> !k.isEmpty())
-                .map(k -> appointmentRepository.findAllByAppointmentCodeInAndAppointmentNameContaining(appointmentCodeList, k))
-                .orElseGet(() -> appointmentRepository.findAllByAppointmentCodeIn(appointmentCodeList));
+        Page<Appointment> filteredAppointmentList = customAppointmentRepository.findAllByUserIdAndKeywordContaining(userId, reqDto.getKeyword(),customPageRequest);
+
+        List<Appointment> appointmentList = filteredAppointmentList.getContent();
 
         List<String> filteredAppointmentCodeList = AppointmentValidator.findAppointmentCodeListByAppointmentList(appointmentList);
 
         List<UserAppointmentMapping> hostMappingList =
                 userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(filteredAppointmentCodeList, UserRole.HOST);
+
         Map<String, String> hostNames = AppointmentValidator.findHostNameList(hostMappingList);
 
-        CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
-
-        List<AppointmentSearchRespDto> dataList = appointmentList.stream().map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
-                hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode()))))
-                .skip(Integer.toUnsignedLong((reqDto.getPage() - 1) * reqDto.getSize()))
-                .limit(reqDto.getSize())
-                .toList();
-
-        return new PageImpl<>(dataList, customPageRequest, filteredAppointmentCodeList.size());
+        return filteredAppointmentList.map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
+                hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode()))));
     }
 
     @Override
