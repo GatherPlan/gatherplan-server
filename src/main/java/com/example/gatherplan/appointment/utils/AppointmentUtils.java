@@ -5,6 +5,7 @@ import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
+import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.utils.unit.AppointmentCandidateInfo;
 import com.example.gatherplan.common.exception.ErrorCode;
@@ -202,9 +203,9 @@ public class AppointmentUtils {
                 .orElseThrow(() -> new AppointmentException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
     }
 
-    public List<String> findAppointmentCodeList(List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream()
-                .map(UserAppointmentMapping::getAppointmentCode)
+    public List<String> findAppointmentCodeListByAppointmentList(List<Appointment> appointmentList) {
+        return appointmentList.stream()
+                .map(Appointment::getAppointmentCode)
                 .toList();
     }
 
