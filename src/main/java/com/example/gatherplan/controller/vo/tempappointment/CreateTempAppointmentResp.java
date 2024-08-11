@@ -8,11 +8,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 만들기 응답 객체")
+@Schema(description = "비회원의 약속 만들기 응답")
 public class CreateTempAppointmentResp {
 
-    @Schema(description = "약속 코드", example = "985a61f6f636")
     @NotBlank
+    @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
     public static CreateTempAppointmentResp of(String appointmentCode) {

@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 참여 정보 조회 응답 객체")
+@Schema(description = "비회원의 지정 약속의 모든 참여 정보 조회 응답")
 public class TempAppointmentParticipantsResp {
 
     @Schema(description = "약속 참여 정보", example = "{ \"nickname\": \"박승일\", " +
