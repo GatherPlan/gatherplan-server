@@ -61,7 +61,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public List<DailyWeatherRespDto> searchDailyWeather(String addressName) {
         Region region = customRegionRepository.findRegionByAddressName(addressName)
-                .orElseThrow(() -> new RegionException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 지역입니다."));
+                .orElseThrow(() -> new RegionException(ErrorCode.REGION_NOT_FOUND));
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(w -> {
