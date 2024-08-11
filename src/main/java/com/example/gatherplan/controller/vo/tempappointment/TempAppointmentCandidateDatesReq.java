@@ -16,7 +16,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 확정 후보 날짜 정보 조회 요청 객체")
+@Schema(description = "비회원의 약속 확정 후보 정보 요청")
 public class TempAppointmentCandidateDatesReq {
 
     @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.")

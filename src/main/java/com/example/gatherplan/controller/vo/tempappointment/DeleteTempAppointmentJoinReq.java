@@ -13,15 +13,15 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 참여 삭제 요청 객체")
+@Schema(description = "비회원의 약속 참여 삭제 요청")
 public class DeleteTempAppointmentJoinReq {
 
-    @Schema(description = "약속 코드", example = "985a61f6f636")
     @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.")
+    @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
-    @Schema(description = "약속 후보 날짜", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
     @NotNull
+    @Schema(description = "약속 후보 날짜", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     private TempUserInfo tempUserInfo;
 }

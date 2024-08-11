@@ -15,15 +15,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "비회원의 약속 참여 변경 요청 객체")
+@Schema(description = "비회원의 약속 참여 변경 요청")
 public class UpdateTempAppointmentJoinReq {
 
     @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
-    @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     @Valid
     @NotNull
+    @Schema(description = "비회원 정보", example = "{\"nickname\": \"홍길동\",\"password\": \"abc1234\"}")
     private TempUserInfo tempUserInfo;
 
     @NotEmpty(message = "날짜 및 시간 정보는 비어 있을 수 없습니다.")
