@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "이메일 인증 요청 객체")
+@Schema(description = "이메일 인증 요청")
 public class EmailAuthReq {
 
     @Schema(description = "이메일", example = "email@example.com")
