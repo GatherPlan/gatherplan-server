@@ -10,23 +10,23 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "회원의 약속 목록 키워드 조회 응답 객체")
+@Schema(description = "약속 목록 키워드 조회 응답")
 public class AppointmentSearchResp {
 
-    @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     @NotBlank
+    @Schema(description = "약속 이름", example = "맨땅에 헤딩")
     private String appointmentName;
 
-    @Schema(description = "호스트 이름", example = "박정빈")
     @NotBlank
+    @Schema(description = "호스트 이름", example = "박정빈")
     private String hostName;
 
-    @Schema(description = "약속 상태", example = "UNCONFIRMED")
     @NotNull
+    @Schema(description = "약속 상태", example = "UNCONFIRMED")
     private AppointmentState appointmentState;
 
-    @Schema(description = "약속 코드", example = "985a61f6f636")
     @NotBlank
+    @Schema(description = "약속 코드", example = "985a61f6f636")
     private String appointmentCode;
 
     @Schema(description = "호스트 여부", example = "true")

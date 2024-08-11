@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 참여 정보 조회 응답 객체")
+@Schema(description = "지정 약속의 모든 참여 정보 조회 응답")
 public class AppointmentParticipantsResp {
 
     @Schema(description = "약속 참여 정보", example = "{ \"nickname\": \"박승일\", " +
@@ -17,5 +17,4 @@ public class AppointmentParticipantsResp {
             "\"userRole\": \"PARTICIPANT\", " +
             "\"selectedDateTimeList\": [{ \"date\": \"2024-03-18\", \"startTime\": \"09:00\", \"endTime\": \"10:00\" }] }")
     private ParticipationInfo participationInfo;
-
 }
