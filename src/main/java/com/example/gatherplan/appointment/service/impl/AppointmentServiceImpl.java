@@ -66,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         AppointmentValidator.validateUserExistenceAndThrow(userId, userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
         boolean isHost = StringUtils.equals(hostName, name);
         boolean isGuest = AppointmentValidator.isUserParticipated(userId, userAppointmentMappingList);
 
@@ -139,10 +139,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         AppointmentValidator.validateIsUserHostOrJoinedAndThrow(userId, userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
 
         List<ParticipationInfo> participationInfoList =
-                AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, appointmentMapper);
+                AppointmentUtils.convertToParticipationInfoList(userAppointmentMappingList, hostName, appointmentMapper);
 
         return participationInfoList.stream().map(appointmentMapper::to).toList();
     }
@@ -156,9 +156,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
         AppointmentValidator.validateIsUserHostOrJoinedAndThrow(userId, userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
+        UserAppointmentMapping userAppointmentMapping = AppointmentUtils.findGuestMapping(userId, userAppointmentMappingList);
 
         ParticipationInfo participationInfo = appointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
@@ -175,7 +175,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
+        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(userId, userAppointmentMappingList);
 
         AppointmentValidator.validateSelectedDateTimeAndThrow(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList());
 
@@ -191,7 +191,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(userId, userAppointmentMappingList);
+        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(userId, userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteById(mapping.getId());
     }
@@ -211,7 +211,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
 
-        String hostName = AppointmentValidator.findHostName(participationInfoList);
+        String hostName = AppointmentUtils.findHostName(participationInfoList);
 
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
                 AppointmentUtils.retrieveCandidateInfoList(appointment.getCandidateDateList(), participationInfoList, hostName);
@@ -259,8 +259,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<UserAppointmentMapping> hostMappingList =
                 userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(filteredAppointmentCodeList, UserRole.HOST);
-
-        Map<String, String> hostNames = AppointmentValidator.findHostNameList(hostMappingList);
+        Map<String, String> hostNames = AppointmentUtils.findHostNameList(hostMappingList);
 
         return filteredAppointmentList.map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
                 hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode()))));
@@ -274,7 +273,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<UserAppointmentMapping> mappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
 
-        String hostName = AppointmentValidator.findHostName(mappingList);
+        String hostName = AppointmentUtils.findHostName(mappingList);
 
         return appointmentMapper.to(appointment, hostName);
     }

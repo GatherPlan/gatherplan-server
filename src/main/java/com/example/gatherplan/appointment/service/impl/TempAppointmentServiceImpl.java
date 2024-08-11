@@ -62,7 +62,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateTempUserExistenceAndThrow(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
         boolean isHost = StringUtils.equals(reqDto.getTempUserInfo().getNickname(), hostName);
         boolean isGuest = AppointmentValidator.isUserParticipated(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
@@ -130,10 +130,10 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserHostOrJoinedAndThrow(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
 
         List<ParticipationInfo> participationInfoList =
-                AppointmentValidator.convertToParticipationInfoList(userAppointmentMappingList, hostName, tempAppointmentMapper);
+                AppointmentUtils.convertToParticipationInfoList(userAppointmentMappingList, hostName, tempAppointmentMapper);
 
         return participationInfoList.stream().map(tempAppointmentMapper::to).toList();
     }
@@ -147,9 +147,9 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
                 userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
         AppointmentValidator.validateIsUserHostOrJoinedAndThrow(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
-        String hostName = AppointmentValidator.findHostName(userAppointmentMappingList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
 
-        UserAppointmentMapping userAppointmentMapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
+        UserAppointmentMapping userAppointmentMapping = AppointmentUtils.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         ParticipationInfo participationInfo = tempAppointmentMapper.toParticipationInfo(
                 userAppointmentMapping, StringUtils.equals(hostName, userAppointmentMapping.getNickname()) ? UserRole.HOST : UserRole.GUEST);
@@ -165,7 +165,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
+        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         AppointmentValidator.validateSelectedDateTimeAndThrow(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList());
 
@@ -180,7 +180,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        UserAppointmentMapping mapping = AppointmentValidator.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
+        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         userAppointmentMappingRepository.deleteById(mapping.getId());
     }
@@ -199,7 +199,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
 
-        String hostName = AppointmentValidator.findHostName(participationInfoList);
+        String hostName = AppointmentUtils.findHostName(participationInfoList);
 
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
                 AppointmentUtils.retrieveCandidateInfoList(appointment.getCandidateDateList(), participationInfoList, hostName);

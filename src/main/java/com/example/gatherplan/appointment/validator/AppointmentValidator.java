@@ -4,12 +4,9 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
-import com.example.gatherplan.appointment.mapper.AppointmentMapper;
-import com.example.gatherplan.appointment.mapper.TempAppointmentMapper;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.common.exception.ErrorCode;
-import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.unit.TempUserInfo;
 import lombok.experimental.UtilityClass;
@@ -17,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class AppointmentValidator {
@@ -77,14 +72,6 @@ public class AppointmentValidator {
         if (!AppointmentState.UNCONFIRMED.equals(appointment.getAppointmentState())) {
             throw new AppointmentException(ErrorCode.APPOINTMENT_ALREADY_CONFIRMED);
         }
-    }
-
-    public String findHostName(List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream()
-                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
-                .map(UserAppointmentMapping::getNickname)
-                .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
     }
 
     public void validateIsUserHostOrJoinedAndThrow(Long userId, List<UserAppointmentMapping> mappings) {
@@ -158,38 +145,5 @@ public class AppointmentValidator {
                 userAppointmentMapping -> StringUtils.equals(userAppointmentMapping.getNickname(), name))) {
             throw new UserException(ErrorCode.USER_NAME_DUPLICATED_IN_APPOINTMENT);
         }
-    }
-
-    public UserAppointmentMapping findGuestMapping(Long userId, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && userId.equals(mapping.getUserSeq()))
-                .findFirst()
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_RELATED_TO_APPOINTMENT));
-    }
-
-    public UserAppointmentMapping findGuestMapping(TempUserInfo tempUserInfo, List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()) && mapping.getNickname().equals(tempUserInfo.getNickname()) && tempUserInfo.getPassword().equals(mapping.getTempPassword()))
-                .findFirst()
-                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_RELATED_TO_APPOINTMENT));
-    }
-
-    public Map<String, String> findHostNameList(List<UserAppointmentMapping> hostMappingList) {
-        return hostMappingList.stream()
-                .collect(Collectors.toMap(UserAppointmentMapping::getAppointmentCode, UserAppointmentMapping::getNickname));
-    }
-
-    public List<ParticipationInfo> convertToParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName, AppointmentMapper appointmentMapper) {
-        return userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .map(mapping -> appointmentMapper.toParticipationInfo(mapping, StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
-                .toList();
-    }
-
-    public List<ParticipationInfo> convertToParticipationInfoList(List<UserAppointmentMapping> userAppointmentMappingList, String hostName, TempAppointmentMapper tempAppointmentMapper) {
-        return userAppointmentMappingList.stream()
-                .filter(mapping -> UserRole.GUEST.equals(mapping.getUserRole()))
-                .map(mapping -> tempAppointmentMapper.toParticipationInfo(mapping, StringUtils.equals(hostName, mapping.getNickname()) ? UserRole.HOST : UserRole.GUEST))
-                .toList();
     }
 }
