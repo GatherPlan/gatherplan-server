@@ -14,7 +14,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 장소 행정구역 검색 요청 객체")
+@Schema(description = "약속 장소 행정구역 검색 요청")
 public class DistrictSearchReq {
 
     @NotBlank(message = "키워드는 공백이 될 수 없습니다.")
@@ -29,5 +29,4 @@ public class DistrictSearchReq {
     @Min(1)
     @Schema(description = "약속 장소 검색 페이지 당 데이터 수", example = "10", type = "integer", requiredMode = REQUIRED)
     private int size;
-
 }

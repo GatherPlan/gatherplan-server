@@ -8,8 +8,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 장소 상세주소 검색 응답 객체")
+@Schema(description = "약속 장소 상세주소 검색 응답")
 public class PlaceSearchResp {
+
     @Schema(description = "행정구역 주소", example = "서울 광진구 군자동 98")
     private String addressName;
 
