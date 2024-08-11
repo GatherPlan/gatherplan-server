@@ -15,7 +15,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "약속 장소 상세주소 검색 요청 객체")
+@Schema(description = "약속 장소 상세주소 검색 요청")
 public class PlaceSearchReq {
 
     @NotBlank(message = "키워드는 공백일 수 없습니다")
