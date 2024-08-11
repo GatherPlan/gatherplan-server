@@ -17,6 +17,7 @@ import com.example.gatherplan.appointment.validator.AppointmentValidator;
 import com.example.gatherplan.common.config.jwt.RoleType;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
+import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void authenticateEmail(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
-            throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이메일입니다.");
+            throw new UserException(ErrorCode.USER_EMAIL_DUPLICATED);
         });
 
         emailAuthRepository.findByEmail(email)
@@ -85,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             javaMailSender.send(simpleMailMessage);
         } catch (MailException e) {
-            throw new UserException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
+            throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
         }
     }
 
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void joinUser(CreateUserReqDto reqDto) {
         EmailAuth emailAuth = emailAuthRepository.findByEmail(reqDto.getEmail())
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "해당 이메일로 전송된 인증번호가 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "해당 이메일로 전송된 인증번호가 없습니다."));
 
         if (now().isAfter(emailAuth.getExpiredAt())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
@@ -102,10 +103,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!StringUtils.equals(reqDto.getAuthCode(), emailAuth.getAuthCode())) {
             throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
         }
-
-        userRepository.findByName(reqDto.getName()).ifPresent(user -> {
-            throw new UserException(ErrorCode.RESOURCE_CONFLICT, "이미 사용중인 이름입니다.");
-        });
 
         String encodedPassword = bCryptPasswordEncoder.encode(reqDto.getPassword());
 
@@ -127,7 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserInfo loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(ErrorCode.RESOURCE_NOT_FOUND, "존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         return new UserInfo(user);
     }

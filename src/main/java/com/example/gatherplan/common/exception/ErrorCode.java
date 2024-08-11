@@ -22,6 +22,7 @@ public enum ErrorCode {
     USER_NOT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 약속의 호스트가 아닙니다."),
     TEMP_USER_CONFLICT(HttpStatus.CONFLICT, 3004, "이미 존재하는 임시회원입니다."),
     USER_NOT_GUEST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 약속의 게스트가 아닙니다."),
+    USER_EMAIL_DUPLICATED(HttpStatus.CONFLICT, 3004, "이미 사용중인 이메일입니다."),
 
     // APPOINTMENT ERROR (WITH USER)
     USER_NOT_JOINED_APPOINTMENT(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
