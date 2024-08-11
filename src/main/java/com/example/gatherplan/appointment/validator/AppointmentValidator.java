@@ -14,7 +14,6 @@ import com.example.gatherplan.common.unit.SelectedDateTime;
 import com.example.gatherplan.common.unit.TempUserInfo;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -126,12 +125,6 @@ public class AppointmentValidator {
         if (isParticipated) {
             throw new UserException(ErrorCode.APPOINTMENT_ALREADY_PARTICIPATE);
         }
-    }
-
-    public List<String> findAppointmentCodeList(List<UserAppointmentMapping> mappingList) {
-        return mappingList.stream()
-                .map(UserAppointmentMapping::getAppointmentCode)
-                .toList();
     }
 
     public List<String> findAppointmentCodeListByAppointmentList(List<Appointment> appointmentList) {
