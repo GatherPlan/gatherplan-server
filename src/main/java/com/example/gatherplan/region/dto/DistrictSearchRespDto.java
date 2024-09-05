@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DistrictSearchRespDto {
-    private String address;
+    private String addressName;
     private LocationType locationType;
 }
