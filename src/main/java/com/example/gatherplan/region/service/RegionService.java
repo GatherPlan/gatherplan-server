@@ -11,4 +11,6 @@ public interface RegionService {
     Page<PlaceSearchRespDto> searchKeywordPlace(KeywordPlaceReqDto reqDto);
 
     List<DailyWeatherRespDto> searchDailyWeather(String addressName);
+
+    List<FestivalRespDto> searchFestival();
 }

@@ -3,8 +3,10 @@ package com.example.gatherplan.region.service.impl;
 import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.CustomPageRequest;
+import com.example.gatherplan.external.DataPortalClient;
 import com.example.gatherplan.external.KakaoLocationClient;
 import com.example.gatherplan.external.WeatherNewsClient;
+import com.example.gatherplan.external.vo.FestivalClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.*;
 import com.example.gatherplan.region.exception.RegionException;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +32,7 @@ public class RegionServiceImpl implements RegionService {
 
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
+    private final DataPortalClient dataPortalClient;
     private final CustomRegionRepository customRegionRepository;
     private final RegionMapper regionMapper;
     private final RegionRepository regionRepository;
@@ -71,6 +76,17 @@ public class RegionServiceImpl implements RegionService {
                     return regionMapper.to(w, weatherImagePath);
                 })
                 .toList();
+    }
+
+    @Override
+    public List<FestivalRespDto> searchFestival() {
+        String fromDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        List<FestivalClientResp.ItemInfo.Item> dataList =
+                dataPortalClient.searchFestival(fromDate).getResponse().getBody().getItems().getItem();
+
+        return dataList.stream()
+                .map(regionMapper::to).toList();
     }
 
     private String generateWeatherImagePath(String weatherCode) {
