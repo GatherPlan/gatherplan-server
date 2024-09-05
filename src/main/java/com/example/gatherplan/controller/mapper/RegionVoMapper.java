@@ -22,4 +22,6 @@ public interface RegionVoMapper {
     KeywordPlaceReqDto to(PlaceSearchReq req);
 
     PlaceSearchResp to(PlaceSearchRespDto respDto);
+
+    FestivalResp to(FestivalRespDto respDto);
 }

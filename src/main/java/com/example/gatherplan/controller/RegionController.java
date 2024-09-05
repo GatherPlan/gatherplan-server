@@ -70,4 +70,17 @@ public class RegionController {
                         respDtos.stream().map(regionVoMapper::to).toList())
         );
     }
+
+    @GetMapping("/festivals")
+    @Operation(summary = "축제 배너", description = "오늘 이후의 축제 배너 조회에 사용됩니다.")
+    public ResponseEntity<ListResponse<FestivalResp>> searchFestival() {
+
+        List<FestivalRespDto> respDtos = regionService.searchFestival();
+
+        return ResponseEntity.ok(
+                ListResponse.of(
+                        respDtos.stream().map(regionVoMapper::to).toList()
+                )
+        );
+    }
 }
