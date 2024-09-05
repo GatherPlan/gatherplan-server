@@ -199,7 +199,7 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         List<UserAppointmentMapping> participationInfoList =
                 userAppointmentMappingRepository.findAllByAppointmentCodeAndUserRole(reqDto.getAppointmentCode(), UserRole.GUEST);
 
-        String hostName = AppointmentUtils.findHostName(participationInfoList);
+        String hostName = AppointmentUtils.findHostName(userAppointmentMappingList);
 
         List<AppointmentCandidateInfo> appointmentCandidateInfos =
                 AppointmentUtils.retrieveCandidateInfoList(appointment.getCandidateDateList(), participationInfoList, hostName);
