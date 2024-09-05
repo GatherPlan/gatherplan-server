@@ -2,6 +2,7 @@ package com.example.gatherplan.common.config.jwt;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
+import com.example.gatherplan.common.exception.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,8 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
+            log.info("토큰이 없습니다.");
+            request.setAttribute("exceptionType", ErrorCode.JWT_TOKEN_NOT_FOUND);
             filterChain.doFilter(request, response);
             return;
         }
@@ -35,12 +38,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //Bearer 부분 제거 후 순수 토큰만 획득
         String token = authorization.split(" ")[1];
 
-        boolean expired = jwtUtil.isExpired(token);
-        if (expired) {
-            log.info("토큰이 만료되었습니다.");
-            filterChain.doFilter(request, response);
-            return;
-        }
+        jwtUtil.isExpired(token, request);
 
         RoleType roleType = RoleType.byRole(jwtUtil.getRole(token));
         UserAuthType userAuthType = UserAuthType.byUserAuthType(jwtUtil.getUserAuthType(token));

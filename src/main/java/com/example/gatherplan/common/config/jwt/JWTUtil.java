@@ -1,7 +1,10 @@
 package com.example.gatherplan.common.config.jwt;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.common.exception.ErrorCode;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JWTUtil {
     private final SecretKey secretKey;
 
@@ -38,7 +42,8 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userAuthType", String.class);
     }
 
-    public Boolean isExpired(String token) {
+    public Boolean isExpired(String token, HttpServletRequest request) {
+        request.setAttribute("exceptionType", ErrorCode.JWT_TOKEN_EXPIRED);
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
