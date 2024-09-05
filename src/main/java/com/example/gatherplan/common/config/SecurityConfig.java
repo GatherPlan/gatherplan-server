@@ -2,6 +2,7 @@ package com.example.gatherplan.common.config;
 
 import com.example.gatherplan.common.config.jwt.JWTFilter;
 import com.example.gatherplan.common.config.jwt.JWTUtil;
+import com.example.gatherplan.common.config.jwt.JwtAuthenticationEntryPoint;
 import com.example.gatherplan.common.config.jwt.LoginFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
@@ -22,10 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
-
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -42,7 +44,8 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         httpSecurity
                 .sessionManagement(session -> session
