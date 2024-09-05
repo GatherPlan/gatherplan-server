@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface RegionMapper {
+    @Mapping(target = "addressName", source = "entity.address")
     DistrictSearchRespDto to(Region entity, LocationType locationType);
 
     PlaceSearchRespDto to(KeywordPlaceClientResp.PlaceSearchInfo clientResp, LocationType locationType);
