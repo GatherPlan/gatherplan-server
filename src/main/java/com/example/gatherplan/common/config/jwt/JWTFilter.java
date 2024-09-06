@@ -38,7 +38,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //Bearer 부분 제거 후 순수 토큰만 획득
         String token = authorization.split(" ")[1];
 
-        jwtUtil.isExpired(token, request);
+        jwtUtil.validateTokenExpired(token, request);
 
         RoleType roleType = RoleType.byRole(jwtUtil.getRole(token));
         UserAuthType userAuthType = UserAuthType.byUserAuthType(jwtUtil.getUserAuthType(token));
