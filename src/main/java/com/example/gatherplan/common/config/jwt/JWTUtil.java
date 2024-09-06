@@ -42,7 +42,7 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userAuthType", String.class);
     }
 
-    public void isExpired(String token, HttpServletRequest request) {
+    public void validateTokenExpired(String token, HttpServletRequest request) {
         request.setAttribute("exceptionType", ErrorCode.JWT_TOKEN_EXPIRED);
         Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }
