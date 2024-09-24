@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,8 +46,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        if (request.getContentType() == null || !request.getContentType().equals("application/json")) {
-            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "입력된 데이터가 JSON 형식이 아닙니다.");
+        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
+            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "잘못된 형식의 요청입니다.");
         }
 
         LoginReq loginReq;
@@ -54,7 +55,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             loginReq = objectMapper.readValue(StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8), LoginReq.class);
         } catch (IOException e) {
-            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "요청된 입력을 파싱하는데 실패했습니다.");
+            throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "잘못된 형식의 요청입니다.");
         }
 
         String email = loginReq.getEmail();
