@@ -23,7 +23,7 @@ public enum UserAuthType {
         return Arrays.stream(values())
                 .filter(type -> StringUtils.equals(type.name(), userAuthType))
                 .findFirst()
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "해당하는 UserAuthType 유형이 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "잘못된 사용자 인증 유형입니다."));
     }
 
     public String getName() {

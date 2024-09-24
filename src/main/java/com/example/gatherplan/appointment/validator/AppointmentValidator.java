@@ -13,6 +13,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @UtilityClass
@@ -32,8 +33,12 @@ public class AppointmentValidator {
                                 .noneMatch(candidateDate -> candidateDate.isEqual(selectedDateTime.getSelectedDate()))
                 )
                 .findFirst()
-                .ifPresent(result -> {
-                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL, String.format("후보 날짜에서 벗어난 날짜입니다. %s", result));
+                .ifPresent(selectedDateTime -> {
+                    throw new AppointmentException(ErrorCode.PARAMETER_VALIDATION_FAIL,
+                            String.format("후보 날짜에서 벗어난 날짜 및 시간입니다. %s %s-%s",
+                                    selectedDateTime.getSelectedDate().format(DateTimeFormatter.ofPattern("MM월 dd일")),
+                                    selectedDateTime.getSelectedStartTime(),
+                                    selectedDateTime.getSelectedEndTime()));
                 });
     }
 

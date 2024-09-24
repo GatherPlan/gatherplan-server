@@ -21,7 +21,7 @@ public enum RoleType {
         return Arrays.stream(values())
                 .filter(type -> StringUtils.equals(type.getRole(), role))
                 .findFirst()
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "해당하는 ROLE 유형이 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "잘못된 사용자 유형입니다."));
     }
 
     public String getName() {
