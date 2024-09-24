@@ -29,10 +29,10 @@ public enum ErrorCode {
     // APPOINTMENT ERROR (WITH USER)
     USER_NOT_JOINED_APPOINTMENT(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
     USER_ALREADY_JOINED_APPOINTMENT(HttpStatus.BAD_REQUEST, 4001, "이미 참여한 약속입니다."),
-    APPOINTMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 4002, "약속을 찾을 수 없습니다."),
+    APPOINTMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 4002, "존재하지 않은 약속입니다."),
     HOST_NOT_FOUND_IN_APPOINTMENT(HttpStatus.NOT_FOUND, 4003, "약속의 호스트를 찾을 수 없습니다."),
-    APPOINTMENT_ALREADY_CONFIRMED(HttpStatus.CONFLICT, 4004, "이미 확정된 약속입니다."),
-    USER_NOT_RELATED_TO_APPOINTMENT(HttpStatus.NOT_FOUND, 4005, "해당 약속과 관련되지 않은 사용자입니다."),
+    APPOINTMENT_ALREADY_CONFIRMED(HttpStatus.CONFLICT, 4004, "이미 확정된 약속입니다. 참여 및 변경이 불가능합니다."),
+    USER_NOT_RELATED_TO_APPOINTMENT(HttpStatus.NOT_FOUND, 4005, "해당 약속에 접근이 불가능한 사용자입니다."),
     USER_NAME_DUPLICATED_IN_APPOINTMENT(HttpStatus.CONFLICT, 4006, "해당 약속의 기존 회원과 이름이 중복됩니다."),
 
     // REGION ERROR

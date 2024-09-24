@@ -200,7 +200,8 @@ public class AppointmentUtils {
                 .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
                 .map(UserAppointmentMapping::getNickname)
                 .findFirst()
-                .orElseThrow(() -> new AppointmentException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
+                .orElseThrow(() -> new AppointmentException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT,
+                        "잘못된 약속 정보가 존재합니다."));
     }
 
     public List<String> findAppointmentCodeListByAppointmentList(List<Appointment> appointmentList) {
