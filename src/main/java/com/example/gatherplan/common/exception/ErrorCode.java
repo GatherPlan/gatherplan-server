@@ -20,11 +20,11 @@ public enum ErrorCode {
     SEVER_NOT_SUPPORT(HttpStatus.INTERNAL_SERVER_ERROR, 9999, "알 수 없는 예외입니다."),
 
     // USER ERROR
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, 3000, "회원을 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, 3000, "존재하지 않은 사용자입니다."),
     USER_NOT_HOST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 약속의 호스트가 아닙니다."),
     TEMP_USER_CONFLICT(HttpStatus.CONFLICT, 3004, "이미 존재하는 임시회원입니다."),
     USER_NOT_GUEST(HttpStatus.NOT_ACCEPTABLE, 3003, "해당 약속의 게스트가 아닙니다."),
-    USER_EMAIL_DUPLICATED(HttpStatus.CONFLICT, 3004, "이미 사용중인 이메일입니다."),
+    USER_EMAIL_DUPLICATED(HttpStatus.CONFLICT, 3004, "이미 사용 중인 이메일입니다."),
 
     // APPOINTMENT ERROR (WITH USER)
     USER_NOT_JOINED_APPOINTMENT(HttpStatus.NOT_FOUND, 4000, "참여하지 않은 약속입니다."),
