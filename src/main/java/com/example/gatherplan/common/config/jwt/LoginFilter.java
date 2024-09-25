@@ -46,7 +46,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
+        if (!MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
             throw new UserException(ErrorCode.PARAMETER_VALIDATION_FAIL, "잘못된 형식의 요청입니다.");
         }
 
