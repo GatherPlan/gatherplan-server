@@ -6,13 +6,17 @@ import com.example.gatherplan.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -70,9 +74,23 @@ public class GlobalExceptionHandler {
         StringBuilder builder = new StringBuilder();
         if (Objects.nonNull(request)) {
             builder.append(" [REQUEST URI]: %s %s".formatted(request.getMethod(), request.getRequestURI()));
+            if (StringUtils.isNotBlank(request.getQueryString())) {
+                builder.append(" [QUERY STRING]: %s".formatted(URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8)));
+            }
+            try {
+                String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                if (StringUtils.isNotBlank(body)) {
+                    builder.append(" [BODY]: %s".formatted(body));
+                }
+            } catch (Exception exception) {
+                log.warn("Exception occurred while extract request body");
+            }
         }
         if (Objects.nonNull(userInfo)) {
             builder.append(" [USER ID] : %s, [USER EMAIL] : %s".formatted(userInfo.getId(), userInfo.getEmail()));
+            if (Objects.nonNull(request)) {
+                builder.append(" [USER TOKEN]: %s".formatted(request.getHeader("Authorization")));
+            }
         }
         if (e instanceof BusinessException businessException) {
             builder.append(" [BUSINESS LOGIC ERROR MESSAGE] : %s".formatted(businessException.getMessage()));
