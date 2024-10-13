@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
         }
         if (Objects.nonNull(userInfo)) {
             builder.append(" [USER ID] : %s, [USER EMAIL] : %s".formatted(userInfo.getId(), userInfo.getEmail()));
-            if (Objects.nonNull(request)) {
+            if (Objects.nonNull(request) && StringUtils.isNotBlank(request.getHeader("Authorization"))) {
                 builder.append(" [USER TOKEN]: %s".formatted(request.getHeader("Authorization")));
             }
         }
