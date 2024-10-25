@@ -17,18 +17,18 @@ import org.hibernate.annotations.Comment;
 public class Address {
 
     @Enumerated(EnumType.STRING)
-    @Comment("형식 구분 값 (상세주소/행정구역)")
+    @Comment("형식 구분 값 (상세주소/행정구역/직접입력)")
     @NotNull
     private LocationType locationType;
 
-    @Comment("상세주소/행정구역 명")
+    @Comment("상세주소/행정구역/직접입력 명")
     @NotBlank
     private String fullAddress;
 
-    @Comment("장소 이름")
+    @Comment("장소 이름 (상세주소 전용 필드)")
     private String placeName;
 
-    @Comment("장소 상세 정보 링크)")
+    @Comment("장소 상세 정보 링크 (상세주소 전용 필드)")
     private String placeUrl;
 
 }
