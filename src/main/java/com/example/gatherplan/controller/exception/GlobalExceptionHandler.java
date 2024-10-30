@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.PARAMETER_VALIDATION_FAIL;
 
-        log.warn("MethodArgumentNotValidException occurred: {}", getDetailLog(exception, userInfo, request));
+        log.warn("MethodArgumentNotValidException occurred: {}", getDetailLog(exception, userInfo, request), exception);
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
             ConstraintViolationException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.PARAMETER_VALIDATION_FAIL;
 
-        log.warn("ConstraintViolationException occurred: {}", getDetailLog(exception, userInfo, request));
+        log.warn("ConstraintViolationException occurred: {}", getDetailLog(exception, userInfo, request), exception);
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
             BusinessException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = exception.getErrorCode();
 
-        log.warn("BusinessException occurred: {}", getDetailLog(exception, userInfo, request));
+        log.warn("BusinessException occurred: {}", getDetailLog(exception, userInfo, request), exception);
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
             RuntimeException exception, @AuthenticationPrincipal UserInfo userInfo, HttpServletRequest request) {
         ErrorCode errorCode = ErrorCode.SEVER_NOT_SUPPORT;
 
-        log.warn("RuntimeException (Unexpected Exception) occurred: {}", getDetailLog(exception, userInfo, request));
+        log.warn("RuntimeException (Unexpected Exception) occurred: {}", getDetailLog(exception, userInfo, request), exception);
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
                     builder.append(" [BODY]: %s".formatted(body));
                 }
             } catch (Exception exception) {
-                log.warn("Exception occurred while extract request body");
+                log.warn("Exception occurred while extract request body", exception);
             }
         }
         if (Objects.nonNull(userInfo)) {
