@@ -3,6 +3,7 @@ package com.example.gatherplan.appointment.repository.impl;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
 import com.example.gatherplan.common.unit.CustomPageRequest;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,8 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .from(userAppointmentMapping)
                 .join(appointment).on(userAppointmentMapping.appointmentCode.eq(appointment.appointmentCode))
                 .where(userAppointmentMapping.userSeq.eq(userId)
-                        .and(StringUtils.isNotBlank(keyword) ? appointment.appointmentName.contains(keyword) : null))
+                        .and(keywordContains(keyword)))
+                .orderBy(appointment.createdAt.desc().nullsLast())
                 .offset(customPageRequest.getOffset())
                 .limit(customPageRequest.getPageSize())
                 .fetch();
@@ -41,11 +43,15 @@ public class CustomAppointmentRepositoryImpl implements CustomAppointmentReposit
                 .from(userAppointmentMapping)
                 .join(appointment).on(userAppointmentMapping.appointmentCode.eq(appointment.appointmentCode))
                 .where(userAppointmentMapping.userSeq.eq(userId)
-                        .and(StringUtils.isNotBlank(keyword) ? appointment.appointmentName.contains(keyword) : null))
+                        .and(keywordContains(keyword)))
                 .fetch()
                 .size();
 
         return new PageImpl<>(result, customPageRequest, total);
+    }
+
+    private Predicate keywordContains(String keyword) {
+        return StringUtils.isNotBlank(keyword) ? appointment.appointmentName.contains(keyword) : null;
     }
 
 }
