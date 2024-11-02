@@ -251,17 +251,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Page<AppointmentSearchRespDto> retrieveAppointmentSearchList(AppointmentSearchReqDto reqDto, Long userId, String name) {
         CustomPageRequest customPageRequest = CustomPageRequest.of(reqDto.getPage(), reqDto.getSize());
 
-        Page<Appointment> filteredAppointmentList = customAppointmentRepository.findAllByUserIdAndKeywordContaining(userId, reqDto.getKeyword(), customPageRequest);
+        Page<Appointment> pagedAppointmentList = customAppointmentRepository.findAllByUserIdAndKeywordContaining(userId, reqDto.getKeyword(), customPageRequest);
 
-        List<Appointment> appointmentList = filteredAppointmentList.getContent();
+        List<Appointment> appointmentList = pagedAppointmentList.getContent();
 
-        List<String> filteredAppointmentCodeList = AppointmentUtils.findAppointmentCodeListByAppointmentList(appointmentList);
+        List<String> appointmentCodeList = AppointmentUtils.findAppointmentCodeListByAppointmentList(appointmentList);
 
         List<UserAppointmentMapping> hostMappingList =
-                userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(filteredAppointmentCodeList, UserRole.HOST);
+                userAppointmentMappingRepository.findByAppointmentCodeInAndUserRole(appointmentCodeList, UserRole.HOST);
         Map<String, String> hostNames = AppointmentUtils.findHostNameList(hostMappingList);
 
-        return filteredAppointmentList.map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
+        return pagedAppointmentList.map(mapping -> appointmentMapper.toAppointmentSearchListRespDto(mapping,
                 hostNames.get(mapping.getAppointmentCode()), name.equals(hostNames.get(mapping.getAppointmentCode()))));
     }
 
