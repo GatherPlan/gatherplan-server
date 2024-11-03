@@ -1,9 +1,9 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.AppointmentVoMapper;
-import com.example.gatherplan.controller.service.AppointmentFacadeService;
 import com.example.gatherplan.controller.vo.appointment.*;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
@@ -28,7 +28,7 @@ import java.util.List;
 @Tag(name = "약속 with 회원", description = "회원의 약속 관련된 기능을 제공합니다.")
 public class AppointmentController {
 
-    private final AppointmentFacadeService appointmentFacadeService;
+    private final AppointmentService appointmentService;
     private final AppointmentVoMapper appointmentVoMapper;
 
     @PostMapping
@@ -38,7 +38,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        String appointmentCode = appointmentFacadeService.registerAppointment(reqDto, userInfo.getId(), userInfo.getUsername(), userInfo.getUserAuthType());
+        String appointmentCode = appointmentService.registerAppointment(reqDto, userInfo.getId(), userInfo.getUsername(), userInfo.getUserAuthType());
 
         return ResponseEntity.ok(
                 CreateAppointmentResp.of(appointmentCode)
@@ -52,7 +52,7 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        AppointmentInfoRespDto respDto = appointmentFacadeService.retrieveAppointmentInfo(appointmentCode, userInfo.getId(), userInfo.getUsername());
+        AppointmentInfoRespDto respDto = appointmentService.retrieveAppointmentInfo(appointmentCode, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
@@ -66,7 +66,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         UpdateAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentFacadeService.updateAppointment(reqDto, userInfo.getId());
+        appointmentService.updateAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -80,7 +80,7 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        appointmentFacadeService.deleteAppointment(appointmentCode, userInfo.getId());
+        appointmentService.deleteAppointment(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -94,7 +94,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentFacadeService.registerAppointmentJoin(reqDto, userInfo.getId(), userInfo.getUsername());
+        appointmentService.registerAppointmentJoin(reqDto, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -108,7 +108,7 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        List<AppointmentParticipantsRespDto> respDtoList = appointmentFacadeService
+        List<AppointmentParticipantsRespDto> respDtoList = appointmentService
                 .retrieveAppointmentParticipants(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
@@ -126,7 +126,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         AppointmentMyParticipantRespDto appointmentMyParticipantRespDto =
-                appointmentFacadeService.retrieveAppointmentMyParticipant(appointmentCode, userInfo.getId());
+                appointmentService.retrieveAppointmentMyParticipant(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(appointmentMyParticipantRespDto)
@@ -141,7 +141,7 @@ public class AppointmentController {
 
         UpdateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
 
-        appointmentFacadeService.updateAppointmentJoin(reqDto, userInfo.getId());
+        appointmentService.updateAppointmentJoin(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -155,7 +155,7 @@ public class AppointmentController {
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode,
             @AuthenticationPrincipal UserInfo userInfo) {
 
-        appointmentFacadeService.deleteAppointmentJoin(appointmentCode, userInfo.getId());
+        appointmentService.deleteAppointmentJoin(appointmentCode, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -171,7 +171,7 @@ public class AppointmentController {
         AppointmentCandidateInfoReqDto reqDto = appointmentVoMapper.to(req);
 
         Page<AppointmentCandidateInfoRespDto> respDtoList
-                = appointmentFacadeService.retrieveCandidateInfo(reqDto, userInfo.getId());
+                = appointmentService.retrieveCandidateInfo(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -187,7 +187,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         ConfirmAppointmentReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentFacadeService.confirmAppointment(reqDto, userInfo.getId());
+        appointmentService.confirmAppointment(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -203,7 +203,7 @@ public class AppointmentController {
         AppointmentSearchReqDto reqDto = appointmentVoMapper.to(req);
 
         Page<AppointmentSearchRespDto> respDtoList =
-                appointmentFacadeService.retrieveAppointmentSearchList(reqDto, userInfo.getId(), userInfo.getUsername());
+                appointmentService.retrieveAppointmentSearchList(reqDto, userInfo.getId(), userInfo.getUsername());
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -218,7 +218,7 @@ public class AppointmentController {
             @Schema(description = "약속 코드", example = "985a61f6f636")
             @RequestParam @NotBlank(message = "약속 코드는 공백이 될 수 없습니다.") String appointmentCode) {
 
-        AppointmentPreviewRespDto respDto = appointmentFacadeService.retrieveAppointmentPreview(appointmentCode);
+        AppointmentPreviewRespDto respDto = appointmentService.retrieveAppointmentPreview(appointmentCode);
 
         return ResponseEntity.ok(
                 appointmentVoMapper.to(respDto)
