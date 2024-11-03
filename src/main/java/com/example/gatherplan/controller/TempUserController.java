@@ -4,8 +4,8 @@ import com.example.gatherplan.appointment.dto.TempUserCreateValidReqDto;
 import com.example.gatherplan.appointment.dto.TempUserExistCheckReqDto;
 import com.example.gatherplan.appointment.dto.TempUserHostCheckReqDto;
 import com.example.gatherplan.appointment.dto.TempUserJoinCheckReqDto;
+import com.example.gatherplan.appointment.service.TempUserService;
 import com.example.gatherplan.controller.mapper.TempUserVoMapper;
-import com.example.gatherplan.controller.service.TempUserFacadeService;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.tempuser.TempUserCheckHostReq;
 import com.example.gatherplan.controller.vo.tempuser.TempUserCreateValidReq;
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "비회원", description = "비회원 관련된 기능을 제공합니다.")
 public class TempUserController {
 
+    private final TempUserService tempUserService;
     private final TempUserVoMapper tempUserVoMapper;
-    private final TempUserFacadeService tempUserFacadeService;
 
     @GetMapping("/host:check")
     @Operation(summary = "비회원의 호스트의 여부 조회 요청", description = "비회원의 호스트 여부를 판단할 때 사용됩니다. [figma #19,#27]")
@@ -37,7 +37,7 @@ public class TempUserController {
             @Valid @ModelAttribute @ParameterObject TempUserCheckHostReq req) {
 
         TempUserHostCheckReqDto reqDto = tempUserVoMapper.to(req);
-        boolean isValid = tempUserFacadeService.checkHost(reqDto);
+        boolean isValid = tempUserService.checkHost(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
@@ -50,7 +50,7 @@ public class TempUserController {
             @Valid @ModelAttribute @ParameterObject TempUserExistCheckReq req) {
 
         TempUserExistCheckReqDto reqDto = tempUserVoMapper.to(req);
-        boolean isValid = tempUserFacadeService.checkUser(reqDto);
+        boolean isValid = tempUserService.checkUser(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
@@ -63,7 +63,7 @@ public class TempUserController {
             @Valid @ModelAttribute @ParameterObject TempUserJoinCheckReq req) {
 
         TempUserJoinCheckReqDto reqDto = tempUserVoMapper.to(req);
-        boolean isValid = tempUserFacadeService.checkJoin(reqDto);
+        boolean isValid = tempUserService.checkJoin(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
@@ -76,7 +76,7 @@ public class TempUserController {
             @Valid @ModelAttribute @ParameterObject TempUserCreateValidReq req) {
 
         TempUserCreateValidReqDto reqDto = tempUserVoMapper.to(req);
-        boolean isValid = tempUserFacadeService.validJoin(reqDto);
+        boolean isValid = tempUserService.validJoin(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
