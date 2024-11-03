@@ -30,7 +30,6 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             log.info("토큰이 없습니다.");
             request.setAttribute("exceptionType", ErrorCode.JWT_TOKEN_NOT_FOUND);
-            filterChain.doFilter(request, response);
             return;
         }
 
