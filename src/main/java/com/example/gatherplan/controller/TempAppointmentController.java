@@ -1,8 +1,8 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.*;
+import com.example.gatherplan.appointment.service.TempAppointmentService;
 import com.example.gatherplan.controller.mapper.TempAppointmentVoMapper;
-import com.example.gatherplan.controller.service.TempAppointmentFacadeService;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.tempappointment.*;
@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "약속 with 비회원", description = "비회원의 약속 관련된 기능을 제공합니다.")
 public class TempAppointmentController {
 
-    private final TempAppointmentFacadeService tempAppointmentFacadeService;
+    private final TempAppointmentService tempAppointmentService;
     private final TempAppointmentVoMapper tempAppointmentVoMapper;
 
 
@@ -33,7 +33,7 @@ public class TempAppointmentController {
             @Valid @RequestBody CreateTempAppointmentReq req) {
 
         CreateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        String appointmentCode = tempAppointmentFacadeService.registerAppointment(reqDto);
+        String appointmentCode = tempAppointmentService.registerAppointment(reqDto);
 
         return ResponseEntity.ok(
                 CreateTempAppointmentResp.of(appointmentCode)
@@ -46,7 +46,7 @@ public class TempAppointmentController {
             @Valid @ModelAttribute @ParameterObject TempAppointmentInfoReq req) {
 
         TempAppointmentInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
-        TempAppointmentInfoRespDto respDto = tempAppointmentFacadeService.retrieveAppointmentInfo(reqDto);
+        TempAppointmentInfoRespDto respDto = tempAppointmentService.retrieveAppointmentInfo(reqDto);
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
@@ -59,7 +59,7 @@ public class TempAppointmentController {
             @Valid @RequestBody UpdateTempAppointmentReq req) {
 
         UpdateTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.updateAppointment(reqDto);
+        tempAppointmentService.updateAppointment(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -72,7 +72,7 @@ public class TempAppointmentController {
             @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentReq req) {
 
         DeleteTempAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.deleteAppointment(reqDto);
+        tempAppointmentService.deleteAppointment(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -85,7 +85,7 @@ public class TempAppointmentController {
             @Valid @RequestBody CreateTempAppointmentParticipationReq req) {
 
         CreateTempAppointmentJoinReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.registerAppointmentJoin(reqDto);
+        tempAppointmentService.registerAppointmentJoin(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -98,7 +98,7 @@ public class TempAppointmentController {
             @Valid @ModelAttribute @ParameterObject TempAppointmentParticipantsReq req) {
 
         TempAppointmentParticipantsReqDto reqDto = tempAppointmentVoMapper.to(req);
-        List<TempAppointmentParticipantsRespDto> respDtoList = tempAppointmentFacadeService.retrieveAppointmentParticipants(reqDto);
+        List<TempAppointmentParticipantsRespDto> respDtoList = tempAppointmentService.retrieveAppointmentParticipants(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -114,7 +114,7 @@ public class TempAppointmentController {
 
         TempAppointmentMyParticipantReqDto reqDto = tempAppointmentVoMapper.to(req);
         TempAppointmentMyParticipantRespDto respDto =
-                tempAppointmentFacadeService.retrieveAppointmentMyParticipant(reqDto);
+                tempAppointmentService.retrieveAppointmentMyParticipant(reqDto);
 
         return ResponseEntity.ok(
                 tempAppointmentVoMapper.to(respDto)
@@ -127,7 +127,7 @@ public class TempAppointmentController {
             @Valid @RequestBody UpdateTempAppointmentJoinReq req) {
 
         UpdateTempAppointmentJoinReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.updateAppointmentJoin(reqDto);
+        tempAppointmentService.updateAppointmentJoin(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -140,7 +140,7 @@ public class TempAppointmentController {
             @Valid @ModelAttribute @ParameterObject DeleteTempAppointmentJoinReq req) {
 
         DeleteTempAppointmentJoinReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.deleteAppointmentJoin(reqDto);
+        tempAppointmentService.deleteAppointmentJoin(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
@@ -154,7 +154,7 @@ public class TempAppointmentController {
         TempAppointmentCandidateInfoReqDto reqDto = tempAppointmentVoMapper.to(req);
 
         Page<TempAppointmentCandidateInfoRespDto> respDtos
-                = tempAppointmentFacadeService.retrieveCandidateInfo(reqDto);
+                = tempAppointmentService.retrieveCandidateInfo(reqDto);
 
         return ResponseEntity.ok(
                 ListResponse.of(
@@ -169,7 +169,7 @@ public class TempAppointmentController {
             @Valid @RequestBody TempConfirmAppointmentReq req) {
 
         TempConfirmAppointmentReqDto reqDto = tempAppointmentVoMapper.to(req);
-        tempAppointmentFacadeService.confirmAppointment(reqDto);
+        tempAppointmentService.confirmAppointment(reqDto);
 
         return ResponseEntity.ok(
                 BooleanResp.success()
