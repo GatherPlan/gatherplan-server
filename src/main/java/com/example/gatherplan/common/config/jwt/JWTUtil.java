@@ -1,9 +1,9 @@
 package com.example.gatherplan.common.config.jwt;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.common.config.jwt.exception.JwtTokenException;
 import com.example.gatherplan.common.exception.ErrorCode;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,9 +42,25 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userAuthType", String.class);
     }
 
-    public void validateTokenExpired(String token, HttpServletRequest request) {
-        request.setAttribute("exceptionType", ErrorCode.JWT_TOKEN_EXPIRED);
-        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
+    public void validateTokenExpired(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
+        } catch (MalformedJwtException e) {
+            log.info("Malformed JWT token structure");
+            throw new JwtTokenException(ErrorCode.JWT_TOKEN_FORMAT_INVALID);
+        } catch (ExpiredJwtException e) {
+            log.info("JWT token has expired");
+            throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXPIRED);
+        } catch (UnsupportedJwtException e) {
+            log.info("JWT token is unsupported or has invalid format");
+            throw new JwtTokenException(ErrorCode.JWT_TOKEN_UNSUPPORTED_TYPE);
+        } catch (SecurityException e) {
+            log.info("JWT signature validation failed");
+            throw new JwtTokenException(ErrorCode.JWT_TOKEN_SIGNATURE_INVALID);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT token is null or empty");
+            throw new JwtTokenException(ErrorCode.JWT_TOKEN_EMPTY);
+        }
     }
 
     public String createJwt(Long id, String nickname, String email, UserAuthType userAuthType, String role, Long expiredMs) {
