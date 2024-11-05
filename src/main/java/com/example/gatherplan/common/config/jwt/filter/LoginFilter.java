@@ -1,7 +1,10 @@
-package com.example.gatherplan.common.config.jwt;
+package com.example.gatherplan.common.config.jwt.filter;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.UserException;
+import com.example.gatherplan.common.config.jwt.JWTUtil;
+import com.example.gatherplan.common.config.jwt.LoginReq;
+import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.common.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -80,7 +83,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(id, name, email, userAuthType, role, 23 * 60 * 60 * 1000L);
+        String token = jwtUtil.createJwt(id, name, email, userAuthType, role, 60L);
 
         response.addHeader("Authorization", "Bearer " + token);
 

@@ -1,9 +1,9 @@
 package com.example.gatherplan.common.config;
 
-import com.example.gatherplan.common.config.jwt.JWTFilter;
+import com.example.gatherplan.common.config.jwt.filter.JWTFilter;
 import com.example.gatherplan.common.config.jwt.JWTUtil;
-import com.example.gatherplan.common.config.jwt.JwtAuthenticationEntryPoint;
-import com.example.gatherplan.common.config.jwt.LoginFilter;
+import com.example.gatherplan.common.config.jwt.filter.LoginFilter;
+import com.example.gatherplan.common.config.jwt.filter.JwtExceptionFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,7 +29,14 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private static final String[] authExcludePath = {
+            "/api/v1/users/**",
+            "/api/v1/temporary/**",
+            "/api/v1/region/**",
+            "/api/v1/appointments/preview",
+            "/", "/swagger-ui/**", "/v3/api-docs/**"
+    };
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -44,8 +53,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         httpSecurity
                 .sessionManagement(session -> session
@@ -53,27 +61,26 @@ public class SecurityConfig {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // swagger 관련
-                        .requestMatchers("/api/v1/users/**").permitAll()
-                        .requestMatchers("/api/v1/region/**").permitAll()
-                        .requestMatchers("/api/v1/temporary/**").permitAll()
-                        .requestMatchers("/api/v1/appointments/preview").permitAll()
+                        .requestMatchers(authExcludePath).permitAll()
                         .anyRequest().authenticated());
 
         httpSecurity
+                .addFilterBefore(jwtExceptionFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(loginFilter(), JWTFilter.class);
+                .addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
 
+    private Filter jwtExceptionFilter() {
+        return new JwtExceptionFilter();
+    }
+
     private Filter jwtFilter() {
-        return new JWTFilter(jwtUtil);
+        return new JWTFilter(jwtUtil,  Arrays.asList(authExcludePath));
     }
 
     private Filter loginFilter() throws Exception {
         return new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper);
     }
-
-
 }
