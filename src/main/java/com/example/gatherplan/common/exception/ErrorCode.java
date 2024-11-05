@@ -21,7 +21,6 @@ public enum ErrorCode {
     JWT_TOKEN_UNSUPPORTED_TYPE(HttpStatus.UNAUTHORIZED,2210, "지원하지 않는 토큰입니다."),
     JWT_TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED,2211, "토큰의 서명이 올바르지 않습니다."),
     JWT_TOKEN_EMPTY(HttpStatus.UNAUTHORIZED,2212, "토큰의 값이 비어있거나 null 입니다."),
-    JWT_TOKEN_ERROR(HttpStatus.UNAUTHORIZED,2212, "토큰의 값이 비어있거나 null 입니다."),
     SEVER_NOT_SUPPORT(HttpStatus.INTERNAL_SERVER_ERROR, 9999, "알 수 없는 예외입니다."),
 
     // USER ERROR
