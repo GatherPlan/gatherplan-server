@@ -1,6 +1,7 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
@@ -174,5 +175,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return AppointmentValidator.isNotDuplicatedName(nickname, userAppointmentMappingList);
     }
 
+    @Override
+    public UserInfoRespDto retrieveUserInfo(UserInfo userInfo) {
+        return userMapper.toUserInfoRespDto(userInfo);
+    }
 }
 

@@ -1,9 +1,11 @@
 package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.common.config.jwt.RoleType;
+import com.example.gatherplan.common.config.jwt.UserInfo;
 import org.mapstruct.*;
 
 @Mapper(
@@ -18,4 +20,7 @@ public interface UserMapper {
     @Mapping(target = "password", source = "encodedPassword")
     @Mapping(target = "name", source = "reqDto.name")
     User to(CreateUserReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType roleType);
+
+    @Mapping(target = "name", source = "userInfo.username")
+    UserInfoRespDto toUserInfoRespDto(UserInfo userInfo);
 }
