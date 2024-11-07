@@ -2,7 +2,6 @@ package com.example.gatherplan.common.config.jwt;
 
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.repository.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
