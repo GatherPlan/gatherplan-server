@@ -183,8 +183,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByUserSeqAndUserRole(userInfo.getId(), UserRole.HOST);
 
-        System.out.println(userAppointmentMappingList.size());
-
         List<String> appointmentCodeList = userAppointmentMappingList.stream()
                 .map(UserAppointmentMapping::getAppointmentCode)
                 .toList();
