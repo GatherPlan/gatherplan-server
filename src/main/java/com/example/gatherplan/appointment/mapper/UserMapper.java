@@ -1,11 +1,9 @@
 package com.example.gatherplan.appointment.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
-import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.common.config.jwt.RoleType;
-import com.example.gatherplan.common.config.jwt.UserInfo;
 import org.mapstruct.*;
 
 @Mapper(
