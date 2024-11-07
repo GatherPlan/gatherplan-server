@@ -12,6 +12,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     boolean existsByAppointmentCode(String appointmentCode);
 
+    void deleteAllByAppointmentCodeIn(List<String> appointmentCodeList);
+
     List<Appointment> findAllByAppointmentCodeInAndAppointmentNameContaining(List<String> appointmentCodeList, String keyword);
 
     List<Appointment> findAllByAppointmentCodeIn(List<String> appointmentCodeList);

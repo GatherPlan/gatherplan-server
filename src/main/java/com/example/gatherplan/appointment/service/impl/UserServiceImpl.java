@@ -2,6 +2,7 @@ package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.UserMapper;
@@ -174,5 +175,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return AppointmentValidator.isNotDuplicatedName(nickname, userAppointmentMappingList);
     }
 
+    @Override
+    @Transactional
+    public void deleteUser(UserInfo userInfo) {
+        System.out.println(userInfo.getId());
+        userAppointmentMappingRepository.deleteAllByUserSeqAndUserRole(userInfo.getId(), UserRole.GUEST);
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByUserSeqAndUserRole(userInfo.getId(), UserRole.HOST);
+
+        System.out.println(userAppointmentMappingList.size());
+
+        List<String> appointmentCodeList = userAppointmentMappingList.stream()
+                .map(UserAppointmentMapping::getAppointmentCode)
+                .toList();
+
+        userAppointmentMappingRepository.deleteAllByAppointmentCodeIn(appointmentCodeList);
+
+        appointmentRepository.deleteAllByAppointmentCodeIn(appointmentCodeList);
+
+        userRepository.deleteById(userInfo.getId());
+    }
 }
 
