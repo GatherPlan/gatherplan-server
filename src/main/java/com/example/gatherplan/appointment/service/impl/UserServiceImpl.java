@@ -177,7 +177,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserInfoRespDto retrieveUserInfo(UserInfo userInfo) {
-        return userMapper.toUserInfoRespDto(userInfo);
+        return UserInfoRespDto.builder()
+                .name(userInfo.getUsername())
+                .email(userInfo.getEmail())
+                .userAuthType(userInfo.getUserAuthType())
+                .build();
     }
 }
 
