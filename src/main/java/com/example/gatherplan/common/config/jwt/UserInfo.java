@@ -31,7 +31,9 @@ public class UserInfo implements UserDetails {
         return user.getId();
     }
 
-    public UserAuthType getUserAuthType() { return user.getUserAuthType();}
+    public UserAuthType getUserAuthType() {
+        return user.getUserAuthType();
+    }
 
     @Override
     public String getPassword() {
