@@ -1,8 +1,6 @@
 package com.example.gatherplan.controller.vo.user;
 
 import com.example.gatherplan.appointment.enums.UserAuthType;
-import com.example.gatherplan.common.config.jwt.RoleType;
-import com.example.gatherplan.controller.vo.common.BooleanResp;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
