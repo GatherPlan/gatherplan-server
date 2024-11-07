@@ -1,12 +1,14 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
 import com.example.gatherplan.controller.vo.user.CreateUserReq;
 import com.example.gatherplan.controller.vo.user.EmailAuthReq;
+import com.example.gatherplan.controller.vo.user.UserInfoResp;
 import com.example.gatherplan.controller.vo.user.ValidationNicknameReq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -105,6 +107,18 @@ public class UserController {
 
         return ResponseEntity.ok(
                 BooleanResp.of(isValid)
+        );
+    }
+
+    @GetMapping
+    @Operation(summary = "회원의 정보 조회 요청", description = "회원이 자신의 회원 정보를 확인할 때 사용됩니다.")
+    public ResponseEntity<UserInfoResp> retrieveUserInfo(
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        UserInfoRespDto respDto = userService.retrieveUserInfo(userInfo);
+
+        return ResponseEntity.ok(
+                userVoMapper.toUserInfoResp(respDto)
         );
     }
 }
