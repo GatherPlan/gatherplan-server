@@ -20,7 +20,4 @@ public interface UserMapper {
     @Mapping(target = "password", source = "encodedPassword")
     @Mapping(target = "name", source = "reqDto.name")
     User to(CreateUserReqDto reqDto, String encodedPassword, UserAuthType userAuthType, RoleType roleType);
-
-    @Mapping(target = "name", source = "userInfo.username")
-    UserInfoRespDto toUserInfoRespDto(UserInfo userInfo);
 }

@@ -31,6 +31,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     private static final String[] authExcludePath = {
+            "/api/v1/users/login",
             "/api/v1/users/auth",
             "/api/v1/users/join",
             "/api/v1/temporary/**",
