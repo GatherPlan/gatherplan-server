@@ -178,7 +178,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void deleteUser(UserInfo userInfo) {
-        System.out.println(userInfo.getId());
         userAppointmentMappingRepository.deleteAllByUserSeqAndUserRole(userInfo.getId(), UserRole.GUEST);
 
         List<UserAppointmentMapping> userAppointmentMappingList =
