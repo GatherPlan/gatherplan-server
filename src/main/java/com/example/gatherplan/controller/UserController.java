@@ -121,5 +121,17 @@ public class UserController {
                 userVoMapper.toUserInfoResp(respDto)
         );
     }
+
+    @DeleteMapping
+    @Operation(summary = "회원 탈퇴 요청", description = "회원이 탈퇴할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> deleteUser(
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        userService.deleteUser(userInfo);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
 }
 
