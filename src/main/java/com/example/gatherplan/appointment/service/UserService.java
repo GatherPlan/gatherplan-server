@@ -18,4 +18,8 @@ public interface UserService {
     boolean checkNickname(String appointmentCode, String nickname);
 
     UserInfoRespDto retrieveUserInfo(UserInfo userInfo);
+
+    void deleteUser(UserInfo userInfo);
+
+    void updateUser(String name, Long id);
 }
