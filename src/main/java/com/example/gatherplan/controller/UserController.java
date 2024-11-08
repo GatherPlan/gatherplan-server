@@ -6,10 +6,7 @@ import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
-import com.example.gatherplan.controller.vo.user.CreateUserReq;
-import com.example.gatherplan.controller.vo.user.EmailAuthReq;
-import com.example.gatherplan.controller.vo.user.UserInfoResp;
-import com.example.gatherplan.controller.vo.user.ValidationNicknameReq;
+import com.example.gatherplan.controller.vo.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -128,6 +125,19 @@ public class UserController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         userService.deleteUser(userInfo);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @PatchMapping
+    @Operation(summary = "회원 정보 수정 요청", description = "회원이 회원 정보를 수정할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> updateUser(
+            @Valid @RequestBody UpdateUsereReq req,
+            @AuthenticationPrincipal UserInfo userInfo) {
+
+        userService.updateUser(req.getName(), userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()

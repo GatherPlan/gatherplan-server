@@ -203,5 +203,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         userRepository.deleteById(userInfo.getId());
     }
+
+    @Override
+    @Transactional
+    public void updateUser(String name, Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateUser(name);
+    }
 }
 
