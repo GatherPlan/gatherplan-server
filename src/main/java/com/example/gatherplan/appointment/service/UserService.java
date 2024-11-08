@@ -20,4 +20,6 @@ public interface UserService {
     UserInfoRespDto retrieveUserInfo(UserInfo userInfo);
 
     void deleteUser(UserInfo userInfo);
+
+    void updateUser(String name, Long id);
 }
