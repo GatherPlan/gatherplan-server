@@ -127,7 +127,7 @@ public class UserController {
     }
 
     @PostMapping("/password:reset")
-    @Operation(summary = "회원의 비밀번호 찾기 및 재설정 요청", description = "회원이 비밀번호를 분실한 경우 비밀번호를 재설정할 때 사용됩니다.")
+    @Operation(summary = "회원의 비밀번호 재설정 요청", description = "회원이 비밀번호를 분실한 경우 비밀번호를 재설정할 때 사용됩니다.")
     public ResponseEntity<BooleanResp> resetPassword(
             @Valid @RequestBody PasswordResetReq req) {
 
