@@ -14,4 +14,8 @@ public interface UserService {
     boolean checkName(String appointmentCode, String name);
 
     boolean checkNickname(String appointmentCode, String nickname);
+
+    void authenticateEmailForPasswordReset(String email);
+
+    void resetPassword(String email, String authCode, String password);
 }

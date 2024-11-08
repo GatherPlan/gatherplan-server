@@ -43,4 +43,8 @@ public class User extends BaseAuditableEntity {
     public String getRole() {
         return this.roleType.getRole();
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
