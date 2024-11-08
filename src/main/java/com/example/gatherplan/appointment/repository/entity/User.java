@@ -47,4 +47,8 @@ public class User extends BaseAuditableEntity {
     public void updateUser(String name) {
         this.name = name;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

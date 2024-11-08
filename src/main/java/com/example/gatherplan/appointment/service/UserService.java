@@ -17,6 +17,10 @@ public interface UserService {
 
     boolean checkNickname(String appointmentCode, String nickname);
 
+    void authenticateEmailForPasswordReset(String email);
+
+    void resetPassword(String email, String authCode, String password);
+
     UserInfoRespDto retrieveUserInfo(UserInfo userInfo);
 
     void deleteUser(UserInfo userInfo);

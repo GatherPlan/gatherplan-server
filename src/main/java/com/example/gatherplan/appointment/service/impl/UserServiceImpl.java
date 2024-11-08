@@ -33,6 +33,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -176,6 +177,64 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return AppointmentValidator.isNotDuplicatedName(nickname, userAppointmentMappingList);
     }
 
+    @Override
+    @Transactional
+    public void authenticateEmailForPasswordReset(String email) {
+        userRepository.findByEmail(email).orElseThrow(() ->
+                new UserException(ErrorCode.USER_NOT_FOUND));
+
+        emailAuthRepository.findByEmail(email)
+                .ifPresent(emailAuth -> emailAuthRepository.deleteByEmail(emailAuth.getEmail()));
+
+        String authCode = Integer.toString(random.nextInt(888888) + 111111);
+        LocalDateTime expiredTime = now().plusMinutes(5);
+
+        EmailAuth emailAuth = EmailAuth.builder()
+                .authCode(authCode)
+                .email(email)
+                .expiredAt(expiredTime)
+                .build();
+
+        emailAuthRepository.save(emailAuth);
+
+        String subject = "[Gather Plan] 일반 회원 비밀번호 재설정을 위한 인증번호 발급";
+        String content = String.format(
+                "Gather Plan 에 방문해주셔서 감사합니다. 인증번호는 %s 입니다. 인증번호를 인증코드란에 입력해주세요.", authCode);
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setFrom(adminEmail);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(content);
+
+        try {
+            javaMailSender.send(simpleMailMessage);
+        } catch (MailException e) {
+            throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(String email, String authCode, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserException(ErrorCode.USER_NOT_FOUND));
+
+        EmailAuth emailAuth = emailAuthRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "해당 이메일로 전송된 인증번호가 없습니다."));
+
+        if (now().isAfter(emailAuth.getExpiredAt())) {
+            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "만료된 인증입니다.");
+        }
+
+        if (!StringUtils.equals(authCode, emailAuth.getAuthCode())) {
+            throw new AuthenticationFailException(ErrorCode.AUTHENTICATION_FAIL, "인증번호가 일치하지 않습니다.");
+        }
+
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+
+        user.updatePassword(encodedPassword);
+    }
     @Override
     public UserInfoRespDto retrieveUserInfo(UserInfo userInfo) {
         return UserInfoRespDto.builder()
