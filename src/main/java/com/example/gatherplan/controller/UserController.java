@@ -6,11 +6,16 @@ import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.controller.mapper.UserVoMapper;
 import com.example.gatherplan.controller.vo.common.BooleanResp;
+import com.example.gatherplan.controller.vo.user.CreateUserReq;
+import com.example.gatherplan.controller.vo.user.EmailAuthReq;
+import com.example.gatherplan.controller.vo.user.PasswordResetReq;
+import com.example.gatherplan.controller.vo.user.ValidationNicknameReq;
 import com.example.gatherplan.controller.vo.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -106,6 +111,33 @@ public class UserController {
                 BooleanResp.of(isValid)
         );
     }
+
+    @GetMapping("/password:auth")
+    @Operation(summary = "비밀번호 재설정을 위한 이메일 인증번호 전송 요청", description = "회원이 비밀번호 재설정 과정에서 필요한 이메일 인증번호를 받기 위해 사용됩니다.")
+    public ResponseEntity<BooleanResp> authenticateEmailForPasswordReset(
+            @Schema(description = "이메일", example = "email@example.com")
+            @NotBlank(message = "이메일은 공백이 될 수 없습니다.")
+            @Email(message = "이메일 형식이 맞지 않습니다.") String email) {
+
+        userService.authenticateEmailForPasswordReset(email);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @PostMapping("/password:reset")
+    @Operation(summary = "회원의 비밀번호 찾기 및 재설정 요청", description = "회원이 비밀번호를 분실한 경우 비밀번호를 재설정할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> resetPassword(
+            @Valid @RequestBody PasswordResetReq req) {
+
+        userService.resetPassword(req.getEmail(), req.getAuthCode(), req.getPassword());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
 
     @GetMapping
     @Operation(summary = "회원의 정보 조회 요청", description = "회원이 자신의 회원 정보를 확인할 때 사용됩니다.")
