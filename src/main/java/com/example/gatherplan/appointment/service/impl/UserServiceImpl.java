@@ -3,6 +3,7 @@ package com.example.gatherplan.appointment.service.impl;
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
 import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
+import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.UserMapper;
@@ -182,6 +183,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .email(userInfo.getEmail())
                 .userAuthType(userInfo.getUserAuthType())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(UserInfo userInfo) {
+        userAppointmentMappingRepository.deleteAllByUserSeqAndUserRole(userInfo.getId(), UserRole.GUEST);
+
+        List<UserAppointmentMapping> userAppointmentMappingList =
+                userAppointmentMappingRepository.findAllByUserSeqAndUserRole(userInfo.getId(), UserRole.HOST);
+
+        List<String> appointmentCodeList = userAppointmentMappingList.stream()
+                .map(UserAppointmentMapping::getAppointmentCode)
+                .toList();
+
+        userAppointmentMappingRepository.deleteAllByAppointmentCodeIn(appointmentCodeList);
+
+        appointmentRepository.deleteAllByAppointmentCodeIn(appointmentCodeList);
+
+        userRepository.deleteById(userInfo.getId());
     }
 }
 
