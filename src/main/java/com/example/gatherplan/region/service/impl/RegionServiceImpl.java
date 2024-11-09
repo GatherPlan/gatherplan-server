@@ -6,6 +6,7 @@ import com.example.gatherplan.common.unit.CustomPageRequest;
 import com.example.gatherplan.external.DataPortalClient;
 import com.example.gatherplan.external.KakaoLocationClient;
 import com.example.gatherplan.external.WeatherNewsClient;
+import com.example.gatherplan.external.vo.DailyWeatherClientResp;
 import com.example.gatherplan.external.vo.FestivalClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.*;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -75,7 +77,11 @@ public class RegionServiceImpl implements RegionService {
             return List.of();
         }
 
-        return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
+        List<DailyWeatherClientResp.DailyWeatherInfo> clientResp =
+                Optional.ofNullable(weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily())
+                        .orElse(List.of());
+
+        return clientResp.stream()
                 .map(w -> {
                     leaveWeatherCodeWithText(w.getWeatherCode(), w.getWeatherState());
 
