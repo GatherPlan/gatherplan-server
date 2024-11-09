@@ -10,7 +10,6 @@ import com.example.gatherplan.external.vo.FestivalClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.*;
 import com.example.gatherplan.region.mapper.RegionMapper;
-import com.example.gatherplan.region.repository.CustomRegionRepository;
 import com.example.gatherplan.region.repository.RegionRepository;
 import com.example.gatherplan.region.repository.entity.Region;
 import com.example.gatherplan.region.service.RegionService;
@@ -33,7 +32,6 @@ public class RegionServiceImpl implements RegionService {
     private final KakaoLocationClient kakaoLocationClient;
     private final WeatherNewsClient weatherNewsClient;
     private final DataPortalClient dataPortalClient;
-    private final CustomRegionRepository customRegionRepository;
     private final RegionMapper regionMapper;
     private final RegionRepository regionRepository;
 
