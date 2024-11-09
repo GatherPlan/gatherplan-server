@@ -1,7 +1,7 @@
 package com.example.gatherplan.region.service.impl;
 
+import com.example.gatherplan.appointment.utils.AddressUtils;
 import com.example.gatherplan.common.enums.LocationType;
-import com.example.gatherplan.common.exception.ErrorCode;
 import com.example.gatherplan.common.unit.CustomPageRequest;
 import com.example.gatherplan.external.DataPortalClient;
 import com.example.gatherplan.external.KakaoLocationClient;
@@ -9,7 +9,6 @@ import com.example.gatherplan.external.WeatherNewsClient;
 import com.example.gatherplan.external.vo.FestivalClientResp;
 import com.example.gatherplan.external.vo.KeywordPlaceClientResp;
 import com.example.gatherplan.region.dto.*;
-import com.example.gatherplan.region.exception.RegionException;
 import com.example.gatherplan.region.mapper.RegionMapper;
 import com.example.gatherplan.region.repository.CustomRegionRepository;
 import com.example.gatherplan.region.repository.RegionRepository;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -65,8 +65,17 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public List<DailyWeatherRespDto> searchDailyWeather(String addressName) {
-        Region region = customRegionRepository.findRegionByAddressName(addressName)
-                .orElseThrow(() -> new RegionException(ErrorCode.REGION_NOT_FOUND));
+        String processedAddressName = AddressUtils.processAddressName(addressName);
+        Region region = regionRepository.findByAddress(processedAddressName)
+                .orElseGet(() -> {
+                    log.warn("No region found for addressName {}", addressName);
+                    return null;
+                });
+
+        // 조회되지 않은 지역의 경우 에러 반환이 아닌 빈 리스트 반환
+        if (Objects.isNull(region)) {
+            return List.of();
+        }
 
         return weatherNewsClient.searchWeatherByRegionCode(region.getCode()).getDaily().stream()
                 .map(w -> {
