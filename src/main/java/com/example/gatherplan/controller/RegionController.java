@@ -1,14 +1,17 @@
 package com.example.gatherplan.controller;
 
+import com.example.gatherplan.common.enums.LocationType;
 import com.example.gatherplan.controller.mapper.RegionVoMapper;
 import com.example.gatherplan.controller.vo.common.ListResponse;
 import com.example.gatherplan.controller.vo.region.*;
 import com.example.gatherplan.region.dto.*;
 import com.example.gatherplan.region.service.RegionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -60,8 +63,14 @@ public class RegionController {
     @Operation(summary = "날씨 검색 요청", description = "날씨를 검색할 때 사용됩니다. [figma #7,#14,#34,#37]")
     public ResponseEntity<ListResponse<DailyWeatherResp>> searchWeather(
             @RequestParam
+            @Schema(description = "주소", example = "서울 광진구 군자동")
             @NotBlank(message = "주소는 공백이 될 수 없습니다.") @Size(min = 2, message = "주소는 2자 이상이어야합니다.")
-            String addressName) {
+            String addressName,
+            @RequestParam
+            @Schema(description = "주소 타입 (DETAIL_ADDRESS: 상세 주소, DISTRICT: 행정구역, CUSTOM_ADDRESS: 직접 입력)",
+                    example = "DETAIL_ADDRESS", allowableValues = {"DETAIL_ADDRESS", "DISTRICT", "CUSTOM_ADDRESS"})
+            @NotNull
+            LocationType locationType) {
 
         List<DailyWeatherRespDto> respDtos = regionService.searchDailyWeather(addressName);
 
