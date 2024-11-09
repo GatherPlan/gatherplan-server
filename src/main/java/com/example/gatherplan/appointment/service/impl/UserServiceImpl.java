@@ -179,8 +179,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void authenticateEmailForPasswordReset(String email) {
-        userRepository.findByEmail(email).orElseThrow(() ->
-                new UserException(ErrorCode.USER_NOT_FOUND));
+        if (!userRepository.existsByEmail(email)) {
+            throw new UserException(ErrorCode.USER_NOT_FOUND);
+        }
 
         emailAuthRepository.findByEmail(email)
                 .ifPresent(emailAuth -> emailAuthRepository.deleteByEmail(emailAuth.getEmail()));
