@@ -40,9 +40,7 @@ public enum ErrorCode {
     USER_NAME_DUPLICATED_IN_APPOINTMENT(HttpStatus.CONFLICT, 4006, "해당 약속의 기존 회원과 이름이 중복됩니다."),
 
     // REGION ERROR
-    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, 5000, "존재하지 않는 지역입니다."),
-    NOT_SUPPORT_LOCATION_TYPE(HttpStatus.NOT_FOUND, 5001, "지원하지 않는 주소 타입입니다.");
-
+    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, 5000, "존재하지 않는 지역입니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
