@@ -77,7 +77,7 @@ public class SecurityConfig {
     }
 
     private Filter jwtExceptionFilter() {
-        return new JwtExceptionFilter();
+        return new JwtExceptionFilter(objectMapper);
     }
 
     private Filter jwtFilter() {
