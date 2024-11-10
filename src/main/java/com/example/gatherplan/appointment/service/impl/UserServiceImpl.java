@@ -7,10 +7,7 @@ import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
 import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.UserMapper;
-import com.example.gatherplan.appointment.repository.AppointmentRepository;
-import com.example.gatherplan.appointment.repository.EmailAuthRepository;
-import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
-import com.example.gatherplan.appointment.repository.UserRepository;
+import com.example.gatherplan.appointment.repository.*;
 import com.example.gatherplan.appointment.repository.entity.EmailAuth;
 import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
@@ -44,6 +41,7 @@ import static java.time.LocalDateTime.now;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final CustomUserAppointmentMappingRepository customUserAppointmentMappingRepository;
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
     private final EmailAuthRepository emailAuthRepository;
     private final UserMapper userMapper;
@@ -247,7 +245,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void deleteUser(UserInfo userInfo) {
-        userAppointmentMappingRepository.deleteAllByUserSeqAndUserRole(userInfo.getId(), UserRole.GUEST);
+        customUserAppointmentMappingRepository.deleteAllByUserSeq(userInfo.getId());
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByUserSeqAndUserRole(userInfo.getId(), UserRole.HOST);
