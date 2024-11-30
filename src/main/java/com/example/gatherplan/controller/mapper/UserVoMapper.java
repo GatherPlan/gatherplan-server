@@ -1,9 +1,12 @@
 package com.example.gatherplan.controller.mapper;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthTokenRespDto;
 import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.controller.vo.user.CreateUserReq;
+import com.example.gatherplan.controller.vo.user.KakaoOauthTokenResp;
 import com.example.gatherplan.controller.vo.user.UserInfoResp;
+import com.example.gatherplan.external.vo.KakaoClientOauthTokenResp;
 import org.mapstruct.*;
 
 @Mapper(
@@ -17,4 +20,6 @@ public interface UserVoMapper {
     CreateUserReqDto to(CreateUserReq req);
 
     UserInfoResp toUserInfoResp(UserInfoRespDto respDto);
+
+    KakaoOauthTokenResp toKakaoOauthTokenResp(KakaoOauthTokenRespDto respDto);
 }
