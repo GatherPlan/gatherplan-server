@@ -39,6 +39,12 @@ public class SecurityConfig {
             "/api/v1/temporary/**",
             "/api/v1/region/**",
             "/api/v1/appointments/preview",
+            "/api/v1/users/oauth/authorize",
+            "/api/v1/users/oauth/authorize/redirect",
+            "/api/v1/users/oauth/token",
+            "/api/v1/users/oauth/check",
+            "/api/v1/users/oauth/join",
+            "/api/v1/users/oauth/login",
             "/", "/swagger-ui/**", "/v3/api-docs/**"
     };
 

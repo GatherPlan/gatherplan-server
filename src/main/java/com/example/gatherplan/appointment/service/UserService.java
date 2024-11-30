@@ -1,8 +1,11 @@
 package com.example.gatherplan.appointment.service;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthLoginRespDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthTokenRespDto;
 import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.common.config.jwt.UserInfo;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface UserService {
     void authenticateEmail(String email);
@@ -26,4 +29,15 @@ public interface UserService {
     void deleteUser(UserInfo userInfo);
 
     void updateUser(String name, Long id);
+
+    void retrieveKakaoOauthAuthorization(HttpServletResponse httpServletResponse);
+
+    KakaoOauthTokenRespDto retrieveKakaoOauthToken(String authorizationCode);
+
+    void checkKakaoOauthUser(String accessToken);
+
+    void joinKakaoOauthUser(String authorizationCode);
+
+    KakaoOauthLoginRespDto loginKakaoOauthUser(String accessToken);
+
 }

@@ -40,6 +40,9 @@ public class User extends BaseAuditableEntity {
     @Comment("Security 에 사용되는 Role")
     private RoleType roleType;
 
+    @Comment("카카오 Oauth Id")
+    private String kakaoId;
+
     public String getRole() {
         return this.roleType.getRole();
     }

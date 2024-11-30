@@ -1,6 +1,8 @@
 package com.example.gatherplan.controller;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthLoginRespDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthTokenRespDto;
 import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.common.config.jwt.UserInfo;
@@ -14,6 +16,7 @@ import com.example.gatherplan.controller.vo.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -174,6 +177,75 @@ public class UserController {
         return ResponseEntity.ok(
                 BooleanResp.success()
         );
+    }
+
+    @GetMapping("/oauth/authorize")
+    @Operation(summary = "Kakao Oauth 인가 요청", description = "Kakao Oauth 인가를 요청할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> retrieveKakaoOauthAuthorization(HttpServletResponse httpServletResponse) {
+
+        userService.retrieveKakaoOauthAuthorization(httpServletResponse);
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @GetMapping("/oauth/authorize/redirect")
+    @Operation(summary = "Kakao Oauth 인가 코드 획득", description = "Kakao Oauth 서버로부터 인가코드를 획득할 때 사용됩니다.")
+    public ResponseEntity<KakaoOauthAuthorizationResp> retrieveKakaoOauthAuthorizationRedirect(
+            @RequestParam("code") String authorizationCode) {
+
+        return ResponseEntity.ok(
+                KakaoOauthAuthorizationResp.of(authorizationCode)
+        );
+    }
+
+    @PostMapping("/oauth/token")
+    @Operation(summary = "Kakao Oauth Token 획득", description = "회원이 Kakao Oauth로부터 서버로부터 access/refresh 토큰을 획득할 때 사용됩니다.")
+    public ResponseEntity<KakaoOauthTokenResp> retrieveKakaoOauthToken(
+            @RequestBody KakaoOauthTokenReq req) {
+
+        KakaoOauthTokenRespDto respDto = userService.retrieveKakaoOauthToken(req.getAuthorizationCode());
+
+        return ResponseEntity.ok(
+                userVoMapper.toKakaoOauthTokenResp(respDto)
+        );
+    }
+
+    @GetMapping("/oauth/check")
+    @Operation(summary = "Kakao Oauth 회원 체크", description = "Kakao Oauth로 가입된 회원인지 체크할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> checkKakaoOauthUser(
+            @RequestBody KakaoOauthCheckReq req) {
+
+        userService.checkKakaoOauthUser(req.getAccessToken());
+
+        return ResponseEntity.ok(
+                BooleanResp.success()
+        );
+    }
+
+    @PostMapping("/oauth/join")
+    @Operation(summary = "회원의 Kakao Oauth 소셜 회원가입", description = "Kakao Oauth로 회원가입을 진행할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> joinKakaoOauthUser(
+            @RequestBody KakaoOauthJoinReq req) {
+
+        userService.joinKakaoOauthUser(req.getAccessToken());
+
+        return ResponseEntity.ok(
+            BooleanResp.success()
+        );
+    }
+
+    @PostMapping("/oauth/login")
+    @Operation(summary = "회원의 Kakao Oauth 로그인", description = "회원이 Kakao Oauth 로그인을 진행할 때 사용됩니다.")
+    public ResponseEntity<BooleanResp> loginKakaoOauthUser(
+            @RequestBody KakaoOauthLoginReq req) {
+
+        KakaoOauthLoginRespDto respDto = userService.loginKakaoOauthUser(req.getAccessToken());
+
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + respDto.getJwtToken())
+                .body(BooleanResp.success());
     }
 }
 
