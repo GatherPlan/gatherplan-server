@@ -6,7 +6,6 @@ import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.controller.vo.user.CreateUserReq;
 import com.example.gatherplan.controller.vo.user.KakaoOauthTokenResp;
 import com.example.gatherplan.controller.vo.user.UserInfoResp;
-import com.example.gatherplan.external.vo.KakaoClientOauthTokenResp;
 import org.mapstruct.*;
 
 @Mapper(
