@@ -21,11 +21,10 @@ import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.common.utils.MailUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,21 +74,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         emailAuthRepository.save(emailAuth);
 
-        String subject = "[Gather Plan] 일반 회원가입 이메일 인증";
-        String content = String.format(
-                "Gather Plan 에 방문해주셔서 감사합니다. 인증번호는 %s 입니다. 인증번호를 인증코드란에 입력해주세요.", authCode);
+        String subject = "일반 회원가입 이메일 인증";
+        String content = String.format("인증번호는 %s 입니다. 인증번호를 인증코드란에 입력해주세요.", authCode);
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(email);
-        simpleMailMessage.setFrom(adminEmail);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(content);
-
-        try {
-            javaMailSender.send(simpleMailMessage);
-        } catch (MailException e) {
-            throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
-        }
+        MailUtils.sendEmail(adminEmail, email, subject, content, javaMailSender);
     }
 
     @Override
@@ -197,21 +185,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         emailAuthRepository.save(emailAuth);
 
-        String subject = "[Gather Plan] 일반 회원 비밀번호 재설정을 위한 인증번호 발급";
-        String content = String.format(
-                "Gather Plan 에 방문해주셔서 감사합니다. 인증번호는 %s 입니다. 인증번호를 인증코드란에 입력해주세요.", authCode);
+        String subject = "일반 회원 비밀번호 재설정을 위한 인증번호 발급";
+        String content = String.format("인증번호는 %s 입니다. 인증번호를 인증코드란에 입력해주세요.", authCode);
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(email);
-        simpleMailMessage.setFrom(adminEmail);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(content);
-
-        try {
-            javaMailSender.send(simpleMailMessage);
-        } catch (MailException e) {
-            throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, "이메일 전송에 실패했습니다.");
-        }
+        MailUtils.sendEmail(adminEmail, email, subject, content, javaMailSender);
     }
 
     @Override
