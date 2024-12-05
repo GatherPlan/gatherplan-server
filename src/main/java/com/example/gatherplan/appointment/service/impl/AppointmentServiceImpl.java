@@ -221,9 +221,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         List<UserAppointmentMapping> userAppointmentMappingList =
                 userAppointmentMappingRepository.findAllByAppointmentCode(appointmentCode);
-        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(userId, userAppointmentMappingList);
+        UserAppointmentMapping guestMapping = AppointmentUtils.findGuestMapping(userId, userAppointmentMappingList);
 
-        userAppointmentMappingRepository.deleteById(mapping.getId());
+        userAppointmentMappingRepository.deleteById(guestMapping.getId());
+
+        UserAppointmentMapping hostMapping = AppointmentUtils.findHost(userAppointmentMappingList);
+        if (!UserAuthType.TEMPORARY.equals(hostMapping.getUserAuthType())) {
+            String hostEmail = userRepository.findById(hostMapping.getUserSeq()).map(User::getEmail)
+                    .orElseThrow(() -> new UserException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
+            String subject = String.format("'%s' 약속 참여자의 참여 정보가 변경 되었습니다.", appointment.getAppointmentName());
+            String content = String.format("'%s' 님이 약속 참여를 취소했습니다.", guestMapping.getNickname());
+            MailUtils.sendEmail(adminEmail, hostEmail, subject, content, javaMailSender);
+        }
     }
 
     @Override
