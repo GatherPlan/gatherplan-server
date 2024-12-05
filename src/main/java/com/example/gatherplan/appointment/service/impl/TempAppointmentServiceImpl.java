@@ -186,11 +186,20 @@ public class TempAppointmentServiceImpl implements TempAppointmentService {
         AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
 
         List<UserAppointmentMapping> userAppointmentMappingList = userAppointmentMappingRepository.findAllByAppointmentCode(reqDto.getAppointmentCode());
-        UserAppointmentMapping mapping = AppointmentUtils.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
+        UserAppointmentMapping guestMapping = AppointmentUtils.findGuestMapping(reqDto.getTempUserInfo(), userAppointmentMappingList);
 
         AppointmentValidator.validateSelectedDateTimeAndThrow(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList());
 
-        mapping.update(reqDto.getSelectedDateTimeList());
+        guestMapping.update(reqDto.getSelectedDateTimeList());
+
+        UserAppointmentMapping hostMapping = AppointmentUtils.findHost(userAppointmentMappingList);
+        if (!UserAuthType.TEMPORARY.equals(hostMapping.getUserAuthType())) {
+            String hostEmail = userRepository.findById(hostMapping.getUserSeq()).map(User::getEmail)
+                    .orElseThrow(() -> new UserException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
+            String subject = String.format("'%s' 약속 참여자의 참여 정보가 변경 되었습니다.", appointment.getAppointmentName());
+            String content = String.format("'%s' 님이 약속 참여 정보를 변경 하였습니다.", guestMapping.getNickname());
+            MailUtils.sendEmail(adminEmail, hostEmail, subject, content, javaMailSender);
+        }
     }
 
     @Override
