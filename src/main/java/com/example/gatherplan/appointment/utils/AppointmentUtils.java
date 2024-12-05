@@ -194,6 +194,13 @@ public class AppointmentUtils {
                 .toList();
     }
 
+    public UserAppointmentMapping findHost(List<UserAppointmentMapping> mappingList) {
+        return mappingList.stream()
+                .filter(mapping -> UserRole.HOST.equals(mapping.getUserRole()))
+                .findFirst()
+                .orElseThrow(() -> new AppointmentException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT,
+                        "잘못된 약속 정보가 존재합니다."));
+    }
 
     public String findHostName(List<UserAppointmentMapping> mappingList) {
         return mappingList.stream()

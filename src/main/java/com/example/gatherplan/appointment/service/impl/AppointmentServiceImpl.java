@@ -5,11 +5,14 @@ import com.example.gatherplan.appointment.enums.AppointmentState;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
 import com.example.gatherplan.appointment.exception.AppointmentException;
+import com.example.gatherplan.appointment.exception.UserException;
 import com.example.gatherplan.appointment.mapper.AppointmentMapper;
 import com.example.gatherplan.appointment.repository.AppointmentRepository;
 import com.example.gatherplan.appointment.repository.CustomAppointmentRepository;
 import com.example.gatherplan.appointment.repository.UserAppointmentMappingRepository;
+import com.example.gatherplan.appointment.repository.UserRepository;
 import com.example.gatherplan.appointment.repository.entity.Appointment;
+import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.AppointmentService;
 import com.example.gatherplan.appointment.utils.AppointmentUtils;
@@ -20,12 +23,15 @@ import com.example.gatherplan.common.unit.ConfirmedDateTime;
 import com.example.gatherplan.common.unit.CustomPageRequest;
 import com.example.gatherplan.common.unit.ParticipationInfo;
 import com.example.gatherplan.common.unit.UserParticipationInfo;
+import com.example.gatherplan.common.utils.MailUtils;
 import com.example.gatherplan.common.utils.UuidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +49,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserAppointmentMappingRepository userAppointmentMappingRepository;
 
     private final CustomAppointmentRepository customAppointmentRepository;
+    private final UserRepository userRepository;
+
+    private final JavaMailSender javaMailSender;
+    @Value("${spring.mail.username}")
+    private String adminEmail;
 
     @Override
     @Transactional
@@ -109,7 +120,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId, String name) {
+    public void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId) {
         Appointment appointment = appointmentRepository.findByAppointmentCode(reqDto.getAppointmentCode())
                 .orElseThrow(() -> new AppointmentException(ErrorCode.APPOINTMENT_NOT_FOUND));
         AppointmentValidator.validateAppointmentStateUnconfirmedAndThrow(appointment);
@@ -124,10 +135,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentValidator.validateSelectedDateTimeAndThrow(appointment.getCandidateDateList(), reqDto.getSelectedDateTimeList());
 
-        UserAppointmentMapping userAppointmentMapping = UserAppointmentMapping.ofUser(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), UserAuthType.LOCAL);
+        UserAppointmentMapping userAppointmentMapping =
+                UserAppointmentMapping.ofUser(reqDto.getAppointmentCode(), userId, UserRole.GUEST, reqDto.getNickname(), UserAuthType.LOCAL);
         userAppointmentMapping.update(reqDto.getSelectedDateTimeList());
 
         userAppointmentMappingRepository.save(userAppointmentMapping);
+
+        UserAppointmentMapping hostMapping = AppointmentUtils.findHost(userAppointmentMappingList);
+        if (!UserAuthType.TEMPORARY.equals(hostMapping.getUserAuthType()) && !userId.equals(hostMapping.getUserSeq())) {
+            String hostEmail = userRepository.findById(hostMapping.getUserSeq()).map(User::getEmail)
+                    .orElseThrow(() -> new UserException(ErrorCode.HOST_NOT_FOUND_IN_APPOINTMENT));
+            String subject = String.format("'%s' 약속에 새로운 인원이 참여했습니다.", appointment.getAppointmentName());
+            String content = String.format("'%s' 님이 약속에 새로 참여했습니다.", reqDto.getNickname());
+            MailUtils.sendEmail(adminEmail, hostEmail, subject, content, javaMailSender);
+        }
     }
 
     @Override

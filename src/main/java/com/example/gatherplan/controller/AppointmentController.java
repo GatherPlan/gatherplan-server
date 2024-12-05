@@ -94,7 +94,7 @@ public class AppointmentController {
             @AuthenticationPrincipal UserInfo userInfo) {
 
         CreateAppointmentJoinReqDto reqDto = appointmentVoMapper.to(req);
-        appointmentService.registerAppointmentJoin(reqDto, userInfo.getId(), userInfo.getUsername());
+        appointmentService.registerAppointmentJoin(reqDto, userInfo.getId());
 
         return ResponseEntity.ok(
                 BooleanResp.success()

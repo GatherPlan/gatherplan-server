@@ -16,7 +16,7 @@ public interface AppointmentService {
 
     void deleteAppointment(String appointmentCode, Long userId);
 
-    void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId, String name);
+    void registerAppointmentJoin(CreateAppointmentJoinReqDto reqDto, Long userId);
 
     List<AppointmentParticipantsRespDto> retrieveAppointmentParticipants(String appointmentCode, Long userId);
 

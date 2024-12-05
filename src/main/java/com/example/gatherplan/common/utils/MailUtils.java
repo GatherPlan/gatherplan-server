@@ -10,8 +10,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 @UtilityClass
 public class MailUtils {
     public void sendEmail(String from, String to, String subjectText, String contentText, JavaMailSender mailSender) {
-        String subject = "[Gather Plan] " + subjectText;
-        String content = String.format("Gather Plan 에 방문해주셔서 감사합니다.%n") + contentText;
+        String subject = "[Plan4U] " + subjectText;
+        String content = String.format("안녕하세요. 당신을 위한 플래너 Plan4U 입니다.%n") + contentText;
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(to);
