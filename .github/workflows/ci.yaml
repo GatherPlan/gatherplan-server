@@ -1,4 +1,4 @@
-name: Build and Deploy to GKE
+name: Build
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-  GAR_LOCATION: us-east1 # TODO: update region of the Artifact Registry
+  GAR_LOCATION: asia-northeast3
   REPOSITORY: gatherplan # TODO: update to Artifact Registry docker repository
   IMAGE: gatherplan-server
   IMG_TAG: v${GITHUB_SHA::7}
@@ -64,35 +64,35 @@ jobs:
           docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${{ env.IMG_TAG }}"
 
 
-      - name: Create GITHUB_SHA_SHORT
-        id: meta
-        run: |
-          echo "github_sha=${{ env.IMG_TAG }}" >> $GITHUB_OUTPUT
+      # - name: Create GITHUB_SHA_SHORT
+      #   id: meta
+      #   run: |
+      #     echo "github_sha=${{ env.IMG_TAG }}" >> $GITHUB_OUTPUT
 
-      - name: Checkout Target Repository
-        uses: actions/checkout@v3
-        with:
-          repository: ppippi-dev/helm-chart
-          token: ${{ secrets.PPI_GITHUB_TOKEN }}
+      # - name: Checkout Target Repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: ppippi-dev/helm-chart
+      #     token: ${{ secrets.PPI_GITHUB_TOKEN }}
 
-      - name: Update Image Version in the related HelmChart values.yaml
-        uses: fjogeleit/yaml-update-action@main
-        with:
-          valueFile: ${{ env.HELM_CHART_VALUES }}
-          propertyPath: 'image.tag'
-          value: ${{ steps.meta.outputs.github_sha }}
-          repository: ppippi-dev/helm-chart
-          branch: main
-          targetBranch: main
-          createPR: false
-          message: 'Update Image Version to ${{ steps.meta.outputs.github_sha }}'
-          token: ${{ secrets.PPI_GITHUB_TOKEN }}
+      # - name: Update Image Version in the related HelmChart values.yaml
+      #   uses: fjogeleit/yaml-update-action@main
+      #   with:
+      #     valueFile: ${{ env.HELM_CHART_VALUES }}
+      #     propertyPath: 'image.tag'
+      #     value: ${{ steps.meta.outputs.github_sha }}
+      #     repository: ppippi-dev/helm-chart
+      #     branch: main
+      #     targetBranch: main
+      #     createPR: false
+      #     message: 'Update Image Version to ${{ steps.meta.outputs.github_sha }}'
+      #     token: ${{ secrets.PPI_GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v2
-      - name: Sync ArgoCD Application
-        uses: omegion/argocd-actions@v1
-        with:
-          address: "argocd.gatherplan.site"
-          token: ${{ secrets.ARGOCD_TOKEN }}
-          action: sync
-          appName: "gatherplan-server"
+      # - uses: actions/checkout@v2
+      # - name: Sync ArgoCD Application
+      #   uses: omegion/argocd-actions@v1
+      #   with:
+      #     address: "argocd.gatherplan.site"
+      #     token: ${{ secrets.ARGOCD_TOKEN }}
+      #     action: sync
+      #     appName: "gatherplan-server"
