@@ -1,6 +1,8 @@
 package com.example.gatherplan.appointment.service.impl;
 
 import com.example.gatherplan.appointment.dto.CreateUserReqDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthLoginRespDto;
+import com.example.gatherplan.appointment.dto.KakaoOauthTokenRespDto;
 import com.example.gatherplan.appointment.dto.UserInfoRespDto;
 import com.example.gatherplan.appointment.enums.UserAuthType;
 import com.example.gatherplan.appointment.enums.UserRole;
@@ -16,11 +18,16 @@ import com.example.gatherplan.appointment.repository.entity.User;
 import com.example.gatherplan.appointment.repository.entity.UserAppointmentMapping;
 import com.example.gatherplan.appointment.service.UserService;
 import com.example.gatherplan.appointment.validator.AppointmentValidator;
+import com.example.gatherplan.common.config.jwt.JWTUtil;
 import com.example.gatherplan.common.config.jwt.RoleType;
 import com.example.gatherplan.common.config.jwt.UserInfo;
 import com.example.gatherplan.common.exception.AuthenticationFailException;
 import com.example.gatherplan.common.exception.BusinessException;
 import com.example.gatherplan.common.exception.ErrorCode;
+import com.example.gatherplan.external.KakaoOauthClient;
+import com.example.gatherplan.external.vo.KakaoClientOauthTokenResp;
+import com.example.gatherplan.external.vo.KakaoOauthUserInfoResp;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +39,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -51,8 +60,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AppointmentRepository appointmentRepository;
+    public final JWTUtil jwtUtil;
+
     @Value("${spring.mail.username}")
     private String adminEmail;
+
+    @Value("${kakao.oauth.url}")
+    private String kakaoOauthUrl;
+
+    @Value("${kakao.oauth.client-id}")
+    private String clientId;
+
+    @Value("${kakao.oauth.redirect-uri}")
+    private String redirectUri;
+
+    private final KakaoOauthClient kakaoOauthClient;
 
     @Override
     @Transactional
@@ -270,6 +292,91 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 
         user.updateUser(name);
+    }
+
+    @Override
+    public void retrieveKakaoOauthAuthorization(HttpServletResponse httpServletResponse) {
+        String requestUrl = String.format(
+                "%s?response_type=%s&client_id=%s&redirect_uri=%s",
+                kakaoOauthUrl, "code", clientId, redirectUri
+        );
+
+        try {
+            httpServletResponse.sendRedirect(requestUrl);
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.KAKAO_OAUTH_REDIRECT_FAILED);
+        }
+    }
+
+    @Override
+    public KakaoOauthTokenRespDto retrieveKakaoOauthToken(String authorizationCode) {
+        KakaoClientOauthTokenResp kakaoClientOauthTokenResp = kakaoOauthClient.getToken(authorizationCode);
+
+        return userMapper.toKakaoOauthTokenRespDto(kakaoClientOauthTokenResp);
+    }
+
+    @Override
+    public void checkKakaoOauthUser(String accessToken) {
+        try {
+            KakaoOauthUserInfoResp kakaoOauthUserInfoResp = kakaoOauthClient.getUserInfo(accessToken);
+
+            if (!userRepository.existsByKakaoId(kakaoOauthUserInfoResp.getId())) {
+                throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+            }
+
+        } catch (WebClientResponseException e) {
+            throw new BusinessException(ErrorCode.KAKAO_OAUTH_USER_INFO_NOT_FOUND);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void joinKakaoOauthUser(String accessToken) {
+        try {
+            KakaoOauthUserInfoResp kakaoOauthUserInfoResp = kakaoOauthClient.getUserInfo(accessToken);
+
+            if (userRepository.existsByKakaoId(kakaoOauthUserInfoResp.getId())) {
+                throw new BusinessException(ErrorCode.USER_EMAIL_DUPLICATED);
+            }
+
+            User user = User.builder()
+                    .kakaoId(kakaoOauthUserInfoResp.getId())
+                    .email(kakaoOauthUserInfoResp.getKakaoAccount().getEmail())
+                    .name(kakaoOauthUserInfoResp.getProperties().get("nickname"))
+                    .password("testpassword")
+                    .userAuthType(UserAuthType.KAKAO)
+                    .roleType(RoleType.USER)
+                    .build();
+
+            userRepository.save(user);
+
+        } catch (WebClientResponseException e) {
+            throw new BusinessException(ErrorCode.KAKAO_OAUTH_USER_INFO_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public KakaoOauthLoginRespDto loginKakaoOauthUser(String accessToken) {
+        try {
+            KakaoOauthUserInfoResp kakaoOauthUserInfoResp = kakaoOauthClient.getUserInfo(accessToken);
+
+            User user = userRepository.findByKakaoId(kakaoOauthUserInfoResp.getId())
+                    .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+            String jwtToken = jwtUtil.createJwt(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getUserAuthType(),
+                    "ROLE_USER",
+                    23 * 60 * 60 * 1000L
+            );
+
+            return userMapper.toKakaoOauthLoginRespDto(jwtToken);
+
+        } catch (WebClientResponseException e) {
+            throw new BusinessException(ErrorCode.KAKAO_OAUTH_USER_INFO_NOT_FOUND);
+        }
     }
 }
 

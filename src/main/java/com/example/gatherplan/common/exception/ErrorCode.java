@@ -40,7 +40,11 @@ public enum ErrorCode {
     USER_NAME_DUPLICATED_IN_APPOINTMENT(HttpStatus.CONFLICT, 4006, "해당 약속의 기존 회원과 이름이 중복됩니다."),
 
     // REGION ERROR
-    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, 5000, "존재하지 않는 지역입니다.");
+    REGION_NOT_FOUND(HttpStatus.NOT_FOUND, 5000, "존재하지 않는 지역입니다."),
+
+    // KAKAO OAUTH
+    KAKAO_OAUTH_USER_INFO_NOT_FOUND(HttpStatus.NOT_FOUND,6000, "해당하는 카카오 사용자를 찾을 수 없습니다."),
+    KAKAO_OAUTH_REDIRECT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 6001, "일시적인 문제로 카카오 Oauth 리다이렉트 처리에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
